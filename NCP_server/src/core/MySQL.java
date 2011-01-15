@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * La class MySQL permettra la liason entre le serveur de chat et le serveur MySQL.
  * @author Poirier Kevin
- * @version 1.0.0
+ * @version 1.0.1
  *
  */
 
@@ -86,6 +86,7 @@ public class MySQL {
 		}
 		catch(SQLException e) {
 			displaySQLErrors(e);
+			System.exit(1);
 		}
 		return connexion;
 
