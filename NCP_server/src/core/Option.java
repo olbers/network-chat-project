@@ -9,11 +9,11 @@ import java.util.StringTokenizer;
  * 
  * Cette classe permet de faire la gestion des options du serveur NCP.
  * Incrementation de la classe:
- * Ajout/modification/supression incrémentation du 3ème numéro.
+ * Ajout/modification/supression d'option incrémentation du 3ème numéro.
  * Modification légère incrémentation du second numéro
  * Lourde modification modification du premier numéro
  * @author Kevin Poirier
- * @version 1.0.0
+ * @version 1.0.1
  * 
  *
  */
@@ -49,6 +49,21 @@ public class Option {
 	 * Variable qui contiendra le flux du fichier option.conf.
 	 */
 	protected BufferedReader optionFile;
+	/**
+	 * Variable qui contiendra l'addresse du serveur MySQL et la base de données a utiliser.
+	 * @since 1.0.1
+	 */
+	protected String dbMySQL;
+	/**
+	 * Variable qui contiendra l'identifiant au serveur MySQL.
+	 * @since 1.0.1
+	 */
+	protected String userMySQL;
+	/**
+	 * Variable qui contiendra le mot de passe pour la connexion au serveur MySQL.
+	 * @since 1.0.1
+	 */
+	protected String pwdMySQL;
 
 	/**
 	 * Constructeur de la classe option. Mettra tout les paramètres à leur valeur par defauts.
@@ -70,6 +85,9 @@ public class Option {
 		this.protect_mdp_server = false;
 		this.nameServer = "NCPserver";
 		this.mdp_server = null;
+		this.dbMySQL="jdbc:mysql://localhost/NCP";
+		this.userMySQL="root";
+		this.pwdMySQL="";
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
 			this.Recup(optionFile);
@@ -140,11 +158,18 @@ public class Option {
 			}else if(option.equalsIgnoreCase("test_mdp_max")){
 				this.setTest_mdp_max(Integer.parseInt(result));
 			}else if(option.equalsIgnoreCase("protect_mdp_server")){
-				this.setprotect_mdp_server(Boolean.parseBoolean(result));
+				this.setProtect_mdp_server(Boolean.parseBoolean(result));
 			}else if(option.equalsIgnoreCase("nameServer")){
 				this.setNameServer(result);
 			}else if(option.equalsIgnoreCase("mdp_server")){
 				this.setMdp_server(result);
+			}else if(option.equalsIgnoreCase("dbMySQL")){
+				String jdbc="jdbc:";
+				this.setDbMySQL(jdbc+result);
+			}else if (option.equalsIgnoreCase("userMySQL")){
+				this.setUserMySQL(result);
+			}else if (option.equalsIgnoreCase("pwdMySQL")){
+				this.setPwdMySQL(result);
 			}else {
 				System.err.println("Erreur, Option non reconnu");
 			}			
@@ -157,9 +182,10 @@ public class Option {
 	 */
 	public String toString() {
 		return "Option [port=" + port + ", nb_client_max=" + nb_client_max
-		+ ", test_mdp_max=" + test_mdp_max + ", protect_mdp_server="
-		+ protect_mdp_server + ", mdp_server=" + mdp_server
-		+ ", nameServer=" + nameServer + "]";
+				+ ", test_mdp_max=" + test_mdp_max + ", protect_mdp_server="
+				+ protect_mdp_server + ", mdp_server=" + mdp_server
+				+ ", nameServer=" + nameServer + ", dbMySQL=" + dbMySQL
+				+ ", userMySQL=" + userMySQL + ", pwdMySQL=" + pwdMySQL + "]";
 	}
 	/**
 	 * Getter de la variable port.
@@ -214,7 +240,7 @@ public class Option {
 	 * @return si le serveur est protege par un mot de passe
 	 * @see Option#protect_mdp_server
 	 */
-	public boolean isprotect_mdp_server() {
+	public boolean isProtect_mdp_server() {
 		return protect_mdp_server;
 	}
 	/**
@@ -222,7 +248,7 @@ public class Option {
 	 * @param protect_mdp_server
 	 * @see Option#protect_mdp_server
 	 */
-	public void setprotect_mdp_server(boolean protect_mdp_server) {
+	public void setProtect_mdp_server(boolean protect_mdp_server) {
 		protect_mdp_server = protect_mdp_server;
 	}
 	/**
@@ -257,4 +283,59 @@ public class Option {
 	public void setNameServer(String nameServer) {
 		this.nameServer = nameServer;
 	}
+	/**
+	 * Getter de la variable dbMySQL
+	 * @return l'adresse de la base de données
+	 * @see Option#dbMySQL
+	 * @since 1.0.1
+	 */
+	public String getDbMySQL() {
+		return dbMySQL;
+	}
+	/**
+	 * Setter de la variable dbMySQL
+	 * @param dbMySQL
+	 * @see Option#dbMySQL
+	 * @since 1.0.1
+	 */
+	public void setDbMySQL(String dbMySQL) {
+		this.dbMySQL = dbMySQL;
+	}
+	/**
+	 * Getter de la variable userMySQL
+	 * @return l'identifiant pour la connexion a la base de donnees.
+	 * @see Option#userMySQL
+	 * @since 1.0.1
+	 */
+	public String getUserMySQL() {
+		return userMySQL;
+	}
+	/**
+	 * Setter de la variable userMySQL
+	 * @param userMySQL
+	 * @see Option#userMySQL
+	 * @since 1.0.1
+	 */
+	public void setUserMySQL(String userMySQL) {
+		this.userMySQL = userMySQL;
+	}
+	/**
+	 * Getter de la variable pwdMySQL
+	 * @return Le mot de passe pour la connexion a la base de donnees.
+	 * @see Option#pwdMySQL
+	 * @since 1.0.1
+	 */
+	public String getPwdMySQL() {
+		return pwdMySQL;
+	}
+	/**
+	 * Setter de la variable pwdMySQL
+	 * @param pwdMySQL
+	 * @see Option#pwdMySQL
+	 * @since 1.0.1
+	 */
+	public void setPwdMySQL(String pwdMySQL) {
+		this.pwdMySQL = pwdMySQL;
+	}
+	
 }
