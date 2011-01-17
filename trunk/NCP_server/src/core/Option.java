@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
  * Modification légère incrémentation du second numéro
  * Lourde modification modification du premier numéro
  * @author Kevin Poirier
- * @version 1.0.1
+ * @version 1.1.0
  * 
  *
  */
@@ -48,7 +48,7 @@ public class Option {
 	/**
 	 * Variable qui contiendra le flux du fichier option.conf.
 	 */
-	protected BufferedReader optionFile;
+	private BufferedReader optionFile;
 	/**
 	 * Variable qui contiendra l'addresse du serveur MySQL et la base de données a utiliser.
 	 * @since 1.0.1
@@ -64,6 +64,16 @@ public class Option {
 	 * @since 1.0.1
 	 */
 	protected String pwdMySQL;
+	/**
+	 * Variable log qui permet la gestion des message d'erreur.
+	 * @since 1.1.0
+	 */
+	protected Log log;
+	/**
+	 * Variable qui indiquera si on log ou non le chat.
+	 * @since 1.0.2
+	 */
+	protected boolean logChat;
 
 	/**
 	 * Constructeur de la classe option. Mettra tout les paramètres à leur valeur par defauts.
@@ -77,7 +87,7 @@ public class Option {
 	 * @see Option#optionFile
 	 */
 
-	public Option() {
+	public Option(Log log) {
 		super();
 		this.nb_client_max=20;
 		this.port=1999;
@@ -88,12 +98,15 @@ public class Option {
 		this.dbMySQL="jdbc:mysql://localhost/NCP";
 		this.userMySQL="root";
 		this.pwdMySQL="";
+		this.logChat=true;
+		this.log=log;
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
 			this.Recup(optionFile);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Fichier option.conf Introuvable");
+			System.err.println("Fichier option.conf Introuvable.");
+			this.log.err("Fichier option.conf Introuvable.");
 		}
 
 
@@ -121,6 +134,16 @@ public class Option {
 								option=mot; //On mets le premier mot dans option
 								while(token.hasMoreTokens()){
 									resultOption=token.nextToken(); //On garde le dernier mot de la ligne dans resultOption
+									if(resultOption.substring(0, 1).equalsIgnoreCase("=")&& resultOption.length()>1){ 
+										System.err.println("Erreur sur la syntaxe à la ligne :"+ligne);
+										this.log.err("Erreur sur la syntaxe à la ligne :"+ligne);
+										//Gestion Si on veux traiter le problème.
+										/*String modifResult = "";
+										for(int i=0;i<(resultOption.length()-1);i++){
+											modifResult=modifResult+resultOption.charAt(i+1);
+										}
+										resultOption=modifResult;*/
+									}
 								}
 								if(resultOption!=null && option!=null){
 									if(!resultOption.equalsIgnoreCase(option)){
@@ -128,6 +151,7 @@ public class Option {
 									}
 								}else{
 									System.err.println("Erreur dans le fichier Option.conf à la ligne suivante:"+ligne);
+									this.log.err("Erreur dans le fichier Option.conf à la ligne suivante:"+ligne);
 								}
 							}
 							mot = null; option = null;resultOption=null; //raz des var
@@ -135,11 +159,12 @@ public class Option {
 					}
 				}			
 			}while(ligne!=null);
+			this.optionFile.close();
+			this.log.init(this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
+		}		
 	}
 	/**
 	 * Cette méthode permet de mettre à jours les option qui ne sont pas garder par défaut.
@@ -170,11 +195,14 @@ public class Option {
 				this.setUserMySQL(result);
 			}else if (option.equalsIgnoreCase("pwdMySQL")){
 				this.setPwdMySQL(result);
+			}else if (option.equalsIgnoreCase("logChat")){
+				this.setLogChat(Boolean.parseBoolean(result));
 			}else {
-				System.err.println("Erreur, Option non reconnu");
+				System.err.println("Erreur, Option non reconnu.");
+				this.log.err("Erreur, l'option '"+option+"' est non reconnu.");
 			}			
 		}
-		System.out.println(this.toString());
+		//System.out.println(this.toString());
 	}
 	/**
 	 * toString de la classe Option.
@@ -185,7 +213,8 @@ public class Option {
 				+ ", test_mdp_max=" + test_mdp_max + ", protect_mdp_server="
 				+ protect_mdp_server + ", mdp_server=" + mdp_server
 				+ ", nameServer=" + nameServer + ", dbMySQL=" + dbMySQL
-				+ ", userMySQL=" + userMySQL + ", pwdMySQL=" + pwdMySQL + "]";
+				+ ", userMySQL=" + userMySQL + ", pwdMySQL=" + pwdMySQL
+				+ ", logChat=" + logChat + "]";
 	}
 	/**
 	 * Getter de la variable port.
@@ -337,5 +366,22 @@ public class Option {
 	public void setPwdMySQL(String pwdMySQL) {
 		this.pwdMySQL = pwdMySQL;
 	}
+	/**
+	 * Getter de la variable logChat
+	 * @return vrai si on log le chat
+	 * @since 1.0.2
+	 */
+	public boolean isLogChat() {
+		return logChat;
+	}
+	/**
+	 * Setter de la variable logChat
+	 * @param logChat
+	 * @since 1.0.2
+	 */
+	public void setLogChat(boolean logChat) {
+		this.logChat = logChat;
+	}
+	
 	
 }

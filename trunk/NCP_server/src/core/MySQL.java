@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * La class MySQL permettra la liason entre le serveur de chat et le serveur MySQL.
  * @author Poirier Kevin
- * @version 1.0.1
+ * @version 1.1.0
  *
  */
 
@@ -31,6 +31,12 @@ public class MySQL {
 	 * @see Option
 	 */
 	protected Option option;
+	/**
+	 * Variable log qui permet la gestion des message d'erreur.
+	 * @since 1.1.0
+	 */
+	protected Log log;
+
 	/**
 	 * Setter de la variable db.
 	 * @param db
@@ -58,8 +64,11 @@ public class MySQL {
 	 */
 	private void displaySQLErrors(SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
+		this.log.err("SQLException: " + e.getMessage());
 		System.out.println("SQLState:     " + e.getSQLState());
+		this.log.err("SQLState:     " + e.getSQLState());
 		System.out.println("VendorError: " + e.getErrorCode());
+		this.log.err("VendorError: " + e.getErrorCode());
 	}
 	/**
 	 * Constructeur de la class MySQL.
@@ -67,16 +76,19 @@ public class MySQL {
 	 * @param option
 	 * @see Option
 	 */
-	public MySQL(Option option){
+	public MySQL(Option option,Log log){
 		this.option=option;
 		this.db=option.getDbMySQL();
 		this.user=option.getUserMySQL();
 		this.pwd=option.getPwdMySQL();
+		this.log=log;
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		}
 		catch (Exception e) {
 			System.err.println("Unable to find and load driver");
+			this.log.err("Unable to find and load driver");
+			this.log.exit();
 			System.exit(1);
 		}
 	}
@@ -86,6 +98,7 @@ public class MySQL {
 		}
 		catch(SQLException e) {
 			displaySQLErrors(e);
+			this.log.exit();
 			System.exit(1);
 		}
 		return connexion;
@@ -106,6 +119,7 @@ public class MySQL {
 		catch(SQLException e) {
 			displaySQLErrors(e);
 			System.err.println(e.getMessage()+"\n"+e.getSQLState()); 
+			this.log.err(e.getMessage()+"\n"+e.getSQLState());
 		}
 	}
 	
