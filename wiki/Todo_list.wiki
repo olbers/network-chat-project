@@ -8,13 +8,13 @@
 ===NCP_Server===
 || Fonctionnalité || Etat || Attribué à ||
 || Connexion || || ||
-|| Gestion BDD || Terminer || Kévin ||
-|| Gestion fichier Option ||Terminer || Kévin ||
+|| Gestion BDD || Terminé || Kévin ||
+|| Gestion fichier Option ||Terminé || Kévin ||
 || Gestion utilisateur (BDD) || || ||
 || Gestion inscription || || ||
 || Gestion Administration || || ||
 || Protection Serveur (MDP) || || ||
-|| Gestion des logs || Terminer || Kévin ||
+|| Gestion des logs || Terminé || Kévin ||
 || Vérification mise à jour application || || ||
 || Vérification client || || ||
 || Cryptage MDP (BDD) || || ||
