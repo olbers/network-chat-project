@@ -1,0 +1,31 @@
+#labels Phase-Design
+<wiki:comment>
+Page qui récapitule les librairies utilisées dans NCP.
+</wiki:comment>
+
+
+= Librairie=
+
+ * JavaSysMon
+
+ * MySQL Connector
+
+== JavaSysMon ==
+@Version : 0.3.3
+
+JavaSysMon permet de récupérer des information sur le système hôte.
+
+Nous l'utiliserons pour vérifier le taux de charge du CPU, et la mémoire utilisée.
+
+[https://github.com/jezhumble/javasysmon JavaSysMon]
+
+Licence : NetBSD
+
+== MySQL Connector == 
+@Version : 5.1.14
+
+MySQL Connector permet avec jdbc de coupler l'application java avec une base de données de type MySQL.
+
+[http://www.mysql.com/downloads/connector/j/ MySQL_Connector]
+
+Licence : GPL
