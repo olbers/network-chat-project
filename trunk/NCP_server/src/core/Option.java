@@ -198,8 +198,8 @@ public class Option {
 			}else if (option.equalsIgnoreCase("logChat")){
 				this.setLogChat(Boolean.parseBoolean(result));
 			}else {
-				System.err.println("Erreur, Option non reconnu.");
-				this.log.err("Erreur, l'option '"+option+"' est non reconnu.");
+				System.err.println("Erreur, l'option '"+option+"' est non reconnue.");
+				this.log.err("Erreur, l'option '"+option+"' est non reconnue.");
 			}			
 		}
 		//System.out.println(this.toString());
