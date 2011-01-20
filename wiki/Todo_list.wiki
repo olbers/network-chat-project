@@ -1,0 +1,46 @@
+#labels Phase-Requirements,Phase-Implementation
+<wiki:comment>Todo List NCP</wiki:comment>
+
+= Todo List=
+ 
+==Application==
+
+===NCP_Server===
+|| Fonctionnalité || Etat || Attribué à ||
+|| Connexion || || ||
+|| Gestion BDD || Terminer || Kévin ||
+|| Gestion fichier Option ||Terminer || Kévin ||
+|| Gestion utilisateur (BDD) || || ||
+|| Gestion inscription || || ||
+|| Gestion Administration || || ||
+|| Protection Serveur (MDP) || || ||
+|| Gestion des logs || Terminer || Kévin ||
+|| Vérification mise à jour application || || ||
+|| Vérification client || || ||
+|| Cryptage MDP (BDD) || || ||
+|| Cryptage SSL (Socket) || || ||
+|| Protection des commandes par permissions || || ||
+|| Commandes /me || || ||
+|| Commandes /nick || || ||
+|| Commandes /kick || || ||
+|| Commandes /total || || ||
+|| Commandes /who || || ||
+|| Commandes /ban || || ||
+|| Commandes /mp || || ||
+
+===NCP_Client_lourd===
+|| Fonctionnalité || Etat || Attribué à ||
+|| Gestion Interface || || ||
+|| Gestion connexion || || ||
+|| Gestion des messages || || ||
+|| Gestion des commandes || || ||
+|| Vérification mise à jour || || ||
+
+
+===NCP_Client_mobile===
+|| Fonctionnalité || Etat || Attribué à ||
+|| Gestion Interface || || ||
+|| Gestion connexion || || ||
+|| Gestion des messages || || ||
+|| Gestion des commandes || || ||
+|| Vérification mise à jour || || ||
