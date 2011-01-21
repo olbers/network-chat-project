@@ -5,7 +5,7 @@ import java.util.*;
 	/**
 	 * La classe log permettra une gestion des log de conversation et des log d'erreur.
 	 * @author Kevin Poirier
-	 * @version 1.0.0
+	 * @version 1.1.0
 	 */
 
 public class Log {
@@ -68,27 +68,12 @@ public class Log {
 	}
 	
 	/**
-	 * La methode date permet de recuperer la date et l'heure actuelle dans un String.
-	 * @return La date sous forme de chaine de charactere.
-	 */
-	public String date(){
-		String date="";
-		int jour,mois,heure,minute,seconde;
-		GregorianCalendar cal = new GregorianCalendar();
-		mois = cal.get(Calendar.MONTH)+1;
-        jour = cal.get(Calendar.DAY_OF_MONTH);
-        heure = cal.get(Calendar.HOUR);
-        minute= cal.get(Calendar.MINUTE);
-        seconde= cal.get(Calendar.SECOND);
-		date="["+jour+"/"+mois+" "+heure+":"+minute+":"+seconde+"]";
-		return date;
-	}
-	/**
 	 * Cette méthode va écrire dans le fichier err.log.
 	 * @param logERR
 	 */
 	public void err(String logERR){
-		this.logFileErr.println(this.date()+logERR);
+		String dateLog = new DateString().dateLog();
+		this.logFileErr.println(dateLog+logERR);
 		this.logFileErr.flush();
 	}
 	/**
@@ -97,7 +82,8 @@ public class Log {
 	 */
 	public void chat(String logChat){
 		if(this.Chat){
-			this.logFileChat.println(this.date()+logChat);
+			String dateLog = new DateString().dateLog();
+			this.logFileChat.println(dateLog+logChat);
 			this.logFileChat.flush();
 		}
 	}
