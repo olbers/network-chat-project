@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
  * Modification légère incrémentation du second numéro
  * Lourde modification modification du premier numéro
  * @author Kevin Poirier
- * @version 1.1.0
+ * @version 1.1.1
  * 
  *
  */
@@ -71,9 +71,24 @@ public class Option {
 	protected Log log;
 	/**
 	 * Variable qui indiquera si on log ou non le chat.
-	 * @since 1.0.2
+	 * @since 1.0.3
 	 */
 	protected boolean logChat;
+	/**
+	 * Variable qui indiquera si on protège le serveur des versions modifier du client.
+	 * @since 1.1.1
+	 */
+	protected boolean protectMD5;
+	/**
+	 * Variable qui contient le hash md5 du client lourd.
+	 * @since 1.1.1
+	 */
+	protected String lourdMD5;
+	/**
+	 * Variable qui contient le hash md5 du client Android.
+	 * @since 1.1.1
+	 */
+	protected String AndroidMD5;
 
 	/**
 	 * Constructeur de la classe option. Mettra tout les paramètres à leur valeur par defauts.
@@ -84,6 +99,14 @@ public class Option {
 	 * @see Option#protect_mdp_server
 	 * @see Option#nameServer
 	 * @see Option#mdp_server
+	 * @see Option#dbMySQL
+	 * @see Option#userMySQL
+	 * @see Option#pwdMySQL
+	 * @see Option#logChat
+	 * @see Option#log
+	 * @see Option#protectMD5
+	 * @see Option#AndroidMD5
+	 * @see Option#lourdMD5
 	 * @see Option#optionFile
 	 */
 
@@ -100,6 +123,9 @@ public class Option {
 		this.pwdMySQL="";
 		this.logChat=true;
 		this.log=log;
+		this.protectMD5=true;
+		this.AndroidMD5="0";
+		this.lourdMD5="0";
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
 			this.Recup(optionFile);
@@ -162,7 +188,7 @@ public class Option {
 			this.optionFile.close();
 			this.log.init(this);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			this.log.err("Impossible de traiter le fichier option.conf.");
 			e.printStackTrace();
 		}		
 	}
@@ -197,6 +223,12 @@ public class Option {
 				this.setPwdMySQL(result);
 			}else if (option.equalsIgnoreCase("logChat")){
 				this.setLogChat(Boolean.parseBoolean(result));
+			}else if (option.equalsIgnoreCase("protectMD5")){
+				this.setProtectMD5(Boolean.parseBoolean(result));
+			}else if (option.equalsIgnoreCase("lourdMD5")){
+				this.setLourdMD5(result);
+			}else if (option.equalsIgnoreCase("androidMD5")){
+				this.setAndroidMD5(result);
 			}else {
 				System.err.println("Erreur, l'option '"+option+"' est non reconnue.");
 				this.log.err("Erreur, l'option '"+option+"' est non reconnue.");
@@ -204,17 +236,21 @@ public class Option {
 		}
 		//System.out.println(this.toString());
 	}
+
 	/**
 	 * toString de la classe Option.
 	 * @return un String de tout les options du fichier
 	 */
+	@Override
 	public String toString() {
 		return "Option [port=" + port + ", nb_client_max=" + nb_client_max
 				+ ", test_mdp_max=" + test_mdp_max + ", protect_mdp_server="
 				+ protect_mdp_server + ", mdp_server=" + mdp_server
-				+ ", nameServer=" + nameServer + ", dbMySQL=" + dbMySQL
-				+ ", userMySQL=" + userMySQL + ", pwdMySQL=" + pwdMySQL
-				+ ", logChat=" + logChat + "]";
+				+ ", nameServer=" + nameServer + ", optionFile=" + optionFile
+				+ ", dbMySQL=" + dbMySQL + ", userMySQL=" + userMySQL
+				+ ", pwdMySQL=" + pwdMySQL + ", log=" + log + ", logChat="
+				+ logChat + ", protectMD5=" + protectMD5 + ", lourdMD5="
+				+ lourdMD5 + ", AndroidMD5=" + AndroidMD5 + "]";
 	}
 	/**
 	 * Getter de la variable port.
@@ -382,6 +418,49 @@ public class Option {
 	public void setLogChat(boolean logChat) {
 		this.logChat = logChat;
 	}
+	/**
+	 * @return the protectMD5
+	 * @since 1.1.1
+	 */
+	public boolean isProtectMD5() {
+		return protectMD5;
+	}
+	/**
+	 * @param protectMD5 the protectMD5 to set
+	 * @since 1.1.1
+	 */
+	public void setProtectMD5(boolean protectMD5) {
+		this.protectMD5 = protectMD5;
+	}
+	/**
+	 * @return the lourdMD5
+	 * @since 1.1.1
+	 */
+	public String getLourdMD5() {
+		return lourdMD5;
+	}
+	/**
+	 * @param lourdMD5 the lourdMD5 to set
+	 * @since 1.1.1
+	 */
+	public void setLourdMD5(String lourdMD5) {
+		this.lourdMD5 = lourdMD5;
+	}
+	/**
+	 * @return the androidMD5
+	 * @since 1.1.1
+	 */
+	public String getAndroidMD5() {
+		return AndroidMD5;
+	}
+	/**
+	 * @param androidMD5 the androidMD5 to set
+	 * @since 1.1.1
+	 */
+	public void setAndroidMD5(String androidMD5) {
+		AndroidMD5 = androidMD5;
+	}
+	
 	
 	
 }
