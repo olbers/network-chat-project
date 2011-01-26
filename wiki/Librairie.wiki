@@ -29,3 +29,20 @@ MySQL Connector permet avec jdbc de coupler l'application java avec une base de 
 [http://www.mysql.com/downloads/connector/j/ MySQL_Connector]
 
 Licence : GPL
+
+== JavaMail API == 
+@Version : 1.4.4
+
+JavaMail est une API d'Oracle permettant d'utiliser des fonctions de mail dans une application java.
+
+[http://www.oracle.com/technetwork/java/javaee/index-138643.html JavaMail API]
+
+== Commons Mail ==
+@version : 1.2
+
+Commons Mail est une API de la fondation Apache, permettant d'envoyer des mail simplement, en s'appuyant sur JavaMail.
+
+[http://commons.apache.org/email/download_email.cgi Commons Mail]
+
+Licence : Apache Licence
+
