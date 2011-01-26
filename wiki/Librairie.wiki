@@ -9,6 +9,10 @@ Page qui récapitule les librairies utilisées dans NCP.
  * JavaSysMon
 
  * MySQL Connector
+ 
+ * JavaMail API
+
+ * Commons Mail
 
 == JavaSysMon ==
 @Version : 0.3.3
@@ -45,4 +49,3 @@ Commons Mail est une API de la fondation Apache, permettant d'envoyer des mail s
 [http://commons.apache.org/email/download_email.cgi Commons Mail]
 
 Licence : Apache Licence
-
