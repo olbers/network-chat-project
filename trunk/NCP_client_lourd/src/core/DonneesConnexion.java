@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -22,9 +24,9 @@ public class DonneesConnexion {
 	protected JLabel jLabel = null;
 	protected JLabel AdresseIP = null;
 	protected JLabel Port = null;
-	protected JTextField jTextField = null;
-	protected JTextField jTextField1 = null;
-	protected JTextField jTextField2 = null;
+	protected JTextField jTextFieldPseudo = null;
+	protected JTextField jTextFieldIP = null;
+	protected JTextField jTextFieldPort = null;
 	protected JButton boutonValider = null;
 
 	protected String adresseIP=null;
@@ -100,11 +102,19 @@ public class DonneesConnexion {
 	 * @return javax.swing.JTextField	
 	 */
 	protected JTextField getJTextField() {
-		if (jTextField == null) {
-			jTextField = new JTextField();
-			jTextField.setBounds(new Rectangle(110, 13, 136, 26));
+		if (jTextFieldPseudo == null) {
+			jTextFieldPseudo = new JTextField();
+			jTextFieldPseudo.setBounds(new Rectangle(110, 13, 136, 26));
+			
+			jTextFieldPseudo.addKeyListener(new java.awt.event.KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					if(e.getKeyChar() == KeyEvent.VK_ENTER){
+						valider();
+					}
+				}
+			});
 		}
-		return jTextField;
+		return jTextFieldPseudo;
 	}
 
 	/**
@@ -113,11 +123,19 @@ public class DonneesConnexion {
 	 * @return javax.swing.JTextField	
 	 */
 	protected JTextField getJTextField1() {
-		if (jTextField1 == null) {
-			jTextField1 = new JTextField();
-			jTextField1.setBounds(new Rectangle(110, 58, 136, 26));
+		if (jTextFieldIP == null) {
+			jTextFieldIP = new JTextField();
+			jTextFieldIP.setBounds(new Rectangle(110, 58, 136, 26));
+			
+			jTextFieldIP.addKeyListener(new java.awt.event.KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					if(e.getKeyChar() == KeyEvent.VK_ENTER){
+						valider();
+					}
+				}
+			});
 		}
-		return jTextField1;
+		return jTextFieldIP;
 	}
 
 	/**
@@ -126,11 +144,19 @@ public class DonneesConnexion {
 	 * @return javax.swing.JTextField	
 	 */
 	protected JTextField getJTextField2() {
-		if (jTextField2 == null) {
-			jTextField2 = new JTextField();
-			jTextField2.setBounds(new Rectangle(110, 105, 136, 26));
+		if (jTextFieldPort == null) {
+			jTextFieldPort = new JTextField();
+			jTextFieldPort.setBounds(new Rectangle(110, 105, 136, 26));
+			
+			jTextFieldPort.addKeyListener(new java.awt.event.KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					if(e.getKeyChar() == KeyEvent.VK_ENTER){
+						valider();
+					}
+				}
+			});
 		}
-		return jTextField2;
+		return jTextFieldPort;
 	}
 
 	/**
@@ -143,39 +169,45 @@ public class DonneesConnexion {
 			boutonValider = new JButton();
 			boutonValider.setBounds(new Rectangle(90, 157, 101, 26));
 			boutonValider.setText("Valider");
+			
+			
 			boutonValider.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-
-					if((!jTextField.getText().isEmpty()) && (!jTextField1.getText().isEmpty()) && (!jTextField2.getText().isEmpty())){
-						
-						if((jTextField.getText().length()<=10) && (jTextField1.getText().length()<=15) && (jTextField2.getText().length()<=5)){
-							
-							System.out.println("Contraintes OK");
-							new Client(jTextField1.getText(),Integer.parseInt(jTextField2.getText()),jTextField.getText());
-							jFrame.dispose();
-						}
-						else{
-							String textContrainte="Certains champs ne sont pas conformes! \n\n" +
-								"Vérifiez que votre pseudo est de 15 caractères maximum. \n" +
-								"Vérifiez que l'adresse IP est correcte.\n" +
-								"Vérifiez que le port du serveur est bien compris entre 1 et 49151.";
-							JOptionPane.showMessageDialog(null,
-									textContrainte,
-									"Informations de saisie",
-									JOptionPane.INFORMATION_MESSAGE);	
-						}
-					}
-					else{
-						String textContrainte="Des champs sont vides!\n\n" +
-								"Vous devez remplir tous les champs.";
-						JOptionPane.showMessageDialog(null,
-								textContrainte,
-								"Informations de saisie",
-								JOptionPane.INFORMATION_MESSAGE);		
-					}
+					valider();
 				}
 			});
 		}
 		return boutonValider;
+	}
+	
+	public void valider(){
+		
+		if((!jTextFieldPseudo.getText().isEmpty()) && (!jTextFieldIP.getText().isEmpty()) && (!jTextFieldPort.getText().isEmpty())){
+			
+			if((jTextFieldPseudo.getText().length()<=10) && (jTextFieldIP.getText().length()<=15) && (jTextFieldPort.getText().length()<=5)){
+				
+				System.out.println("Contraintes OK");
+				new Client(jTextFieldIP.getText(),Integer.parseInt(jTextFieldPort.getText()),jTextFieldPseudo.getText());
+				jFrame.dispose();
+			}
+			else{
+				String textContrainte="Certains champs ne sont pas conformes! \n\n" +
+					"Vérifiez que votre pseudo est de 15 caractères maximum. \n" +
+					"Vérifiez que l'adresse IP est correcte.\n" +
+					"Vérifiez que le port du serveur est bien compris entre 1 et 49151.";
+				JOptionPane.showMessageDialog(null,
+						textContrainte,
+						"Informations de saisie",
+						JOptionPane.INFORMATION_MESSAGE);	
+			}
+		}
+		else{
+			String textContrainte="Des champs sont vides!\n\n" +
+					"Vous devez remplir tous les champs.";
+			JOptionPane.showMessageDialog(null,
+					textContrainte,
+					"Informations de saisie",
+					JOptionPane.INFORMATION_MESSAGE);		
+		}
 	}
 }
