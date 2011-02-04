@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * La class MySQL permettra la liason entre le serveur de chat et le serveur MySQL.
  * @author Poirier Kevin
- * @version 1.1.0
+ * @version 2.0.0
  *
  */
 
@@ -62,7 +62,7 @@ public class MySQL {
 	 * Gestion des erreurs SQL.
 	 * @param e
 	 */
-	private void displaySQLErrors(SQLException e) {
+	public void displaySQLErrors(SQLException e) {
 		System.out.println("SQLException: " + e.getMessage());
 		this.log.err("SQLException: " + e.getMessage());
 		System.out.println("SQLState:     " + e.getSQLState());
@@ -84,6 +84,7 @@ public class MySQL {
 		this.log=log;
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			this.connexion=this.connectToBDD();
 		}
 		catch (Exception e) {
 			System.err.println("Unable to find and load driver");
@@ -91,9 +92,15 @@ public class MySQL {
 			this.log.exit();
 			System.exit(1);
 		}
+		
 	}
-	public Connection connectToBDD(){
+	/**
+	 * Permet la connexion à la base de données/
+	 * @return connexion
+	 */
+	private Connection connectToBDD(){
 		try {
+			//System.err.println(this.pwd);
 			this.connexion = DriverManager.getConnection(this.db,this.user,this.pwd);
 		}
 		catch(SQLException e) {
@@ -108,13 +115,11 @@ public class MySQL {
 	 * Methode qui permet de faire des INSERT / UPDATE / DROP
 	 * @param requete
 	 */
-	public void updateSQL(String requete){
+	public void updateSQL(PreparedStatement prState){
 		try {
-			this.connexion=this.connectToBDD();
-			Statement statement = connexion.createStatement();
-			statement.executeUpdate(requete);			
-			statement.close();
-			connexion.close();			
+			PreparedStatement prepState = prState;
+			prepState.executeUpdate();		
+			prepState.close();			
 		}
 		catch(SQLException e) {
 			displaySQLErrors(e);
@@ -126,22 +131,33 @@ public class MySQL {
 	//La méthode selectSQL est surchargé pour recuperer le nombre d'element nécessaire qui sont renvoyé dans un arrayList.
 	/**
 	 * Cette méthode effectue une requete SQL renvoyant un seul élement par résultat dans un ArrayList
-	 * @param requete
-	 * @param elem1
+	 * @param prState
+	 * @param elem
 	 * @return Une ArrayList contenant les différents résultat de la requete
 	 */
-	public ArrayList selecSQL(String requete, String elem1){
-		ArrayList<String> resultatSelect = new ArrayList<String>() ;
+	public ArrayList selecSQL(PreparedStatement prState, ArrayList<String> elem){
+		ArrayList<String> resultatSelect = null ;
 		try {
-			this.connexion=this.connectToBDD();
-			Statement statement = connexion.createStatement();
-			ResultSet rs = statement.executeQuery(requete);
+			PreparedStatement prepState = prState; 
+			ResultSet rs = prepState.executeQuery();
+			int i=0;
 			while (rs.next()) {
-				resultatSelect.add(rs.getString(elem1));				
+				if (resultatSelect==null){
+					resultatSelect=new ArrayList<String>();
+				}
+				if(elem.size()==1)
+					resultatSelect.add(rs.getString(elem.get(0)));
+				else if (elem.size()==2)
+					resultatSelect.add(rs.getString(elem.get(0))+" "+rs.getString(elem.get(1)));
+				else if(elem.size()==3)
+					resultatSelect.add(rs.getString(elem.get(0))+" "+rs.getString(elem.get(1)+" "+rs.getString(elem.get(2))));
+				else if(elem.size()==4)
+					resultatSelect.add(rs.getString(elem.get(0))+" "+rs.getString(elem.get(1))+" "+rs.getString(elem.get(2))+" "+rs.getString(elem.get(3)));
+				else
+					System.err.println("Erreur dans les élements de la requete sql.");
 			}
 			rs.close();
-			statement.close();
-			connexion.close();
+			prepState.close();
 		}
 		catch(SQLException e) {
 			displaySQLErrors(e);
@@ -149,56 +165,25 @@ public class MySQL {
 		return resultatSelect;
 	}
 	/**
-	 * Cette méthode effectue une requete SQL renvoyant deux élements par résultat dans un ArrayList
-	 * @param requete
-	 * @param elem1
-	 * @param elem2
-	 * @return Une ArrayList contenant les différents résultat de la requete
+	 * Permet de fermer la connexion à la BDD.
+	 * @since 2.0.0
 	 */
-	public ArrayList selecSQL(String requete, String elem1,String elem2){
-		ArrayList<String> resultatSelect = new ArrayList<String>() ;
+	public void closeBDD(){
 		try {
-			this.connexion=this.connectToBDD();
-			Statement statement = connexion.createStatement();
-			ResultSet rs = statement.executeQuery(requete);
-			while (rs.next()) {
-				resultatSelect.add(rs.getString(elem1)+" "+rs.getString(elem2));				
-			}
-			rs.close();
-			statement.close();
 			connexion.close();
-		}
-		catch(SQLException e) {
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			displaySQLErrors(e);
+			System.err.println(e.getMessage()+"\n"+e.getSQLState()); 
+			this.log.err(e.getMessage()+"\n"+e.getSQLState());
 		}
-		return resultatSelect;
 	}
 	/**
-	 * Cette méthode effectue une requete SQL renvoyant trois élements par résultat dans un ArrayList
-	 * @param requete
-	 * @param elem1
-	 * @param elem2
-	 * @param elem3
-	 * @return Une ArrayList contenant les différents résultat de la requete
+	 * @return the connexion
+	 * @since 2.0.0
 	 */
-	public ArrayList selecSQL(String requete, String elem1,String elem2,String elem3){
-		ArrayList<String> resultatSelect = new ArrayList<String>() ;
-		try {
-			this.connexion=this.connectToBDD();
-			Statement statement = connexion.createStatement();
-			ResultSet rs = statement.executeQuery(requete);
-			while (rs.next()) {
-				resultatSelect.add(rs.getString(elem1)+" "+rs.getString(elem2)+" "+rs.getString(elem3));				
-			}
-			rs.close();
-			statement.close();
-			connexion.close();
-		}
-		catch(SQLException e) {
-			displaySQLErrors(e);
-		}
-		return resultatSelect;
+	public Connection getConnexion() {
+		return connexion;
 	}
-
-
+	
 }

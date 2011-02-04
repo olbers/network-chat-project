@@ -26,7 +26,7 @@ public class DateString {
 		return date;
 	}
 	/**
-	 * La fonction dateChat permet de donner la l'heyre pour l'afficher dans le chat.
+	 * La fonction dateChat permet de donner la l'heure pour l'afficher dans le chat.
 	 * @return L'heure  sous la forme [hh:mm:ss]
 	 */
 	public String dateChat(){
@@ -38,5 +38,20 @@ public class DateString {
         seconde= cal.get(Calendar.SECOND);
 		date="["+heure+":"+minute+":"+seconde+"]";
 		return date;
+	}
+	/**
+	 * La fonction dateSQL permer de donner la date qui sera affiche dans la BDD
+	 * @return La date sous la forme jj-mm-aa
+	 */ 
+	public String dateSQL(){
+		String date="";
+		int jour,mois,annee;
+		GregorianCalendar cal = new GregorianCalendar();
+		mois = cal.get(Calendar.MONTH)+1;
+        jour = cal.get(Calendar.DAY_OF_MONTH);
+        annee = cal.get(Calendar.YEAR);
+		date=jour+"-"+mois+"-"+annee;
+		return date;
+		
 	}
 }
