@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
  * Modification légère incrémentation du second numéro
  * Lourde modification modification du premier numéro
  * @author Kevin Poirier
- * @version 1.1.1
+ * @version 1.1.3
  * 
  *
  */
@@ -89,6 +89,29 @@ public class Option {
 	 * @since 1.1.1
 	 */
 	protected String AndroidMD5;
+	/**
+	 * Variable qui contient l'adresse du serveur smtp
+	 * @since 1.1.2
+	 */
+	protected String smtp;
+	/**
+	 * Variable qui contient le login du serveur smtp
+	 * @since 1.1.2
+	 */
+	protected String smtpLog;
+	/**
+	 * Variable qui contient le pass du serveur smtp
+	 * @since 1.1.2
+	 */
+	protected String smtpMdp;
+	/**
+	 * Variable qui contient le string du mail Admin
+	 */
+	protected String adminMail;
+	/**
+	 * Variable qui contient le String du mail de l'inscription
+	 */
+	protected String inscriptionMail;
 
 	/**
 	 * Constructeur de la classe option. Mettra tout les paramètres à leur valeur par defauts.
@@ -126,6 +149,11 @@ public class Option {
 		this.protectMD5=true;
 		this.AndroidMD5="0";
 		this.lourdMD5="0";
+		this.smtp= "";
+		this.smtpLog = "";
+		this.smtpMdp = "";
+		this.adminMail = "";
+		this.inscriptionMail = "";
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
 			this.Recup(optionFile);
@@ -229,6 +257,16 @@ public class Option {
 				this.setLourdMD5(result);
 			}else if (option.equalsIgnoreCase("androidMD5")){
 				this.setAndroidMD5(result);
+			}else if (option.equalsIgnoreCase("smtp")){
+				this.setSmtp(result);
+			}else if (option.equalsIgnoreCase("smtpLog")){
+				this.setSmtpLog(result);
+			}else if (option.equalsIgnoreCase("smtpMdp")){
+				this.setSmtpMdp(result);
+			}else if (option.equalsIgnoreCase("adminMail")){
+				this.setAdminMail(result);
+			}else if (option.equalsIgnoreCase("InscriptionMail")){
+				this.setInscriptionMail(result);
 			}else {
 				System.err.println("Erreur, l'option '"+option+"' est non reconnue.");
 				this.log.err("Erreur, l'option '"+option+"' est non reconnue.");
@@ -241,7 +279,6 @@ public class Option {
 	 * toString de la classe Option.
 	 * @return un String de tout les options du fichier
 	 */
-	@Override
 	public String toString() {
 		return "Option [port=" + port + ", nb_client_max=" + nb_client_max
 				+ ", test_mdp_max=" + test_mdp_max + ", protect_mdp_server="
@@ -250,7 +287,10 @@ public class Option {
 				+ ", dbMySQL=" + dbMySQL + ", userMySQL=" + userMySQL
 				+ ", pwdMySQL=" + pwdMySQL + ", log=" + log + ", logChat="
 				+ logChat + ", protectMD5=" + protectMD5 + ", lourdMD5="
-				+ lourdMD5 + ", AndroidMD5=" + AndroidMD5 + "]";
+				+ lourdMD5 + ", AndroidMD5=" + AndroidMD5 + ", smtp=" + smtp
+				+ ", smtpLog=" + smtpLog + ", smtpMdp=" + smtpMdp
+				+ ", adminMail=" + adminMail + ", inscriptionMail="
+				+ inscriptionMail + "]";
 	}
 	/**
 	 * Getter de la variable port.
@@ -459,6 +499,68 @@ public class Option {
 	 */
 	public void setAndroidMD5(String androidMD5) {
 		AndroidMD5 = androidMD5;
+	}
+	/**
+	 * @return the smtp
+	 */
+	public String getSmtp() {
+		return smtp;
+	}
+	/**
+	 * @param smtp the smtp to set
+	 */
+	public void setSmtp(String smtp) {
+		this.smtp = smtp;
+	}
+	/**
+	 * @return the smtpLog
+	 */
+	public String getSmtpLog() {
+		return smtpLog;
+	}
+	/**
+	 * @param smtpLog the smtpLog to set
+	 */
+	public void setSmtpLog(String smtpLog) {
+		this.smtpLog = smtpLog;
+	}
+	/**
+	 * @return the smtpMdp
+	 */
+	public String getSmtpMdp() {
+		return smtpMdp;
+	}
+	/**
+	 * @param smtpMdp the smtpMdp to set
+	 */
+	public void setSmtpMdp(String smtpMdp) {
+		this.smtpMdp = smtpMdp;
+	}
+	/**
+	 * @return the adminMail
+	 */
+	public String getAdminMail() {
+		return adminMail;
+	}
+	/**
+	 * @param adminMail the adminMail to set
+	 */
+	public void setAdminMail(String adminMail) {
+		this.adminMail = adminMail;
+	}
+	/**
+	 * @return the inscriptionMail
+	 * @since 1.1.3
+	 */
+	public String getInscriptionMail() {
+		return inscriptionMail;
+	}
+	/**
+	 * @param inscriptionMail the inscriptionMail to set
+	 * @since 1.1.3
+	 */
+	public void setInscriptionMail(String inscriptionMail) {
+		this.inscriptionMail = inscriptionMail;
 	}
 	
 	
