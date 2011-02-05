@@ -2,7 +2,7 @@ package core;
 /**
  * La class ThreadConnexion permet de gérer en continue les requetes de conenxion au serveur.
  * @author Poirier Kévin
- * @version 0.0.1
+ * @version 0.1.1
  */
 
 public class ThreadConnexion extends Thread {
@@ -21,16 +21,17 @@ public class ThreadConnexion extends Thread {
 	/**
 	 * Methode run du Thread.
 	 */
+	@Override
 	public void run(){
 		while(true){
 			
 			try {
-				serveur.clientConnexion();
+				this.serveur.clientConnexion();
 				sleep(50); //permet de ralentir les vérification du thread. (Vérification que cela ne pose pas de soucis...)
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				serveur.log.err("Erreur lors de la temporisation du thread de connexion");
+				this.serveur.log.err("Erreur lors de la temporisation du thread de connexion");
 			}
 		}
 	}

@@ -1,20 +1,22 @@
 package core;
 
+
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
 /**
  * La class RequeteSQL va traiter toutes les requetes SQL via un des prepared Statement
  * @author Poirier Kevin 
+ * @version 0.1.0
  */
 
 public class RequeteSQL {
-	/**
-	 * Permet de joindre la base de données.
-	 */
 	protected MySQL bdd;	
 	/**
+	 * Constructeur
 	 * @param bdd
 	 */
 	public RequeteSQL(MySQL bdd) {

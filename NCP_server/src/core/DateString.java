@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 /**
  * La class DateString permet de récuperer la date et l'heure, ou la date et l'heure en fonction des besoins.
  * @author Poirier Kévin
- * @version 1.0.0
+ * @version 0.1.1
  */
 
 public class DateString {
@@ -42,6 +42,7 @@ public class DateString {
 	/**
 	 * La fonction dateSQL permer de donner la date qui sera affiche dans la BDD
 	 * @return La date sous la forme jj-mm-aa
+	 * @since 1.1.0
 	 */ 
 	public String dateSQL(){
 		String date="";

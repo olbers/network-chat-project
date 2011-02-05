@@ -9,7 +9,7 @@ import java.net.Socket;
 /**
  * La class Client, permet la gestion de tout les clients connectés au serveur.
  * @author Poirier Kévin
- * @version 0.0.1
+ * @version 0.1.1
  */
 public class Client {
 	protected int id;
@@ -65,7 +65,7 @@ public class Client {
 	 * Permet de fermer la connexion au client
 	 * @param client
 	 */
-	public void closeClient(Client client){		
+	public void closeClient(){		
 		try {
 			this.threadClient.stop();
 			this.in.close();
