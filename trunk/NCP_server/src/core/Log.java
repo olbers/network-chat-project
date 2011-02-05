@@ -1,11 +1,10 @@
 package core;
 
 import java.io.*;
-import java.util.*;
 	/**
 	 * La classe log permettra une gestion des log de conversation et des log d'erreur.
 	 * @author Kevin Poirier
-	 * @version 1.1.0
+	 * @version 0.1.1
 	 */
 
 public class Log {

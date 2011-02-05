@@ -2,6 +2,12 @@ package core;
 
 import java.net.Socket;
 
+/**
+ * Cette classe permet de recuperer les flux clients.
+ * @author Poirier Kevin
+ * @version 0.1.0
+ *
+ */
 public class ThreadClient extends Thread {
 	/**
 	 * Permet de recuperer un objet Server.
@@ -26,7 +32,10 @@ public class ThreadClient extends Thread {
 		this.socketClient = socketClient;
 		this.client = client;
 	}
-
+	/**
+	 * Methode run de la classe ThreadClient.
+	 */
+	@Override
 	public void run()
 	{
 		while(true){

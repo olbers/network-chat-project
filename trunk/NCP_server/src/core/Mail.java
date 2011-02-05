@@ -8,7 +8,7 @@ import org.apache.commons.mail.SimpleEmail;
 /**
  * La class Mail permet d'envoyer les différents mail système de l'application.
  * @author Poirier Kévin
- * @version 0.0.1
+ * @version 0.1.0
  */
 
 public class Mail {

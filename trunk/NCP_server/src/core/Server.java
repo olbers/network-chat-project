@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.0.9.1
+ * @version 0.0.9.2
  *
  */
 
@@ -206,7 +206,7 @@ public class Server {
 		try {
 			if(in.ready()){
 				chaineRecu = in.readLine();;
-				if (chaineRecu!=null){
+				if (chaineRecu!=null && !chaineRecu.equals("")){
 					this.traitementChaine(chaineRecu,client);
 				}
 			}
@@ -222,7 +222,7 @@ public class Server {
 	 * @param chaine
 	 */
 	public void traitementChaine(String chaine,Client client){
-		if(chaine!=null || chaine.equalsIgnoreCase("")){
+		if(chaine!=null || !chaine.equals("")){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
 				this.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
@@ -303,6 +303,11 @@ public class Server {
 		}
 
 	}
+	/**
+	 * La methode md5 Permet de verifier si le client correspond bien à ce que l'on attend.
+	 * @param chaine
+	 * @param client
+	 */	
 	public void md5(String chaine, Client client){
 		if (!client.isActiver()){
 			String[] argument= new String[2];
@@ -437,7 +442,7 @@ public class Server {
 	 */
 	public void clientDeconnexion(Client client){
 		this.envoiePrive(client, "&deconnexion");
-		client.closeClient(client);
+		client.closeClient();
 	}
 	/**
 	 * @return the in

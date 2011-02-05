@@ -1,7 +1,15 @@
 package core;
 
-import java.sql.*;
-import java.util.*;
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+
 /**
  * La class MySQL permettra la liason entre le serveur de chat et le serveur MySQL.
  * @author Poirier Kevin
@@ -102,6 +110,7 @@ public class MySQL {
 		try {
 			//System.err.println(this.pwd);
 			this.connexion = DriverManager.getConnection(this.db,this.user,this.pwd);
+			
 		}
 		catch(SQLException e) {
 			displaySQLErrors(e);

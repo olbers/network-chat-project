@@ -9,9 +9,6 @@ import java.util.StringTokenizer;
  * 
  * Cette classe permet de faire la gestion des options du serveur NCP.
  * Incrementation de la classe:
- * Ajout/modification/supression d'option incrémentation du 3ème numéro.
- * Modification légère incrémentation du second numéro
- * Lourde modification modification du premier numéro
  * @author Kevin Poirier
  * @version 1.1.3
  * 
@@ -279,6 +276,7 @@ public class Option {
 	 * toString de la classe Option.
 	 * @return un String de tout les options du fichier
 	 */
+	@Override
 	public String toString() {
 		return "Option [port=" + port + ", nb_client_max=" + nb_client_max
 				+ ", test_mdp_max=" + test_mdp_max + ", protect_mdp_server="
