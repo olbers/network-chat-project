@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.0.9
+ * @version 0.0.9.1
  *
  */
 
@@ -222,7 +222,7 @@ public class Server {
 	 * @param chaine
 	 */
 	public void traitementChaine(String chaine,Client client){
-		if(chaine!=null){
+		if(chaine!=null || chaine.equalsIgnoreCase("")){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
 				this.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
@@ -324,7 +324,7 @@ public class Server {
 	 * @param client
 	 */
 	public void register(String chaine, Client client){
-		if(client.getBddID()!=0){
+		if(client.getBddID()==0){
 			String[] argument= new String[4];
 			argument=this.recupArgument(chaine, 4);
 			System.out.println(argument[1]);
