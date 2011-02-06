@@ -95,6 +95,7 @@ public class MySQL {
 			this.connexion=this.connectToBDD();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Unable to find and load driver");
 			this.log.err("Unable to find and load driver");
 			this.log.exit();

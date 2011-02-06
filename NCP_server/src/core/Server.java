@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.0.9.2
+ * @version 0.1.0.0
  *
  */
 
