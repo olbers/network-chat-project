@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.1
+ * @version 0.1.0.0
  *
  */
 
@@ -312,8 +312,8 @@ public class Server {
 		if (!client.isActiver()){
 			String[] argument= new String[2];
 			argument=this.recupArgument(chaine, 2);
-			//System.out.println(option.lourdMD5);
-			//System.out.println(argument[1]);
+			System.out.println(option.lourdMD5);
+			System.out.println(argument[1]);
 			if(!option.isProtectMD5() || option.getLourdMD5().equalsIgnoreCase(argument[1])){
 				this.envoiePrive(client, "1");
 				this.client.setChMD5(true);
