@@ -7,6 +7,7 @@ public class Main {
 	 * @author Poirier Kévin
 	 * @Version 0.1.0
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Log newLog =new Log();
 		Option option = new Option(newLog); 
