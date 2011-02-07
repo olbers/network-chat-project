@@ -4,7 +4,7 @@ import java.io.*;
 	/**
 	 * La classe log permettra une gestion des log de conversation et des log d'erreur.
 	 * @author Kevin Poirier
-	 * @version 0.1.1
+	 * @version 0.1.2
 	 */
 
 public class Log {
@@ -39,8 +39,8 @@ public class Log {
 	 */
 	public Log(){
 		super();
-		this.logChat="chat.log";
-		this.logErr="err.log";	
+		this.logChat="./log/chat.log";
+		this.logErr="./log/err.log";	
 		try {
 			this.logFileErr= new PrintWriter(new FileWriter(this.logErr, true));
 		} catch (IOException e) {
