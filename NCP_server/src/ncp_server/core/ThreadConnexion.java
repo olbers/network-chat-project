@@ -1,4 +1,4 @@
-package core;
+package ncp_server.core;
 /**
  * La class ThreadConnexion permet de gérer en continue les requetes de conenxion au serveur.
  * @author Poirier Kévin

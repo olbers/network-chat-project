@@ -12,18 +12,21 @@
 	<property name="dist.log" location="${dist.temp}/log" />
 	<property name="license" location="LICENSE" />
 	<property name="log" location="log" />
-	<property name="main-class" location="core.main"/>
+	<property name="main-class" location="ncp_server.Main"/>
 	
 	
 	<path id="classpath">
 		<fileset dir="${lib}">
-			<include name="mysql-connector-java-5.1.14-bin.jar"/>
-			<include name="javasysmon-0.3.3.jar"/>
-			<include name="commons-email-1.2.jar"/>
-			<include name="mail.jar"/>
-			<include name="NCP_MD5_SHA1_Tools.jar"/>
+			<include name="*.jar"/>
 		</fileset>
 	</path>
+	
+	<!-- convert the libraries to be included in the 
+  		Class-Path attribute of the MANIFEST.MF file -->
+	<pathconvert property="class-path.lib" pathsep=" ">
+  		<path refid="classpath"/>
+  		<map from="${lib}" to="lib"/>
+	</pathconvert>
 	
 	<target name="clean">
 		<delete dir="${build}" />
@@ -56,7 +59,8 @@
 	<target name="create-jar" depends="clean,init_create-jar,compile">		
 		<jar destfile="${dist.temp}/${ant.project.name}.jar" basedir="${build}">
 			<manifest>
-				<attribute name="Main-Class" value="${main-class}"/>
+				<attribute name="Main-Class" value="ncp_server.Main"/>
+				<attribute name="Class-Path" value="${class-path.lib}"/>
 			</manifest>
 		</jar>
 		<copy todir="${dist.lib}">

@@ -1,6 +1,8 @@
-package core;
+package ncp_server.util;
 
 import java.io.*;
+
+import ncp_server.util.option.Option;
 	/**
 	 * La classe log permettra une gestion des log de conversation et des log d'erreur.
 	 * @author Kevin Poirier

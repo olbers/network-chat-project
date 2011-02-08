@@ -1,4 +1,4 @@
-package core;
+package ncp_server.util.db;
 
 
 
@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import ncp_server.util.Log;
+import ncp_server.util.option.*;
 
 
 /**

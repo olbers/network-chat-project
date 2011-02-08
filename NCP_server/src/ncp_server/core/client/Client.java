@@ -1,10 +1,12 @@
-package core;
+package ncp_server.core.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+
+import ncp_server.core.Server;
 
 /**
  * La class Client, permet la gestion de tout les clients connectés au serveur.
@@ -52,13 +54,13 @@ public class Client {
 	 * Permet de créer le thread client
 	 * @param serveur
 	 */
-	protected void createThread(Server serveur){
+	public void createThread(Server serveur){
 		this.threadClient=new ThreadClient(serveur, socketClient, this);
 	}
 	/**
 	 * Permet de lancer le thread client.
 	 */
-	protected void startThread(){
+	public void startThread(){
 		this.threadClient.start();
 	}
 	/**

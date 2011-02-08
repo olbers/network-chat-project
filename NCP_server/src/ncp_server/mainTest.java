@@ -1,7 +1,12 @@
-package core;
+package ncp_server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import ncp_server.core.Server;
+import ncp_server.util.Log;
+import ncp_server.util.mail.Mail;
+import ncp_server.util.option.Option;
 public class mainTest {
 
 	/**
