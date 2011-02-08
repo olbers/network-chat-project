@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ncp_server.util.Log;
-import ncp_server.util.option.*;
+import ncp_server.util.option.Option;
 
 
 /**
@@ -49,39 +49,6 @@ public class MySQL {
 	protected Log log;
 
 	/**
-	 * Setter de la variable db.
-	 * @param db
-	 */
-	public void setDb(String db) {
-		this.db = db;
-	}
-	/**
-	 * Setter de la variable user.
-	 * @param user
-	 */
-	public void setUser(String user) {
-		this.user = user;
-	}
-	/**
-	 * Setter de la variable pwd.
-	 * @param pwd
-	 */
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-	/**
-	 * Gestion des erreurs SQL.
-	 * @param e
-	 */
-	public void displaySQLErrors(SQLException e) {
-		System.out.println("SQLException: " + e.getMessage());
-		this.log.err("SQLException: " + e.getMessage());
-		System.out.println("SQLState:     " + e.getSQLState());
-		this.log.err("SQLState:     " + e.getSQLState());
-		System.out.println("VendorError: " + e.getErrorCode());
-		this.log.err("VendorError: " + e.getErrorCode());
-	}
-	/**
 	 * Constructeur de la class MySQL.
 	 * Recupère les options du serveur pour la base de données à partir du fichier
 	 * @param option
@@ -107,6 +74,20 @@ public class MySQL {
 		
 	}
 	/**
+	 * Permet de fermer la connexion à la BDD.
+	 * @since 2.0.0
+	 */
+	public void closeBDD(){
+		try {
+			connexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			displaySQLErrors(e);
+			System.err.println(e.getMessage()+"\n"+e.getSQLState()); 
+			this.log.err(e.getMessage()+"\n"+e.getSQLState());
+		}
+	}
+	/**
 	 * Permet la connexion à la base de données/
 	 * @return connexion
 	 */
@@ -125,22 +106,24 @@ public class MySQL {
 
 	}
 	/**
-	 * Methode qui permet de faire des INSERT / UPDATE / DROP
-	 * @param requete
+	 * Gestion des erreurs SQL.
+	 * @param e
 	 */
-	public void updateSQL(PreparedStatement prState){
-		try {
-			PreparedStatement prepState = prState;
-			prepState.executeUpdate();		
-			prepState.close();			
-		}
-		catch(SQLException e) {
-			displaySQLErrors(e);
-			System.err.println(e.getMessage()+"\n"+e.getSQLState()); 
-			this.log.err(e.getMessage()+"\n"+e.getSQLState());
-		}
+	public void displaySQLErrors(SQLException e) {
+		System.out.println("SQLException: " + e.getMessage());
+		this.log.err("SQLException: " + e.getMessage());
+		System.out.println("SQLState:     " + e.getSQLState());
+		this.log.err("SQLState:     " + e.getSQLState());
+		System.out.println("VendorError: " + e.getErrorCode());
+		this.log.err("VendorError: " + e.getErrorCode());
 	}
-	
+	/**
+	 * @return the connexion
+	 * @since 2.0.0
+	 */
+	public Connection getConnexion() {
+		return connexion;
+	}
 	//La méthode selectSQL est surchargé pour recuperer le nombre d'element nécessaire qui sont renvoyé dans un arrayList.
 	/**
 	 * Cette méthode effectue une requete SQL renvoyant un seul élement par résultat dans un ArrayList
@@ -178,25 +161,42 @@ public class MySQL {
 		return resultatSelect;
 	}
 	/**
-	 * Permet de fermer la connexion à la BDD.
-	 * @since 2.0.0
+	 * Setter de la variable db.
+	 * @param db
 	 */
-	public void closeBDD(){
+	public void setDb(String db) {
+		this.db = db;
+	}
+	
+	/**
+	 * Setter de la variable pwd.
+	 * @param pwd
+	 */
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	/**
+	 * Setter de la variable user.
+	 * @param user
+	 */
+	public void setUser(String user) {
+		this.user = user;
+	}
+	/**
+	 * Methode qui permet de faire des INSERT / UPDATE / DROP
+	 * @param requete
+	 */
+	public void updateSQL(PreparedStatement prState){
 		try {
-			connexion.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			PreparedStatement prepState = prState;
+			prepState.executeUpdate();		
+			prepState.close();			
+		}
+		catch(SQLException e) {
 			displaySQLErrors(e);
 			System.err.println(e.getMessage()+"\n"+e.getSQLState()); 
 			this.log.err(e.getMessage()+"\n"+e.getSQLState());
 		}
-	}
-	/**
-	 * @return the connexion
-	 * @since 2.0.0
-	 */
-	public Connection getConnexion() {
-		return connexion;
 	}
 	
 }

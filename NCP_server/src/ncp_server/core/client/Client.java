@@ -51,19 +51,6 @@ public class Client {
 		this.chMD5=false;
 	}
 	/**
-	 * Permet de créer le thread client
-	 * @param serveur
-	 */
-	public void createThread(Server serveur){
-		this.threadClient=new ThreadClient(serveur, socketClient, this);
-	}
-	/**
-	 * Permet de lancer le thread client.
-	 */
-	public void startThread(){
-		this.threadClient.start();
-	}
-	/**
 	 * Permet de fermer la connexion au client
 	 * @param client
 	 */
@@ -79,31 +66,23 @@ public class Client {
 		
 	}
 	/**
-	 * @return the pseudo
+	 * Permet de créer le thread client
+	 * @param serveur
 	 */
-	public String getPseudo() {
-		return pseudo;
+	public void createThread(Server serveur){
+		this.threadClient=new ThreadClient(serveur, socketClient, this);
 	}
-
 	/**
-	 * @param pseudo the pseudo to set
+	 * @return the bddID
 	 */
-	public void setPseudo(String pseudo) {
-		this.pseudo = pseudo;
+	public int getBddID() {
+		return BddID;
 	}
-
 	/**
-	 * @return the lastMessage
+	 * @return the compte
 	 */
-	public long getLastMessage() {
-		return lastMessage;
-	}
-
-	/**
-	 * @param lastMessage the lastMessage to set
-	 */
-	public void setLastMessage(long lastMessage) {
-		this.lastMessage = lastMessage;
+	public String getCompte() {
+		return compte;
 	}
 
 	/**
@@ -114,31 +93,10 @@ public class Client {
 	}
 
 	/**
-	 * @return the socketClient
-	 */
-	public Socket getSocketClient() {
-		return socketClient;
-	}
-
-	/**
 	 * @return the in
 	 */
 	public BufferedReader getIn() {
 		return in;
-	}
-
-	/**
-	 * @return the out
-	 */
-	public PrintWriter getOut() {
-		return out;
-	}
-
-	/**
-	 * @return the threadClient
-	 */
-	public Thread getThreadClient() {
-		return threadClient;
 	}
 
 	/**
@@ -149,17 +107,17 @@ public class Client {
 	}
 
 	/**
-	 * @return the activer
+	 * @return the lastMessage
 	 */
-	public boolean isActiver() {
-		return activer;
+	public long getLastMessage() {
+		return lastMessage;
 	}
 
 	/**
-	 * @param activer the activer to set
+	 * @return the lvAccess
 	 */
-	public void setActiver(boolean activer) {
-		this.activer = activer;
+	public int getLvAccess() {
+		return lvAccess;
 	}
 
 	/**
@@ -170,28 +128,64 @@ public class Client {
 	}
 
 	/**
-	 * @param mail the mail to set
+	 * @return the out
 	 */
-	public void setMail(String mail) {
-		this.mail = mail;
+	public PrintWriter getOut() {
+		return out;
+	}
+
+	/**
+	 * @return the pseudo
+	 */
+	public String getPseudo() {
+		return pseudo;
+	}
+
+	/**
+	 * @return the socketClient
+	 */
+	public Socket getSocketClient() {
+		return socketClient;
+	}
+
+	/**
+	 * @return the threadClient
+	 */
+	public Thread getThreadClient() {
+		return threadClient;
+	}
+
+	/**
+	 * @return the activer
+	 */
+	public boolean isActiver() {
+		return activer;
+	}
+
+	/**
+	 * @return the chMD5
+	 */
+	public boolean isChMD5() {
+		return chMD5;
+	}
+
+	/**
+	 * @param activer the activer to set
+	 */
+	public void setActiver(boolean activer) {
+		this.activer = activer;
 	}
 	/**
-	 * @return the lvAccess
+	 * @param bddID the bddID to set
 	 */
-	public int getLvAccess() {
-		return lvAccess;
+	public void setBddID(int bddID) {
+		BddID = bddID;
 	}
 	/**
-	 * @param lvAccess the lvAccess to set
+	 * @param chMD5 the chMD5 to set
 	 */
-	public void setLvAccess(int lvAccess) {
-		this.lvAccess = lvAccess;
-	}
-	/**
-	 * @return the compte
-	 */
-	public String getCompte() {
-		return compte;
+	public void setChMD5(boolean chMD5) {
+		this.chMD5 = chMD5;
 	}
 	/**
 	 * @param compte the compte to set
@@ -207,28 +201,34 @@ public class Client {
 		this.ip = ip;
 	}
 	/**
-	 * @return the bddID
+	 * @param lastMessage the lastMessage to set
 	 */
-	public int getBddID() {
-		return BddID;
+	public void setLastMessage(long lastMessage) {
+		this.lastMessage = lastMessage;
 	}
 	/**
-	 * @param bddID the bddID to set
+	 * @param lvAccess the lvAccess to set
 	 */
-	public void setBddID(int bddID) {
-		BddID = bddID;
+	public void setLvAccess(int lvAccess) {
+		this.lvAccess = lvAccess;
 	}
 	/**
-	 * @return the chMD5
+	 * @param mail the mail to set
 	 */
-	public boolean isChMD5() {
-		return chMD5;
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 	/**
-	 * @param chMD5 the chMD5 to set
+	 * @param pseudo the pseudo to set
 	 */
-	public void setChMD5(boolean chMD5) {
-		this.chMD5 = chMD5;
+	public void setPseudo(String pseudo) {
+		this.pseudo = pseudo;
+	}
+	/**
+	 * Permet de lancer le thread client.
+	 */
+	public void startThread(){
+		this.threadClient.start();
 	}
 	
 	
