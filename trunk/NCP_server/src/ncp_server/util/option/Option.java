@@ -165,6 +165,142 @@ public class Option {
 
 	}
 	/**
+	 * @return the adminMail
+	 */
+	public String getAdminMail() {
+		return adminMail;
+	}
+	/**
+	 * @return the androidMD5
+	 * @since 1.1.1
+	 */
+	public String getAndroidMD5() {
+		return AndroidMD5;
+	}
+
+	/**
+	 * Getter de la variable dbMySQL
+	 * @return l'adresse de la base de données
+	 * @see Option#dbMySQL
+	 * @since 1.0.1
+	 */
+	public String getDbMySQL() {
+		return dbMySQL;
+	}
+	/**
+	 * @return the inscriptionMail
+	 * @since 1.1.3
+	 */
+	public String getInscriptionMail() {
+		return inscriptionMail;
+	}
+	/**
+	 * @return the lourdMD5
+	 * @since 1.1.1
+	 */
+	public String getLourdMD5() {
+		return lourdMD5;
+	}
+	/**
+	 * Getter de la variable mdp_server
+	 * @return le mot de passe du serveur
+	 * @see Option#mdp_server
+	 */
+	public String getMdp_server() {
+		return mdp_server;
+	}
+	/**
+	 * Getter de la variable nameServer
+	 * @return le nom du serveur
+	 * @see Option#nameServer
+	 */
+	public String getNameServer() {
+		return nameServer;
+	}
+	/**
+	 * Getter de la variable nb_client_max.
+	 * @return le nombre de client max
+	 * @see Option#nb_client_max
+	 */
+	public int getNb_client_max() {
+		return nb_client_max;
+	}
+	/**
+	 * Getter de la variable port.
+	 * @return le port du serveur 
+	 * @see Option#port
+	 */
+	public int getPort() {
+		return port;
+	}
+	/**
+	 * Getter de la variable pwdMySQL
+	 * @return Le mot de passe pour la connexion a la base de donnees.
+	 * @see Option#pwdMySQL
+	 * @since 1.0.1
+	 */
+	public String getPwdMySQL() {
+		return pwdMySQL;
+	}
+	/**
+	 * @return the smtp
+	 */
+	public String getSmtp() {
+		return smtp;
+	}
+	/**
+	 * @return the smtpLog
+	 */
+	public String getSmtpLog() {
+		return smtpLog;
+	}
+	/**
+	 * @return the smtpMdp
+	 */
+	public String getSmtpMdp() {
+		return smtpMdp;
+	}
+	/**
+	 * Getter de la variable test_mdp_max
+	 * @return le nombre d'essai autorise
+	 * @see Option#test_mdp_max
+	 */
+	public int getTest_mdp_max() {
+		return test_mdp_max;
+	}
+	/**
+	 * Getter de la variable userMySQL
+	 * @return l'identifiant pour la connexion a la base de donnees.
+	 * @see Option#userMySQL
+	 * @since 1.0.1
+	 */
+	public String getUserMySQL() {
+		return userMySQL;
+	}
+	/**
+	 * Getter de la variable logChat
+	 * @return vrai si on log le chat
+	 * @since 1.0.2
+	 */
+	public boolean isLogChat() {
+		return logChat;
+	}
+	/**
+	 * Getter de la variable protect_mdp_server
+	 * @return si le serveur est protege par un mot de passe
+	 * @see Option#protect_mdp_server
+	 */
+	public boolean isProtect_mdp_server() {
+		return protect_mdp_server;
+	}
+	/**
+	 * @return the protectMD5
+	 * @since 1.1.1
+	 */
+	public boolean isProtectMD5() {
+		return protectMD5;
+	}
+	/**
 	 * Cette méthode permet de récuperer les options dans le fichier option.conf.
 	 * @param  optionFile
 	 * 
@@ -220,6 +356,74 @@ public class Option {
 		}		
 	}
 	/**
+	 * @param adminMail the adminMail to set
+	 */
+	public void setAdminMail(String adminMail) {
+		this.adminMail = adminMail;
+	}
+	/**
+	 * @param androidMD5 the androidMD5 to set
+	 * @since 1.1.1
+	 */
+	public void setAndroidMD5(String androidMD5) {
+		AndroidMD5 = androidMD5;
+	}
+	/**
+	 * Setter de la variable dbMySQL
+	 * @param dbMySQL
+	 * @see Option#dbMySQL
+	 * @since 1.0.1
+	 */
+	public void setDbMySQL(String dbMySQL) {
+		this.dbMySQL = dbMySQL;
+	}
+	/**
+	 * @param inscriptionMail the inscriptionMail to set
+	 * @since 1.1.3
+	 */
+	public void setInscriptionMail(String inscriptionMail) {
+		this.inscriptionMail = inscriptionMail;
+	}
+	/**
+	 * Setter de la variable logChat
+	 * @param logChat
+	 * @since 1.0.2
+	 */
+	public void setLogChat(boolean logChat) {
+		this.logChat = logChat;
+	}
+	/**
+	 * @param lourdMD5 the lourdMD5 to set
+	 * @since 1.1.1
+	 */
+	public void setLourdMD5(String lourdMD5) {
+		this.lourdMD5 = lourdMD5;
+	}
+	/**
+	 * Setter de la variable mdp_server
+	 * @param mdp_server
+	 * @see Option#mdp_server
+	 */
+	public void setMdp_server(String mdp_server) {
+		this.mdp_server = mdp_server;
+	}
+	/**
+	 * Setter de la variable nameServer
+	 * @param nameServer
+	 * @see Option#nameServer
+	 */
+	public void setNameServer(String nameServer) {
+		this.nameServer = nameServer;
+	}
+	/**
+	 * Setter de la variable nb_client_max
+	 * @param nb_client_max
+	 * @see Option#nb_client_max
+	 */
+	public void setNb_client_max(int nb_client_max) {
+		this.nb_client_max = nb_client_max;
+	}
+	/**
 	 * Cette méthode permet de mettre à jours les option qui ne sont pas garder par défaut.
 	 * 
 	 * @param  option
@@ -273,7 +477,73 @@ public class Option {
 		}
 		//System.out.println(this.toString());
 	}
-
+	/**
+	 * Setter de la variable port.
+	 * @param port
+	 * @see Option#port
+	 */
+	public void setPort(int port) {
+		this.port = port;
+	}
+	/**
+	 * Setter de la variable protect_mdp_server
+	 * @param protect_mdp_server
+	 * @see Option#protect_mdp_server
+	 */
+	public void setProtect_mdp_server(boolean protect_mdp_server) {
+		protect_mdp_server = protect_mdp_server;
+	}
+	/**
+	 * @param protectMD5 the protectMD5 to set
+	 * @since 1.1.1
+	 */
+	public void setProtectMD5(boolean protectMD5) {
+		this.protectMD5 = protectMD5;
+	}
+	/**
+	 * Setter de la variable pwdMySQL
+	 * @param pwdMySQL
+	 * @see Option#pwdMySQL
+	 * @since 1.0.1
+	 */
+	public void setPwdMySQL(String pwdMySQL) {
+		this.pwdMySQL = pwdMySQL;
+	}
+	/**
+	 * @param smtp the smtp to set
+	 */
+	public void setSmtp(String smtp) {
+		this.smtp = smtp;
+	}
+	/**
+	 * @param smtpLog the smtpLog to set
+	 */
+	public void setSmtpLog(String smtpLog) {
+		this.smtpLog = smtpLog;
+	}
+	/**
+	 * @param smtpMdp the smtpMdp to set
+	 */
+	public void setSmtpMdp(String smtpMdp) {
+		this.smtpMdp = smtpMdp;
+	}
+	/**
+	 * Setter de la variable test_mdp_max
+	 * @param test_mdp_max
+	 * @see Option#test_mdp_max
+	 */
+	public void setTest_mdp_max(int test_mdp_max) {
+		this.test_mdp_max = test_mdp_max;
+	}
+	/**
+	 * Setter de la variable userMySQL
+	 * @param userMySQL
+	 * @see Option#userMySQL
+	 * @since 1.0.1
+	 */
+	public void setUserMySQL(String userMySQL) {
+		this.userMySQL = userMySQL;
+	}
 	/**
 	 * toString de la classe Option.
 	 * @return un String de tout les options du fichier
@@ -291,276 +561,6 @@ public class Option {
 				+ ", smtpLog=" + smtpLog + ", smtpMdp=" + smtpMdp
 				+ ", adminMail=" + adminMail + ", inscriptionMail="
 				+ inscriptionMail + "]";
-	}
-	/**
-	 * Getter de la variable port.
-	 * @return le port du serveur 
-	 * @see Option#port
-	 */
-	public int getPort() {
-		return port;
-	}
-	/**
-	 * Setter de la variable port.
-	 * @param port
-	 * @see Option#port
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
-	/**
-	 * Getter de la variable nb_client_max.
-	 * @return le nombre de client max
-	 * @see Option#nb_client_max
-	 */
-	public int getNb_client_max() {
-		return nb_client_max;
-	}
-	/**
-	 * Setter de la variable nb_client_max
-	 * @param nb_client_max
-	 * @see Option#nb_client_max
-	 */
-	public void setNb_client_max(int nb_client_max) {
-		this.nb_client_max = nb_client_max;
-	}
-	/**
-	 * Getter de la variable test_mdp_max
-	 * @return le nombre d'essai autorise
-	 * @see Option#test_mdp_max
-	 */
-	public int getTest_mdp_max() {
-		return test_mdp_max;
-	}
-	/**
-	 * Setter de la variable test_mdp_max
-	 * @param test_mdp_max
-	 * @see Option#test_mdp_max
-	 */
-	public void setTest_mdp_max(int test_mdp_max) {
-		this.test_mdp_max = test_mdp_max;
-	}
-	/**
-	 * Getter de la variable protect_mdp_server
-	 * @return si le serveur est protege par un mot de passe
-	 * @see Option#protect_mdp_server
-	 */
-	public boolean isProtect_mdp_server() {
-		return protect_mdp_server;
-	}
-	/**
-	 * Setter de la variable protect_mdp_server
-	 * @param protect_mdp_server
-	 * @see Option#protect_mdp_server
-	 */
-	public void setProtect_mdp_server(boolean protect_mdp_server) {
-		protect_mdp_server = protect_mdp_server;
-	}
-	/**
-	 * Getter de la variable mdp_server
-	 * @return le mot de passe du serveur
-	 * @see Option#mdp_server
-	 */
-	public String getMdp_server() {
-		return mdp_server;
-	}
-	/**
-	 * Setter de la variable mdp_server
-	 * @param mdp_server
-	 * @see Option#mdp_server
-	 */
-	public void setMdp_server(String mdp_server) {
-		this.mdp_server = mdp_server;
-	}
-	/**
-	 * Getter de la variable nameServer
-	 * @return le nom du serveur
-	 * @see Option#nameServer
-	 */
-	public String getNameServer() {
-		return nameServer;
-	}
-	/**
-	 * Setter de la variable nameServer
-	 * @param nameServer
-	 * @see Option#nameServer
-	 */
-	public void setNameServer(String nameServer) {
-		this.nameServer = nameServer;
-	}
-	/**
-	 * Getter de la variable dbMySQL
-	 * @return l'adresse de la base de données
-	 * @see Option#dbMySQL
-	 * @since 1.0.1
-	 */
-	public String getDbMySQL() {
-		return dbMySQL;
-	}
-	/**
-	 * Setter de la variable dbMySQL
-	 * @param dbMySQL
-	 * @see Option#dbMySQL
-	 * @since 1.0.1
-	 */
-	public void setDbMySQL(String dbMySQL) {
-		this.dbMySQL = dbMySQL;
-	}
-	/**
-	 * Getter de la variable userMySQL
-	 * @return l'identifiant pour la connexion a la base de donnees.
-	 * @see Option#userMySQL
-	 * @since 1.0.1
-	 */
-	public String getUserMySQL() {
-		return userMySQL;
-	}
-	/**
-	 * Setter de la variable userMySQL
-	 * @param userMySQL
-	 * @see Option#userMySQL
-	 * @since 1.0.1
-	 */
-	public void setUserMySQL(String userMySQL) {
-		this.userMySQL = userMySQL;
-	}
-	/**
-	 * Getter de la variable pwdMySQL
-	 * @return Le mot de passe pour la connexion a la base de donnees.
-	 * @see Option#pwdMySQL
-	 * @since 1.0.1
-	 */
-	public String getPwdMySQL() {
-		return pwdMySQL;
-	}
-	/**
-	 * Setter de la variable pwdMySQL
-	 * @param pwdMySQL
-	 * @see Option#pwdMySQL
-	 * @since 1.0.1
-	 */
-	public void setPwdMySQL(String pwdMySQL) {
-		this.pwdMySQL = pwdMySQL;
-	}
-	/**
-	 * Getter de la variable logChat
-	 * @return vrai si on log le chat
-	 * @since 1.0.2
-	 */
-	public boolean isLogChat() {
-		return logChat;
-	}
-	/**
-	 * Setter de la variable logChat
-	 * @param logChat
-	 * @since 1.0.2
-	 */
-	public void setLogChat(boolean logChat) {
-		this.logChat = logChat;
-	}
-	/**
-	 * @return the protectMD5
-	 * @since 1.1.1
-	 */
-	public boolean isProtectMD5() {
-		return protectMD5;
-	}
-	/**
-	 * @param protectMD5 the protectMD5 to set
-	 * @since 1.1.1
-	 */
-	public void setProtectMD5(boolean protectMD5) {
-		this.protectMD5 = protectMD5;
-	}
-	/**
-	 * @return the lourdMD5
-	 * @since 1.1.1
-	 */
-	public String getLourdMD5() {
-		return lourdMD5;
-	}
-	/**
-	 * @param lourdMD5 the lourdMD5 to set
-	 * @since 1.1.1
-	 */
-	public void setLourdMD5(String lourdMD5) {
-		this.lourdMD5 = lourdMD5;
-	}
-	/**
-	 * @return the androidMD5
-	 * @since 1.1.1
-	 */
-	public String getAndroidMD5() {
-		return AndroidMD5;
-	}
-	/**
-	 * @param androidMD5 the androidMD5 to set
-	 * @since 1.1.1
-	 */
-	public void setAndroidMD5(String androidMD5) {
-		AndroidMD5 = androidMD5;
-	}
-	/**
-	 * @return the smtp
-	 */
-	public String getSmtp() {
-		return smtp;
-	}
-	/**
-	 * @param smtp the smtp to set
-	 */
-	public void setSmtp(String smtp) {
-		this.smtp = smtp;
-	}
-	/**
-	 * @return the smtpLog
-	 */
-	public String getSmtpLog() {
-		return smtpLog;
-	}
-	/**
-	 * @param smtpLog the smtpLog to set
-	 */
-	public void setSmtpLog(String smtpLog) {
-		this.smtpLog = smtpLog;
-	}
-	/**
-	 * @return the smtpMdp
-	 */
-	public String getSmtpMdp() {
-		return smtpMdp;
-	}
-	/**
-	 * @param smtpMdp the smtpMdp to set
-	 */
-	public void setSmtpMdp(String smtpMdp) {
-		this.smtpMdp = smtpMdp;
-	}
-	/**
-	 * @return the adminMail
-	 */
-	public String getAdminMail() {
-		return adminMail;
-	}
-	/**
-	 * @param adminMail the adminMail to set
-	 */
-	public void setAdminMail(String adminMail) {
-		this.adminMail = adminMail;
-	}
-	/**
-	 * @return the inscriptionMail
-	 * @since 1.1.3
-	 */
-	public String getInscriptionMail() {
-		return inscriptionMail;
-	}
-	/**
-	 * @param inscriptionMail the inscriptionMail to set
-	 * @since 1.1.3
-	 */
-	public void setInscriptionMail(String inscriptionMail) {
-		this.inscriptionMail = inscriptionMail;
 	}
 	
 	

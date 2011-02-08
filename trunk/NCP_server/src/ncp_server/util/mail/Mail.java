@@ -76,6 +76,13 @@ public class Mail {
 	}
 
 	/**
+	 * Envoi un mail d'erreur
+	 * @param message
+	 */
+	public void errorAdminMail(String message){
+		this.envoiMail(this.option.getInscriptionMail(), "Erreur sur le serveur NCP", message, this.option.getAdminMail());		
+	}
+	/**
 	 * Envoi le mail d'inscription
 	 * @param client
 	 */
@@ -89,13 +96,6 @@ public class Mail {
 		"L'équipe de "+this.option.getNameServer()+".";
 		this.envoiMail(this.option.getInscriptionMail(), "Inscription", message, client.getMail());
 
-	}
-	/**
-	 * Envoi un mail d'erreur
-	 * @param message
-	 */
-	public void errorAdminMail(String message){
-		this.envoiMail(this.option.getInscriptionMail(), "Erreur sur le serveur NCP", message, this.option.getAdminMail());		
 	}
 
 }

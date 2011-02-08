@@ -27,6 +27,51 @@ public class RequeteSQL {
 	}
 
 	/**
+	 * Permet de recuperer le compte si il existe et que le mot de passe corresponds.
+	 * @param compte
+	 * @param mail
+	 * @return Renvoi l'arrayList contenant le nom du compte si mot de passe ok.
+	 */
+	public ArrayList connexionClient (String compte, String mdp){
+		ArrayList<String> resultat=null;
+		ArrayList<String> element = new ArrayList<String>();
+		element.add("id");
+		element.add("compte");
+		element.add("mail");
+		element.add("lvAccess");
+		String sql = "Select * FROM user WHERE compte = ? AND mdp = ? ";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setString(1, compte);
+			preState.setString(2, mdp);
+			resultat = this.bdd.selecSQL(preState, element);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);			
+		}
+		return resultat;
+	}
+	/**
+	 * Permet de recuperer l'id d'un compte
+	 * @param compte
+	 * @return Renvoi l'arrayList contenant l'id d'un compte.
+	 */
+	public ArrayList getBDDID (String compte){
+		ArrayList<String> resultat=null;
+		ArrayList<String> element = new ArrayList<String>();
+		element.add("id");
+		String sql = "Select id FROM user WHERE compte = ?";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setString(1, compte);
+			resultat = this.bdd.selecSQL(preState, element);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);			
+		}
+		return resultat;
+	}
+	/**
 	 * Permet d'inserer un client dans la BDD
 	 * @param compte
 	 * @param mdp
@@ -103,51 +148,6 @@ public class RequeteSQL {
 		try {
 			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
 			preState.setString(1, mail);
-			resultat = this.bdd.selecSQL(preState, element);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			this.bdd.displaySQLErrors(e);			
-		}
-		return resultat;
-	}
-	/**
-	 * Permet de recuperer l'id d'un compte
-	 * @param compte
-	 * @return Renvoi l'arrayList contenant l'id d'un compte.
-	 */
-	public ArrayList getBDDID (String compte){
-		ArrayList<String> resultat=null;
-		ArrayList<String> element = new ArrayList<String>();
-		element.add("id");
-		String sql = "Select id FROM user WHERE compte = ?";
-		try {
-			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
-			preState.setString(1, compte);
-			resultat = this.bdd.selecSQL(preState, element);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			this.bdd.displaySQLErrors(e);			
-		}
-		return resultat;
-	}
-	/**
-	 * Permet de recuperer le compte si il existe et que le mot de passe corresponds.
-	 * @param compte
-	 * @param mail
-	 * @return Renvoi l'arrayList contenant le nom du compte si mot de passe ok.
-	 */
-	public ArrayList connexionClient (String compte, String mdp){
-		ArrayList<String> resultat=null;
-		ArrayList<String> element = new ArrayList<String>();
-		element.add("id");
-		element.add("compte");
-		element.add("mail");
-		element.add("lvAccess");
-		String sql = "Select * FROM user WHERE compte = ? AND mdp = ? ";
-		try {
-			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
-			preState.setString(1, compte);
-			preState.setString(2, mdp);
 			resultat = this.bdd.selecSQL(preState, element);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

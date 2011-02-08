@@ -1,6 +1,8 @@
 package ncp_server.util;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import ncp_server.util.option.Option;
 	/**
@@ -51,6 +53,36 @@ public class Log {
 		}
 	}
 	/**
+	 * Cette méthode va écrire dans le fichier chat.log.
+	 * @param logChat
+	 */
+	public void chat(String logChat){
+		if(this.Chat){
+			String dateLog = new DateString().dateLog();
+			this.logFileChat.println(dateLog+logChat);
+			this.logFileChat.flush();
+		}
+	}
+	
+	/**
+	 * Cette méthode va écrire dans le fichier err.log.
+	 * @param logERR
+	 */
+	public void err(String logERR){
+		String dateLog = new DateString().dateLog();
+		this.logFileErr.println(dateLog+logERR);
+		this.logFileErr.flush();
+	}
+	/**
+	 * Cette méthode permet de fermer les différent flux.
+	 */
+	public void exit(){
+		if(this.Chat){
+			this.logFileChat.close();
+		}
+		this.logFileErr.close();
+	}
+	/**
 	 * la fonction init permet de recuperer dans le fichier option si on va log le chat.
 	 * @param option
 	 */
@@ -66,36 +98,6 @@ public class Log {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	/**
-	 * Cette méthode va écrire dans le fichier err.log.
-	 * @param logERR
-	 */
-	public void err(String logERR){
-		String dateLog = new DateString().dateLog();
-		this.logFileErr.println(dateLog+logERR);
-		this.logFileErr.flush();
-	}
-	/**
-	 * Cette méthode va écrire dans le fichier chat.log.
-	 * @param logChat
-	 */
-	public void chat(String logChat){
-		if(this.Chat){
-			String dateLog = new DateString().dateLog();
-			this.logFileChat.println(dateLog+logChat);
-			this.logFileChat.flush();
-		}
-	}
-	/**
-	 * Cette méthode permet de fermer les différent flux.
-	 */
-	public void exit(){
-		if(this.Chat){
-			this.logFileChat.close();
-		}
-		this.logFileErr.close();
 	}
 
 }
