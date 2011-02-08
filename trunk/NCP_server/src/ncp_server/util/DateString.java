@@ -1,4 +1,4 @@
-package core;
+package ncp_server.util;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

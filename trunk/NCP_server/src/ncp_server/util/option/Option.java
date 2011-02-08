@@ -1,10 +1,12 @@
-package core;
+package ncp_server.util.option;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
+
+import ncp_server.util.Log;
 /**
  * 
  * Cette classe permet de faire la gestion des options du serveur NCP.

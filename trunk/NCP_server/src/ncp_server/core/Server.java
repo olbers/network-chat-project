@@ -1,4 +1,4 @@
-package core;
+package ncp_server.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +8,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import ncp_server.core.client.Client;
+import ncp_server.util.DateString;
+import ncp_server.util.Log;
+import ncp_server.util.db.*;
+import ncp_server.util.mail.Mail;
+import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
@@ -73,7 +80,6 @@ public class Server {
 	 * @param log
 	 * @param option
 	 */
-
 	public Server(Log log, Option option){
 		super();
 		this.log=log;

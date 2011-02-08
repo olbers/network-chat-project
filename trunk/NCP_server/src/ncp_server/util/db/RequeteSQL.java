@@ -1,10 +1,11 @@
-package core;
+package ncp_server.util.db;
 
 
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 
 
 /**
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  */
 
 public class RequeteSQL {
+	
 	protected MySQL bdd;	
 	/**
 	 * Constructeur

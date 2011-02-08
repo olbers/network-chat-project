@@ -1,4 +1,8 @@
-package core;
+package ncp_server.util.mail;
+
+import ncp_server.core.client.Client;
+import ncp_server.util.Log;
+import ncp_server.util.option.Option;
 
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;

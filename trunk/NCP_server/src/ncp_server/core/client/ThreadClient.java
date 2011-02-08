@@ -1,6 +1,8 @@
-package core;
+package ncp_server.core.client;
 
 import java.net.Socket;
+
+import ncp_server.core.Server;
 
 /**
  * Cette classe permet de recuperer les flux clients.
