@@ -43,6 +43,11 @@
 		<delete dir="${dist}"/>
 	</target>
 	
+	<target name="clean-log">
+		<delete file="./log/chat.log" />
+		<delete file="./log/err.log" />
+	</target>
+	
 	<target name="init_compile">
 		<mkdir dir="${build}"/>
 	</target>
