@@ -19,7 +19,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.2
+ * @version 0.1.0.3
  *
  */
 
@@ -251,8 +251,7 @@ public class Server {
 	public void createServer(){
 		try {
 			this.socketServer= new ServerSocket(this.option.getPort());			
-			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());
-			this.log.chat(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getNameServer());			
+			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
 			this.connexion= new ThreadConnexion(this);
 			this.connexion.start();
 		} catch (IOException e) {
@@ -281,63 +280,7 @@ public class Server {
 	 */
 	public void envoiePrive(Client client, String message){
 		client.getOut().println(message);
-		this.log.chat(message);
 		client.getOut().flush();
-	}
-	/**
-	 * @return the bDD
-	 */
-	public MySQL getBDD() {
-		return BDD;
-	}
-	/**
-	 * @return the in
-	 */
-	public BufferedReader getIn() {
-		return in;
-	}
-	/**
-	 * @return the listClient
-	 */
-	public ArrayList getListClient() {
-		return listClient;
-	}
-	/**
-	 * @return the log
-	 */
-	public Log getLog() {
-		return log;
-	}
-	/**
-	 * @return the option
-	 */
-	public Option getOption() {
-		return option;
-	}
-	/**
-	 * @return the out
-	 */
-	public PrintWriter getOut() {
-		return out;
-	}
-
-	/**
-	 * @return the socketClient
-	 */
-	public Socket getSocketClient() {
-		return socketClient;
-	}
-	/**
-	 * @return the socketServer
-	 */
-	public ServerSocket getSocketServer() {
-		return socketServer;
-	}
-	/**
-	 * @return the autorisationConnexion
-	 */
-	public boolean isAutorisationConnexion() {
-		return autorisationConnexion;
 	}
 	/**
 	 * La methode md5 Permet de verifier si le client correspond bien à ce que l'on attend.
@@ -445,18 +388,7 @@ public class Server {
 	public void setAutorisationConnexion(boolean autorisationConnexion) {
 		this.autorisationConnexion = autorisationConnexion;
 	}
-	/**
-	 * @param in the in to set
-	 */
-	public void setIn(BufferedReader in) {
-		this.in = in;
-	}
-	/**
-	 * @param out the out to set
-	 */
-	public void setOut(PrintWriter out) {
-		this.out = out;
-	}
+
 	/**
 	 * Cette methode permet de supprimer le premier caracteres qui permet de distinguer les commandes.
 	 * @param chaine
@@ -519,7 +451,7 @@ public class Server {
 			String message,messageToLog;
 			messageToLog=client.getPseudo() + ": "+chaine;
 			this.log.chat(messageToLog);
-			message=new DateString().dateChat() + messageToLog;
+			message="*"+new DateString().dateChat() + messageToLog;
 			this.envoieATous(message);
 		}
 	}
@@ -538,6 +470,73 @@ public class Server {
 			this.envoiePrive(client, "7");
 		}
 	}
+	
+	/**
+	 * @return the bDD
+	 */
+	public MySQL getBDD() {
+		return BDD;
+	}
+	/**
+	 * @return the in
+	 */
+	public BufferedReader getIn() {
+		return in;
+	}
+	/**
+	 * @return the listClient
+	 */
+	public ArrayList getListClient() {
+		return listClient;
+	}
+	/**
+	 * @return the log
+	 */
+	public Log getLog() {
+		return log;
+	}
+	/**
+	 * @return the option
+	 */
+	public Option getOption() {
+		return option;
+	}
+	/**
+	 * @return the out
+	 */
+	public PrintWriter getOut() {
+		return out;
+	}
 
+	/**
+	 * @return the socketClient
+	 */
+	public Socket getSocketClient() {
+		return socketClient;
+	}
+	/**
+	 * @return the socketServer
+	 */
+	public ServerSocket getSocketServer() {
+		return socketServer;
+	}
+	/**
+	 * @return the autorisationConnexion
+	 */
+	public boolean isAutorisationConnexion() {
+		return autorisationConnexion;
+	}
+	/**
+	 * @param in the in to set
+	 */
+	public void setIn(BufferedReader in) {
+		this.in = in;
+	}
+	/**
+	 * @param out the out to set
+	 */
+	public void setOut(PrintWriter out) {
+		this.out = out;
+	}
 
 }
