@@ -14,9 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 
-
-
-public class DonneesConnexion {
+public class Connexion {
 
 	protected JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="378,9"
 	protected JPanel jContentPane = null;
@@ -28,10 +26,10 @@ public class DonneesConnexion {
 	protected JTextField jTextFieldIP = null;
 	protected JTextField jTextFieldPort = null;
 	protected JButton boutonValider = null;
-
 	protected String adresseIP=null;
-	protected String port=null;
+	protected int port=0;
 	protected String pseudo=null;
+	public Client client;
 
 
 	/**
@@ -39,13 +37,14 @@ public class DonneesConnexion {
 	 * 	
 	 * @return javax.swing.JFrame	
 	 */
-	public DonneesConnexion() {
+	public Connexion(Client client) {
+		this.client=client;
 		jFrame = new JFrame();
 		jFrame.setSize(new Dimension(294, 242));
 		jFrame.setTitle("Paramètres connexion");
 		jFrame.setContentPane(getJContentPane());
 		jFrame.setLocationRelativeTo(null);
-		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		// Le processus se termine correctement lorsque l'on ferme la fenêtre
+		jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);		// Le processus se termine correctement lorsque l'on ferme la fenêtre
 		jFrame.setResizable(false);
 		jFrame.setVisible(true);
 
@@ -182,12 +181,17 @@ public class DonneesConnexion {
 	
 	public void valider(){
 		
+		adresseIP=jTextFieldIP.getText();
+		port=Integer.parseInt(jTextFieldPort.getText());
+		pseudo=jTextFieldPseudo.getText();
+		
+		
 		if((!jTextFieldPseudo.getText().isEmpty()) && (!jTextFieldIP.getText().isEmpty()) && (!jTextFieldPort.getText().isEmpty())){
 			
-			if((jTextFieldPseudo.getText().length()<=10) && (jTextFieldIP.getText().length()<=15) && (jTextFieldPort.getText().length()<=5)){
+			if((jTextFieldPseudo.getText().length()<=15) && (jTextFieldIP.getText().length()<=15) && (jTextFieldPort.getText().length()<=5)){
 				
 				System.out.println("Contraintes OK");
-				new Client(jTextFieldIP.getText(),Integer.parseInt(jTextFieldPort.getText()),jTextFieldPseudo.getText());
+				client.parametresConnexion(adresseIP, port, pseudo);
 				jFrame.dispose();
 			}
 			else{
