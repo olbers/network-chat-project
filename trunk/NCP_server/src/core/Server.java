@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.1
+ * @version 0.1.0.2
  *
  */
 
@@ -99,6 +99,7 @@ public class Server {
 			this.log.err("Impossible de créer le serveur.");
 			System.err.println("Impossible de créer le serveur.");
 			e.printStackTrace();
+			System.exit(1);
 		}		
 	}
 	/**
@@ -121,13 +122,14 @@ public class Server {
 	 * @param socketClient
 	 */
 	public void verificationConnexion(Socket socketClient){
-		this.client=this.ajoutClient(socketClient);
+		Client client;
+		client=this.ajoutClient(socketClient);
 		if(this.isAutorisationConnexion()){
-			this.envoiePrive(this.client, "&verif");
-			this.client.createThread(this);
-			this.client.startThread();
+			this.envoiePrive(client, "&verif");
+			client.createThread(this);
+			client.startThread();
 		}else{
-			this.envoiePrive(this.client, "7");
+			this.envoiePrive(client, "7");
 		}
 	}
 	/**
@@ -138,7 +140,7 @@ public class Server {
 		this.client = new Client(this.getListClient().size(), "Anonymous"+this.getListClient().size()+1,
 				socketClient, this.createIn(socketClient), this.createOUT(socketClient));
 		this.listClient.add(client);
-		return this.client;
+		return client;
 	}
 	/**
 	 * Creer le flux d'entre pour le client.
@@ -192,9 +194,9 @@ public class Server {
 	 * @param message
 	 */
 	public void envoiePrive(Client client, String message){
-		this.client.getOut().println(message);
+		client.getOut().println(message);
 		this.log.chat(message);
-		this.client.getOut().flush();
+		client.getOut().flush();
 	}
 	/**
 	 * La methode recupChaine permet de recuperer les chaines de caracteres envoyer par les clients.
@@ -265,17 +267,18 @@ public class Server {
 				if(testExist!=null){ //Pas enregistrer dans la BDD
 					CheckPseudo=true;
 					this.envoiePrive(client, "4");
-				}
-				for (int i=0;i<this.listClient.size();i++){
-					if (compte.equalsIgnoreCase(this.listClient.get(i).getPseudo())){
-						CheckPseudo= true;
-						this.envoiePrive(client, "5");
-						break;
-					}					
+				}else{				
+					for (int i=0;i<this.listClient.size();i++){
+						if (compte.equalsIgnoreCase(this.listClient.get(i).getPseudo())){
+							CheckPseudo= true;
+							this.envoiePrive(client, "5");
+							break;
+						}					
+					}
 				}
 				if(!CheckPseudo){
-					this.client.setLvAccess(0);
-					this.client.setPseudo(compte);
+					client.setLvAccess(0);
+					client.setPseudo(compte);
 					//methode Activer Client;					
 					this.envoiePrive(client, "1");
 					this.activationClient(client);
@@ -283,17 +286,27 @@ public class Server {
 
 			}else {
 				ArrayList resultCompte = this.requeteSQL.connexionClient(compte, mdp);
+				boolean checkConnect =false;
 				if (resultCompte != null){//Client reconnu
 					String [] getValBDD = this.recupArgument((String)resultCompte.get(0), 4);
-					client.setBddID(Integer.parseInt(getValBDD[0]));
-					client.setPseudo(getValBDD[1]);
-					client.setCompte(getValBDD[1]);
-					client.setMail(getValBDD[2]);
-					client.setLvAccess(Integer.parseInt(getValBDD[3]));
-					this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
-					this.envoiePrive(client, "1");
-					this.activationClient(client);
-					// Gestion des information
+					for (int i=0;i<this.listClient.size();i++){
+						if (Integer.parseInt(getValBDD[0])==this.listClient.get(i).getBddID()){
+							checkConnect= true;
+							this.envoiePrive(client, "5");
+							break;
+						}					
+					}
+					if(!checkConnect){
+						// Gestion des information
+						client.setBddID(Integer.parseInt(getValBDD[0]));
+						client.setPseudo(getValBDD[1]);
+						client.setCompte(getValBDD[1]);
+						client.setMail(getValBDD[2]);
+						client.setLvAccess(Integer.parseInt(getValBDD[3]));
+						this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
+						this.envoiePrive(client, "1");
+						this.activationClient(client);
+					}
 				}else{
 					//Utilisateur enregistrer
 					this.envoiePrive(client, "6");
@@ -316,7 +329,7 @@ public class Server {
 			//System.out.println(argument[1]);
 			if(!option.isProtectMD5() || option.getLourdMD5().equalsIgnoreCase(argument[1])){
 				this.envoiePrive(client, "1");
-				this.client.setChMD5(true);
+				client.setChMD5(true);
 			}else{
 				this.envoiePrive(client, "7");
 
@@ -332,7 +345,7 @@ public class Server {
 		if(client.getBddID()==0){
 			String[] argument= new String[4];
 			argument=this.recupArgument(chaine, 4);
-			System.out.println(argument[1]);
+			//System.out.println(argument[1]);
 			ArrayList testMail = this.requeteSQL.verifMail(argument[3]);
 			ArrayList testExist = this.requeteSQL.verifClient(argument[1]);
 			if(testMail!=null){
@@ -343,7 +356,7 @@ public class Server {
 				this.envoiePrive(client, "2");
 			}else{
 				this.requeteSQL.insertClient(argument[1], argument[2], argument[3],
-						1, this.client.getIp().toString(), new DateString().dateSQL());
+						0, client.getIp().toString(), new DateString().dateSQL());
 				client.setCompte(argument[1]);
 				client.setMail(argument[3]);
 				client.setBddID(Integer.parseInt((String) (this.requeteSQL.getBDDID(argument[1]).get(0))));
@@ -376,11 +389,13 @@ public class Server {
 	 * @param client
 	 */
 	public void traitementMessageAll(String chaine,Client client){
-		String message,messageToLog;
-		messageToLog=this.client.getPseudo() + ": "+chaine;
-		this.log.chat(messageToLog);
-		message=new DateString().dateChat() + messageToLog;
-		this.envoieATous(message);
+		if(client.isActiver()){
+			String message,messageToLog;
+			messageToLog=client.getPseudo() + ": "+chaine;
+			this.log.chat(messageToLog);
+			message=new DateString().dateChat() + messageToLog;
+			this.envoieATous(message);
+		}
 	}
 
 	/**
