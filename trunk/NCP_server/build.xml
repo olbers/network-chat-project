@@ -28,6 +28,10 @@
   		<map from="${lib}" to="lib"/>
 	</pathconvert>
 	
+	<tstamp>
+		<format property="build.tstamp" pattern="dd-MM-yyyy__HH:mm" />
+	</tstamp>
+	
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist.temp}" />
@@ -59,6 +63,8 @@
 	<target name="create-jar" depends="clean,init_create-jar,compile">		
 		<jar destfile="${dist.temp}/${ant.project.name}.jar" basedir="${build}">
 			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Main-Class" value="ncp_server.Main"/>
 				<attribute name="Class-Path" value="${class-path.lib}"/>
 			</manifest>
