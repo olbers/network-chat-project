@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="NCP_server" basedir="." default="compile">
+	
+	<property name="src" location="src" />
+	<property name="lib" location="lib" />
+	<property name="base.dir" location="." />
+	<property name="build" location="build" />
+	<property name="build.lib" location="${build}/lib" />
+	<property name="dist" location="dist" />
+	<property name="dist.temp" location="${dist}/temp" />
+	<property name="dist.lib" location="${dist.temp}/lib" />
+	<property name="dist.log" location="${dist.temp}/log" />
+	<property name="license" location="LICENSE" />
+	<property name="log" location="log" />
+	<property name="main-class" location="core.main"/>
+	
+	
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="mysql-connector-java-5.1.14-bin.jar"/>
+			<include name="javasysmon-0.3.3.jar"/>
+			<include name="commons-email-1.2.jar"/>
+			<include name="mail.jar"/>
+			<include name="NCP_MD5_SHA1_Tools.jar"/>
+		</fileset>
+	</path>
+	
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist.temp}" />
+	</target>
+	
+	<target name="clean-all">
+		<delete dir="${build}" />
+		<delete dir="${dist.temp}" />
+		<delete dir="${dist}"/>
+	</target>
+	
+	<target name="init_compile">
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<target name="compile" depends="clean,init_compile">		
+		<javac destdir="${build}" >
+			<src path="${src}"/>
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+	
+	<target name="init_create-jar">
+		<mkdir dir="${dist}"/>
+		<mkdir dir="${dist.temp}"/>
+		<mkdir dir="${dist.lib}"/>
+	</target>	
+	
+	<target name="create-jar" depends="clean,init_create-jar,compile">		
+		<jar destfile="${dist.temp}/${ant.project.name}.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}"/>
+			</manifest>
+		</jar>
+		<copy todir="${dist.lib}">
+			<fileset dir="${lib}">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="prepare_zip">
+		<mkdir dir="${dist.log}"/>
+		<copy todir="${dist.temp}">
+			<fileset dir="${license}">
+				<include name="*.txt"/>
+			</fileset>
+		</copy>
+		<copy todir="${dist.temp}">
+			<fileset dir="${base.dir}">
+				<include name="option.conf"/>
+				<include name="db.sql"/>
+				<include name="Start_Server.bat"/>
+				<include name="Start_Server.sh"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="create-zip" depends="create-jar,prepare_zip">
+		<zip destfile="${dist}/${ant.project.name}.zip" basedir="${dist.temp}"/>
+	</target>		
+	<!--
+	<target name="info_build">
+		<tstamp>
+			<format property="build.tstamp" pattern="dd-MM-yyyy__HH:mm" />
+		</tstamp>
+		<exec dir="." executable="svn" outputproperty="ncp.revision" failifexecutionfails="fail">
+			<arg line="info ." />
+		</exec>
+		
+		<concat destfile="${dist.temp}/buildInfo.txt">
+			svn-info:
+			${ncp.revision}
+			builddate=${build.tstamp}
+		</concat>
+	</target>
+	-->
+	
+</project>
