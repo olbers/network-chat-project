@@ -131,12 +131,11 @@ public class MySQL {
 	 * @param elem
 	 * @return Une ArrayList contenant les différents résultat de la requete
 	 */
-	public ArrayList selecSQL(PreparedStatement prState, ArrayList<String> elem){
+	public ArrayList<String> selecSQL(PreparedStatement prState, ArrayList<String> elem){
 		ArrayList<String> resultatSelect = null ;
 		try {
 			PreparedStatement prepState = prState; 
 			ResultSet rs = prepState.executeQuery();
-			int i=0;
 			while (rs.next()) {
 				if (resultatSelect==null){
 					resultatSelect=new ArrayList<String>();

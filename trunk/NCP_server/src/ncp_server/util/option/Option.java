@@ -491,7 +491,7 @@ public class Option {
 	 * @see Option#protect_mdp_server
 	 */
 	public void setProtect_mdp_server(boolean protect_mdp_server) {
-		protect_mdp_server = protect_mdp_server;
+		this.protect_mdp_server = protect_mdp_server;
 	}
 	/**
 	 * @param protectMD5 the protectMD5 to set

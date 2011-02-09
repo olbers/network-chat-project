@@ -32,7 +32,7 @@ public class RequeteSQL {
 	 * @param mail
 	 * @return Renvoi l'arrayList contenant le nom du compte si mot de passe ok.
 	 */
-	public ArrayList connexionClient (String compte, String mdp){
+	public ArrayList<String> connexionClient (String compte, String mdp){
 		ArrayList<String> resultat=null;
 		ArrayList<String> element = new ArrayList<String>();
 		element.add("id");
@@ -56,7 +56,7 @@ public class RequeteSQL {
 	 * @param compte
 	 * @return Renvoi l'arrayList contenant l'id d'un compte.
 	 */
-	public ArrayList getBDDID (String compte){
+	public ArrayList<String> getBDDID (String compte){
 		ArrayList<String> resultat=null;
 		ArrayList<String> element = new ArrayList<String>();
 		element.add("id");
@@ -120,7 +120,7 @@ public class RequeteSQL {
 	 * @param compte
 	 * @return Renvoi l'arrayList contenant l'utilisateur si il existe.
 	 */
-	public ArrayList verifClient (String compte){
+	public ArrayList<String> verifClient (String compte){
 		ArrayList<String> resultat=null;
 		ArrayList<String> element = new ArrayList<String>();
 		element.add("compte");
@@ -140,7 +140,7 @@ public class RequeteSQL {
 	 * @param mail
 	 * @return Renvoi l'arrayList contenant le mail si il existe.
 	 */
-	public ArrayList verifMail (String mail){
+	public ArrayList<String> verifMail (String mail){
 		ArrayList<String> resultat=null;
 		ArrayList<String> element = new ArrayList<String>();
 		element.add("mail");
