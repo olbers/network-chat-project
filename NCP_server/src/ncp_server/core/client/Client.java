@@ -56,7 +56,7 @@ public class Client {
 	 */
 	public void closeClient(){		
 		try {
-			this.threadClient.stop();
+			this.threadClient.interrupt();
 			this.in.close();
 			this.out.close();
 		} catch (IOException e) {

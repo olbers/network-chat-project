@@ -1,12 +1,7 @@
 package ncp_server;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-import ncp_server.core.Server;
-import ncp_server.util.Log;
-import ncp_server.util.mail.Mail;
-import ncp_server.util.option.Option;
 public class mainTest {
 
 	/**
@@ -15,7 +10,7 @@ public class mainTest {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String requete;
+		/*String requete;
 		String[] testTab;
 		String test = "@md5 9d9e72cffa1ec681d40317b6ce40dc41";
 		ArrayList user=null;
@@ -24,22 +19,21 @@ public class mainTest {
 		Server server = new Server(newLog, optionTest);
 		new Mail(optionTest, newLog).errorAdminMail("Erratum dsl du spam je test");
 		
-		/*
 		test = server.suppr1Car(test);
 		System.out.println(test);
 		System.out.println(server.recupCommande(test));
 		System.out.println(test);
 		testTab= server.recupArgument(test, 2);
-		System.out.println(testTab[1]);*/
-		/*try {
+		System.out.println(testTab[1]);
+		try {
 			PreparedStatement testState = server.getBDD().getConnexion().prepareStatement("select * from test");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 		
-		/*String err="Erreur de ";
+		String err="Erreur de ";
 		newLog.err(err);
 		String chat="BlablaBla";
 		newLog.chat(chat);

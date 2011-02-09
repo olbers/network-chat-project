@@ -85,7 +85,7 @@ public class Server {
 		super();
 		this.log=log;
 		this.option=option;
-		this.listClient = new ArrayList();
+		this.listClient = new ArrayList<Client>();
 		this.autorisationConnexion=true;
 		this.BDD=new MySQL(this.option, this.log);
 		this.requeteSQL= new RequeteSQL(this.BDD);
@@ -109,7 +109,7 @@ public class Server {
 		String listeDePseudo="$";
 		for(int i=0;i<this.listClient.size();i++){
 			if(this.listClient.get(i).isActiver())
-				listeDePseudo=listeDePseudo+this.listClient.get(i).getPseudo()+";";
+				listeDePseudo=listeDePseudo+this.listClient.get(i).getPseudo()+"|";
 		}
 		this.envoieATous(listeDePseudo);
 	}
@@ -158,7 +158,7 @@ public class Server {
 			String mdp = argument [2];						
 			if (mdp.equalsIgnoreCase("")){
 				boolean CheckPseudo = false;
-				ArrayList testExist = this.requeteSQL.verifClient(compte);
+				ArrayList<String> testExist = this.requeteSQL.verifClient(compte);
 				if(testExist!=null){ //Pas enregistrer dans la BDD
 					CheckPseudo=true;
 					this.envoiePrive(client, "4");
@@ -180,10 +180,10 @@ public class Server {
 				}
 
 			}else {
-				ArrayList resultCompte = this.requeteSQL.connexionClient(compte, mdp);
+				ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
 				boolean checkConnect =false;
 				if (resultCompte != null){//Client reconnu
-					String [] getValBDD = this.recupArgument((String)resultCompte.get(0), 4);
+					String [] getValBDD = this.recupArgument(resultCompte.get(0), 4);
 					for (int i=0;i<this.listClient.size();i++){
 						if (Integer.parseInt(getValBDD[0])==this.listClient.get(i).getBddID()){
 							checkConnect= true;
@@ -363,8 +363,8 @@ public class Server {
 			String[] argument= new String[4];
 			argument=this.recupArgument(chaine, 4);
 			//System.out.println(argument[1]);
-			ArrayList testMail = this.requeteSQL.verifMail(argument[3]);
-			ArrayList testExist = this.requeteSQL.verifClient(argument[1]);
+			ArrayList<String> testMail = this.requeteSQL.verifMail(argument[3]);
+			ArrayList<String> testExist = this.requeteSQL.verifClient(argument[1]);
 			if(testMail!=null){
 				//Mail utilisé
 				this.envoiePrive(client, "3");
@@ -376,7 +376,7 @@ public class Server {
 						0, client.getIp().toString(), new DateString().dateSQL());
 				client.setCompte(argument[1]);
 				client.setMail(argument[3]);
-				client.setBddID(Integer.parseInt((String) (this.requeteSQL.getBDDID(argument[1]).get(0))));
+				client.setBddID(Integer.parseInt((this.requeteSQL.getBDDID(argument[1]).get(0))));
 				new Mail(this.option, this.log).inscriptionMail(client);
 				this.envoiePrive(client, "1");//Message de confirmation
 			}
@@ -406,7 +406,7 @@ public class Server {
 	 * @param chaine
 	 */
 	public void traitementChaine(String chaine,Client client){
-		if(chaine!=null || !chaine.equals("")){
+		if(chaine!=null || !"".equals(chaine)){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
 				this.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
@@ -486,7 +486,7 @@ public class Server {
 	/**
 	 * @return the listClient
 	 */
-	public ArrayList getListClient() {
+	public ArrayList<Client> getListClient() {
 		return listClient;
 	}
 	/**
