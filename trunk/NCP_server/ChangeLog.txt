@@ -1,0 +1,12 @@
+ChangeLog :
+==========================================================
+06 Fevrier 2011
+V:0.1
+Revision : 42
+Multi Utilisateur
+Connexion BDD
+Fonction verification MD5
+Connect /Register
+Log
+Fichier Option
+===========================================================
