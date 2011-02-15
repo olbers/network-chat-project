@@ -12,7 +12,7 @@ import ncp_server.util.Log;
  * Cette classe permet de faire la gestion des options du serveur NCP.
  * Incrementation de la classe:
  * @author Kevin Poirier
- * @version 1.1.4
+ * @version 1.1.5
  * 
  *
  */
@@ -157,8 +157,10 @@ public class Option {
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
 			this.Recup(optionFile);
+			System.out.println("[OK]");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
+			System.err.println("[FAIl]");
 			System.err.println("Fichier option.conf Introuvable.");
 			this.log.err("Fichier option.conf Introuvable.");
 		}

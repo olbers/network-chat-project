@@ -19,12 +19,11 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.4
+ * @version 0.1.0.5
  *
  */
 
 public class Server {
-
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -91,7 +90,7 @@ public class Server {
 		this.autorisationConnexion=true;
 		this.BDD=MySQL.getInstance();
 		this.requeteSQL= RequeteSQL.getInstance();
-
+		
 	}
 	/**
 	 * Methode singleton qui permet d'assurer une seul instance de la classe.
@@ -101,9 +100,7 @@ public class Server {
 		if(null == instance)
 			instance=new Server();		
 		return instance;
-	}
-	
-	
+	}	
 	/**
 	 * Permet d'activer un client.
 	 * @param client
@@ -263,15 +260,18 @@ public class Server {
 	public void createServer(){
 		try {
 			this.socketServer= new ServerSocket(this.option.getPort());
+			System.out.println("[OK]");
+			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
+			this.connexion= new ThreadConnexion();
+			this.connexion.start();
 		} catch (IOException e) {
+			System.err.println("[FAIL]");
 			this.log.err("Impossible de créer le serveur.");
 			System.err.println("Impossible de créer le serveur.");
-			e.printStackTrace();
+			System.err.println(e);
+			//e.printStackTrace();
 			System.exit(1);
-		}
-		System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
-		this.connexion= new ThreadConnexion();
-		this.connexion.start();
+		}		
 	}
 	/**
 	 * La methode envoieATous permet d'envoyer les messages à tout les clients connecter.

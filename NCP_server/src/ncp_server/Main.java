@@ -9,13 +9,17 @@ public class Main {
 	/**
 	 * La class Main permet de lancer l'application, et creer les premier objet neccessaire au bon fonctionnement de l'application.
 	 * @author Poirier Kévin
-	 * @Version 0.2.0
+	 * @Version 0.2.1
 	 */
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
+		System.out.print("Lancement du système de log .....");
 		Log log = Log.getInstance(); //Creation de l'object de log
+		System.out.print("Lancement du système d'option ...");
 		Option option = Option.getInstace(); //Creation de l'object Option
+		System.out.print("Connexion à la BDD ..............");
 		Server server = Server.getInstance(); //Creation de la class principale Server.
+		System.out.print("Lancement du serveur ............");
 		server.createServer();
 
 	}

@@ -8,7 +8,7 @@ import ncp_server.util.option.Option;
 	/**
 	 * La classe log permettra une gestion des log de conversation et des log d'erreur.
 	 * @author Kevin Poirier
-	 * @version 0.1.3
+	 * @version 0.1.5
 	 */
 
 public class Log {
@@ -47,10 +47,14 @@ public class Log {
 		this.logErr="./log/err.log";	
 		try {
 			this.logFileErr= new PrintWriter(new FileWriter(this.logErr, true));
+			System.out.println("[OK]");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("[FAIL]");
+			System.out.println(e);
+		//	e.printStackTrace();
 		}
+		
 	}
 	/**
 	 * Methode singleton qui permet d'assurer une seul instance de la classe.
@@ -104,8 +108,9 @@ public class Log {
 				this.Chat=true;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("[FAIL]");
+			System.err.println(e);
+			//e.printStackTrace();
 		}
 		
 	}
