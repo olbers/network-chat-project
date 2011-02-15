@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import ncp_server.core.client.Client;
+import ncp_server.core.commande.CommandeClient;
 import ncp_server.util.DateString;
 import ncp_server.util.Log;
 import ncp_server.util.db.MySQL;
 import ncp_server.util.db.RequeteSQL;
-import ncp_server.util.mail.Mail;
 import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.5
+ * @version 0.1.0.7
  *
  */
 
@@ -77,6 +77,7 @@ public class Server {
 	protected RequeteSQL requeteSQL;
 	
 	private static Server instance;
+	protected CommandeClient comCli;
 	/**
 	 * Constructeur de la class Server.
 	 * @param log
@@ -89,8 +90,7 @@ public class Server {
 		this.listClient = new ArrayList<Client>();
 		this.autorisationConnexion=true;
 		this.BDD=MySQL.getInstance();
-		this.requeteSQL= RequeteSQL.getInstance();
-		
+		this.requeteSQL= RequeteSQL.getInstance();		
 	}
 	/**
 	 * Methode singleton qui permet d'assurer une seul instance de la classe.
@@ -155,71 +155,7 @@ public class Server {
 		this.envoiePrive(client, "&deconnexion");
 		client.closeClient();
 	}
-	/**
-	 * Permet de connecter le client
-	 * @param chaine
-	 * @param client
-	 */
-	public void connect(String chaine, Client client){
-		if(!client.isActiver()){
-			String[] argument = this.recupArgument(chaine, 3);
-			String compte = argument[1];
-			String mdp = argument [2];						
-			if (mdp.equalsIgnoreCase("")){
-				boolean CheckPseudo = false;
-				ArrayList<String> testExist = this.requeteSQL.verifClient(compte);
-				if(testExist!=null){ //Pas enregistrer dans la BDD
-					CheckPseudo=true;
-					this.envoiePrive(client, "4");
-				}else{				
-					for (int i=0;i<this.listClient.size();i++){
-						if (compte.equalsIgnoreCase(this.listClient.get(i).getPseudo())){
-							CheckPseudo= true;
-							this.envoiePrive(client, "5");
-							break;
-						}					
-					}
-				}
-				if(!CheckPseudo){
-					client.setLvAccess(0);
-					client.setPseudo(compte);
-					//methode Activer Client;					
-					this.envoiePrive(client, "1");
-					this.activationClient(client);
-				}
 
-			}else {
-				ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
-				boolean checkConnect =false;
-				if (resultCompte != null){//Client reconnu
-					String [] getValBDD = this.recupArgument(resultCompte.get(0), 4);
-					for (int i=0;i<this.listClient.size();i++){
-						if (Integer.parseInt(getValBDD[0])==this.listClient.get(i).getBddID()){
-							checkConnect= true;
-							this.envoiePrive(client, "5");
-							break;
-						}					
-					}
-					if(!checkConnect){
-						// Gestion des information
-						client.setBddID(Integer.parseInt(getValBDD[0]));
-						client.setPseudo(getValBDD[1]);
-						client.setCompte(getValBDD[1]);
-						client.setMail(getValBDD[2]);
-						client.setLvAccess(Integer.parseInt(getValBDD[3]));
-						this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
-						this.envoiePrive(client, "1");
-						this.activationClient(client);
-					}
-				}else{
-					//Utilisateur enregistrer
-					this.envoiePrive(client, "6");
-				}
-			}
-
-		}
-
-	}
 	/**
 	 * Creer le flux d'entre pour le client.
 	 * @param socketClient
@@ -261,6 +197,7 @@ public class Server {
 		try {
 			this.socketServer= new ServerSocket(this.option.getPort());
 			System.out.println("[OK]");
+			this.initCommandes();
 			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
 			this.connexion= new ThreadConnexion();
 			this.connexion.start();
@@ -272,6 +209,12 @@ public class Server {
 			//e.printStackTrace();
 			System.exit(1);
 		}		
+	}
+	/**
+	 *Permet d'initialiser les différent système de commandes.
+	 */
+	public void initCommandes(){
+		this.comCli = CommandeClient.getInstance();
 	}
 	/**
 	 * La methode envoieATous permet d'envoyer les messages à tout les clients connecter.
@@ -294,26 +237,7 @@ public class Server {
 		client.getOut().println(message);
 		client.getOut().flush();
 	}
-	/**
-	 * La methode md5 Permet de verifier si le client correspond bien à ce que l'on attend.
-	 * @param chaine
-	 * @param client
-	 */	
-	public void md5(String chaine, Client client){
-		if (!client.isActiver()){
-			String[] argument= new String[2];
-			argument=this.recupArgument(chaine, 2);
-			//System.out.println(option.lourdMD5);
-			//System.out.println(argument[1]);
-			if(!option.isProtectMD5() || option.getLourdMD5().equalsIgnoreCase(argument[1])){
-				this.envoiePrive(client, "1");
-				client.setChMD5(true);
-			}else{
-				this.envoiePrive(client, "7");
 
-			}
-		}
-	}
 	/**
 	 * Permer de recuperer les argument qui ont été envoyer.
 	 * @param chaine
@@ -354,46 +278,7 @@ public class Server {
 		}
 
 	}
-	/**
-	 * Permet de recuperer la commande qui à été envoyer
-	 * @param chaine
-	 * @return String
-	 */
-	public String recupCommande(String chaine){
-		StringTokenizer token;
-		token = new StringTokenizer(chaine);
-		chaine = token.nextToken();
-		return chaine;
-	}
-	/**
-	 * Permet d'enregistrer un client dans la base de données.
-	 * @param chaine
-	 * @param client
-	 */
-	public void register(String chaine, Client client){
-		if(client.getBddID()==0){
-			String[] argument= new String[4];
-			argument=this.recupArgument(chaine, 4);
-			//System.out.println(argument[1]);
-			ArrayList<String> testMail = this.requeteSQL.verifMail(argument[3]);
-			ArrayList<String> testExist = this.requeteSQL.verifClient(argument[1]);
-			if(testMail!=null){
-				//Mail utilisé
-				this.envoiePrive(client, "3");
-			}else if (testExist!=null){
-				//pseudo utilisé
-				this.envoiePrive(client, "2");
-			}else{
-				this.requeteSQL.insertClient(argument[1], argument[2], argument[3],
-						0, client.getIp().toString(), new DateString().dateSQL());
-				client.setCompte(argument[1]);
-				client.setMail(argument[3]);
-				client.setBddID(Integer.parseInt((this.requeteSQL.getBDDID(argument[1]).get(0))));
-				new Mail().inscriptionMail(client);
-				this.envoiePrive(client, "1");//Message de confirmation
-			}
-		}
-	}
+	
 	/**
 	 * @param autorisationConnexion the autorisationConnexion to set
 	 */
@@ -420,7 +305,7 @@ public class Server {
 	public void traitementChaine(String chaine,Client client){
 		if(chaine!=null || !"".equals(chaine)){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
-				this.traitementCommandeClient(this.suppr1Car(chaine),client);
+				this.comCli.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
 				this.traitementCommandeUtilisateur(this.suppr1Car(chaine),client);
 			}else {
@@ -428,23 +313,7 @@ public class Server {
 			}
 		}
 	}
-	/**
-	 * Permet de gerer les commandes clients @
-	 * @param chaine
-	 * @param client
-	 */
-	public void traitementCommandeClient(String chaine,Client client){
-		String commande;
-		commande=this.recupCommande(chaine);
-		if (commande.equalsIgnoreCase("connect")){
-			this.connect(chaine, client);
-		}else if (commande.equalsIgnoreCase("md5")){
-			this.md5(chaine, client);
-		}else if (commande.equalsIgnoreCase("register")){
-			this.register(chaine, client);
-		}
 
-	}
 	/**
 	 * Permet de gerer les commandes utilisateurs /
 	 * @param chaine
@@ -481,8 +350,7 @@ public class Server {
 		}else{
 			this.envoiePrive(client, "7");
 		}
-	}
-	
+	}	
 	/**
 	 * @return the bDD
 	 */
@@ -550,5 +418,4 @@ public class Server {
 	public void setOut(PrintWriter out) {
 		this.out = out;
 	}
-
 }
