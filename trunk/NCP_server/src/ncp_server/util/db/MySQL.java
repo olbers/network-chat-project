@@ -64,8 +64,10 @@ public class MySQL {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			this.connexion=this.connectToBDD();
+			System.out.println("[OK]");
 		}
 		catch (Exception e) {
+			System.err.println("[FAIL]");
 			e.printStackTrace();
 			System.err.println("Unable to find and load driver");
 			this.log.err("Unable to find and load driver");
@@ -105,10 +107,10 @@ public class MySQL {
 	private Connection connectToBDD(){
 		try {
 			//System.err.println(this.pwd);
-			this.connexion = DriverManager.getConnection(this.db,this.user,this.pwd);
-			
+			this.connexion = DriverManager.getConnection(this.db,this.user,this.pwd);			
 		}
 		catch(SQLException e) {
+			System.err.println("[FAIL]");
 			displaySQLErrors(e);
 			this.log.exit();
 			System.exit(1);
