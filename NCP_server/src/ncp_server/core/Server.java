@@ -19,7 +19,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.3
+ * @version 0.1.0.4
  *
  */
 
@@ -76,22 +76,34 @@ public class Server {
 	 * L'attribut requeteSQL permet de gerer la class qui gère les requetes SQL.
 	 */
 	protected RequeteSQL requeteSQL;
+	
+	private static Server instance;
 	/**
 	 * Constructeur de la class Server.
 	 * @param log
 	 * @param option
 	 */
-	public Server(Log log, Option option){
+	private Server(){
 		super();
-		this.log=log;
-		this.option=option;
+		this.log=Log.getInstance();
+		this.option=Option.getInstace();
 		this.listClient = new ArrayList<Client>();
 		this.autorisationConnexion=true;
-		this.BDD=new MySQL(this.option, this.log);
-		this.requeteSQL= new RequeteSQL(this.BDD);
-		this.createServer();
+		this.BDD=MySQL.getInstance();
+		this.requeteSQL= RequeteSQL.getInstance();
 
 	}
+	/**
+	 * Methode singleton qui permet d'assurer une seul instance de la classe.
+	 * @return instance
+	 */
+	public static Server getInstance(){
+		if(null == instance)
+			instance=new Server();		
+		return instance;
+	}
+	
+	
 	/**
 	 * Permet d'activer un client.
 	 * @param client
@@ -250,16 +262,16 @@ public class Server {
 	 */
 	public void createServer(){
 		try {
-			this.socketServer= new ServerSocket(this.option.getPort());			
-			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
-			this.connexion= new ThreadConnexion(this);
-			this.connexion.start();
+			this.socketServer= new ServerSocket(this.option.getPort());
 		} catch (IOException e) {
 			this.log.err("Impossible de créer le serveur.");
 			System.err.println("Impossible de créer le serveur.");
 			e.printStackTrace();
 			System.exit(1);
-		}		
+		}
+		System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
+		this.connexion= new ThreadConnexion();
+		this.connexion.start();
 	}
 	/**
 	 * La methode envoieATous permet d'envoyer les messages à tout les clients connecter.
@@ -377,7 +389,7 @@ public class Server {
 				client.setCompte(argument[1]);
 				client.setMail(argument[3]);
 				client.setBddID(Integer.parseInt((this.requeteSQL.getBDDID(argument[1]).get(0))));
-				new Mail(this.option, this.log).inscriptionMail(client);
+				new Mail().inscriptionMail(client);
 				this.envoiePrive(client, "1");//Message de confirmation
 			}
 		}
@@ -464,7 +476,7 @@ public class Server {
 		client=this.ajoutClient(socketClient);
 		if(this.isAutorisationConnexion()){
 			this.envoiePrive(client, "&verif");
-			client.createThread(this);
+			client.createThread();
 			client.startThread();
 		}else{
 			this.envoiePrive(client, "7");

@@ -12,7 +12,7 @@ import ncp_server.util.Log;
  * Cette classe permet de faire la gestion des options du serveur NCP.
  * Incrementation de la classe:
  * @author Kevin Poirier
- * @version 1.1.3
+ * @version 1.1.4
  * 
  *
  */
@@ -111,6 +111,7 @@ public class Option {
 	 * Variable qui contient le String du mail de l'inscription
 	 */
 	protected String inscriptionMail;
+	private static Option instance;
 
 	/**
 	 * Constructeur de la classe option. Mettra tout les paramètres à leur valeur par defauts.
@@ -132,7 +133,7 @@ public class Option {
 	 * @see Option#optionFile
 	 */
 
-	public Option(Log log) {
+	private Option() {
 		super();
 		this.nb_client_max=20;
 		this.port=1999;
@@ -144,7 +145,7 @@ public class Option {
 		this.userMySQL="root";
 		this.pwdMySQL="";
 		this.logChat=true;
-		this.log=log;
+		this.log=Log.getInstance();
 		this.protectMD5=true;
 		this.AndroidMD5="0";
 		this.lourdMD5="0";
@@ -161,9 +162,18 @@ public class Option {
 			System.err.println("Fichier option.conf Introuvable.");
 			this.log.err("Fichier option.conf Introuvable.");
 		}
-
-
 	}
+	/**
+	 * Methode singleton qui permet d'assurer une seul instance de la classe.
+	 * @return
+	 */
+	public static Option getInstace(){
+		if(null == instance){
+			instance=new Option();
+		}
+		return instance;
+	}
+	
 	/**
 	 * @return the adminMail
 	 */

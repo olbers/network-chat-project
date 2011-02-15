@@ -6,8 +6,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import ncp_server.core.Server;
-
 /**
  * La class Client, permet la gestion de tout les clients connectés au serveur.
  * @author Poirier Kévin
@@ -69,8 +67,8 @@ public class Client {
 	 * Permet de créer le thread client
 	 * @param serveur
 	 */
-	public void createThread(Server serveur){
-		this.threadClient=new ThreadClient(serveur, socketClient, this);
+	public void createThread(){
+		this.threadClient=new ThreadClient(this.socketClient, this);
 	}
 	/**
 	 * @return the bddID

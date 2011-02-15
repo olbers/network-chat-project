@@ -8,7 +8,7 @@ import ncp_server.util.option.Option;
 	/**
 	 * La classe log permettra une gestion des log de conversation et des log d'erreur.
 	 * @author Kevin Poirier
-	 * @version 0.1.2
+	 * @version 0.1.3
 	 */
 
 public class Log {
@@ -37,7 +37,7 @@ public class Log {
 	 * Le boolean chat permet de vérifier si le on va utilisé le log du chat.
 	 */
 	private boolean Chat=false;
-	
+	private static Log instance;
 	/**
 	 * Constructeur de la class Log.
 	 */
@@ -51,6 +51,16 @@ public class Log {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * Methode singleton qui permet d'assurer une seul instance de la classe.
+	 * @return Instance
+	 */
+	public static Log getInstance(){
+		if(null == instance){
+			instance = new Log();
+		}
+		return instance;
 	}
 	/**
 	 * Cette méthode va écrire dans le fichier chat.log.
