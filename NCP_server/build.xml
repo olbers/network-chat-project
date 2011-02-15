@@ -65,7 +65,7 @@
 		<mkdir dir="${dist.lib}"/>
 	</target>	
 	
-	<target name="create-jar" depends="clean,init_create-jar,compile">		
+	<target name="create-jar" depends="clean,init_create-jar,info_build,compile">		
 		<jar destfile="${dist.temp}/${ant.project.name}.jar" basedir="${build}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -94,28 +94,32 @@
 				<include name="db.sql"/>
 				<include name="Start_Server.bat"/>
 				<include name="Start_Server.sh"/>
+				<include name="BuildInfo.txt"/>
+				<include name="ChangeLog.txt"/>
 			</fileset>
 		</copy>
 	</target>
 	
 	<target name="create-zip" depends="create-jar,prepare_zip">
-		<zip destfile="${dist}/${ant.project.name}.zip" basedir="${dist.temp}"/>
+		<property name="zip_name" value="${ant.project.name}_${build.tstamp_fic}"/>
+		<zip destfile="${dist}/${zip_name}.zip" basedir="${dist.temp}"/>
 	</target>		
-	<!--
+	
 	<target name="info_build">
+		<property name="revision" value="HEAD"/>
 		<tstamp>
 			<format property="build.tstamp" pattern="dd-MM-yyyy__HH:mm" />
+			<format property="build.tstamp_fic" pattern="dd-MM-yyyy" />
 		</tstamp>
-		<exec dir="." executable="svn" outputproperty="ncp.revision" failifexecutionfails="fail">
-			<arg line="info ." />
-		</exec>
-		
-		<concat destfile="${dist.temp}/buildInfo.txt">
-			svn-info:
+        <exec executable="svn" outputproperty="ncp.revision">
+            <arg line="log ${homedir}/.. -r ${revision} -q"/>
+        </exec>
+		<concat destfile="${dist.temp}/BuildInfo.txt">
+			SVN-info:
 			${ncp.revision}
-			builddate=${build.tstamp}
+			BuildDate=${build.tstamp}
 		</concat>
 	</target>
-	-->
+	
 	
 </project>
