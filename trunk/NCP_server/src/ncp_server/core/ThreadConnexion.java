@@ -2,7 +2,7 @@ package ncp_server.core;
 /**
  * La class ThreadConnexion permet de gérer en continue les requetes de conenxion au serveur.
  * @author Poirier Kévin
- * @version 0.1.1
+ * @version 0.1.2
  */
 
 public class ThreadConnexion extends Thread {
@@ -14,9 +14,9 @@ public class ThreadConnexion extends Thread {
 	 * Constructeur de Thread.
 	 * @param serv
 	 */
-	public ThreadConnexion(Server serv){
+	public ThreadConnexion(){
 		super();
-		this.serveur=serv;
+		this.serveur=Server.getInstance();
 	}
 	/**
 	 * Methode run du Thread.

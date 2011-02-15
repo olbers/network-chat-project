@@ -41,10 +41,10 @@ public class Mail {
 	 * @param option
 	 * @param log
 	 */
-	public Mail(Option option,Log log){
+	public Mail(){
 		super();
-		this.option=option;
-		this.log=log;
+		this.option=Option.getInstace();
+		this.log=Log.getInstance();
 		this.smtpServer=this.option.getSmtp();
 		this.smtpLog=this.option.getSmtpLog();
 		this.smtpMdp=this.option.getSmtpMdp();

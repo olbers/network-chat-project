@@ -16,7 +16,7 @@ import ncp_server.util.option.Option;
 /**
  * La class MySQL permettra la liason entre le serveur de chat et le serveur MySQL.
  * @author Poirier Kevin
- * @version 2.0.0
+ * @version 2.0.1
  *
  */
 
@@ -47,6 +47,7 @@ public class MySQL {
 	 * @since 1.1.0
 	 */
 	protected Log log;
+	private static MySQL instance;
 
 	/**
 	 * Constructeur de la class MySQL.
@@ -54,12 +55,12 @@ public class MySQL {
 	 * @param option
 	 * @see Option
 	 */
-	public MySQL(Option option,Log log){
-		this.option=option;
+	public MySQL(){
+		this.option=Option.getInstace();
 		this.db=option.getDbMySQL();
 		this.user=option.getUserMySQL();
 		this.pwd=option.getPwdMySQL();
-		this.log=log;
+		this.log=Log.getInstance();
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			this.connexion=this.connectToBDD();
@@ -72,6 +73,16 @@ public class MySQL {
 			System.exit(1);
 		}
 		
+	}
+	/**
+	 * Methode singleton qui permet d'assurer une seul instance de la classe.
+	 * @return instance
+	 */
+	public static MySQL getInstance(){
+		if(null == instance){
+			instance = new MySQL();
+		}
+		return instance;
 	}
 	/**
 	 * Permet de fermer la connexion à la BDD.

@@ -28,9 +28,9 @@ public class ThreadClient extends Thread {
 	 * @param socketClient
 	 * @param client
 	 */
-	public ThreadClient(Server serveur, Socket socketClient, Client client) {
+	public ThreadClient(Socket socketClient, Client client) {
 		super();
-		this.serveur = serveur;
+		this.serveur = Server.getInstance();
 		this.socketClient = socketClient;
 		this.client = client;
 	}

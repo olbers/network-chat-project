@@ -11,20 +11,28 @@ import java.util.ArrayList;
 /**
  * La class RequeteSQL va traiter toutes les requetes SQL via un des prepared Statement
  * @author Poirier Kevin 
- * @version 0.1.0
+ * @version 0.1.1
  */
 
 public class RequeteSQL {
 	
 	protected MySQL bdd;	
+	private static RequeteSQL instance;
 	/**
 	 * Constructeur
 	 * @param bdd
 	 */
-	public RequeteSQL(MySQL bdd) {
+	public RequeteSQL() {
 		super();
-		this.bdd = bdd;
+		this.bdd = MySQL.getInstance();
 	}
+	public static RequeteSQL getInstance(){
+		if(null == instance){
+			instance = new RequeteSQL();
+		}
+		return instance;
+	}
+	
 
 	/**
 	 * Permet de recuperer le compte si il existe et que le mot de passe corresponds.
