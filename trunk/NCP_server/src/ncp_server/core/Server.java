@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 
 import ncp_server.core.client.Client;
 import ncp_server.core.commande.CommandeClient;
+import ncp_server.core.commande.CommandeUtilisateur;
 import ncp_server.util.DateString;
 import ncp_server.util.Log;
 import ncp_server.util.db.MySQL;
@@ -19,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.7
+ * @version 0.1.0.8
  *
  */
 
@@ -78,6 +79,7 @@ public class Server {
 	
 	private static Server instance;
 	protected CommandeClient comCli;
+	protected CommandeUtilisateur commUser;
 	/**
 	 * Constructeur de la class Server.
 	 * @param log
@@ -215,6 +217,7 @@ public class Server {
 	 */
 	public void initCommandes(){
 		this.comCli = CommandeClient.getInstance();
+		this.commUser = CommandeUtilisateur.getInstance();
 	}
 	/**
 	 * La methode envoieATous permet d'envoyer les messages à tout les clients connecter.
@@ -307,20 +310,11 @@ public class Server {
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
 				this.comCli.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
-				this.traitementCommandeUtilisateur(this.suppr1Car(chaine),client);
+				this.commUser.traitementCommandeUtilisateur(this.suppr1Car(chaine),client);
 			}else {
 				this.traitementMessageAll(chaine, client);
 			}
 		}
-	}
-
-	/**
-	 * Permet de gerer les commandes utilisateurs /
-	 * @param chaine
-	 * @param client
-	 */
-	public void traitementCommandeUtilisateur(String chaine,Client client){
-
 	}
 	/**
 	 * Cette methode permet de gerer l'envoi des messages à tout les clients.
@@ -350,7 +344,49 @@ public class Server {
 		}else{
 			this.envoiePrive(client, "7");
 		}
-	}	
+	}
+	/**
+	 * Permet de verifier l'existance d'un compte
+	 * @param compte
+	 * @return boolean
+	 */
+	public boolean existCompte(String compte){
+		ArrayList<String> testExist = this.requeteSQL.verifClient(compte);
+		if(testExist != null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * Permet de verifier si un pseudo est déjà connecté
+	 * @param pseudo
+	 * @return
+	 */
+	public boolean pseudoCo(String pseudo){
+		for (int i=0;i<this.getListClient().size();i++){
+			if (pseudo.equalsIgnoreCase(this.getListClient().get(i).getPseudo())){
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean verifPseudoMDP(String compte, String mdp){
+		ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
+		if(resultCompte!=null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public boolean compteCo(int bddID){
+		for (int i=0;i<this.getListClient().size();i++){
+			if (bddID==this.getListClient().get(i).getBddID()){
+				return true;
+			}					
+		}
+		return false;
+	}
 	/**
 	 * @return the bDD
 	 */

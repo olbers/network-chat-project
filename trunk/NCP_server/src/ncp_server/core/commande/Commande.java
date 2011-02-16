@@ -39,5 +39,28 @@ public class Commande {
 		chaine = token.nextToken();
 		return chaine;
 	}
+	/**
+	 * Permet de supprimer les commandes de la chaine
+	 * @param chaine
+	 * @param nbarg
+	 * @return
+	 */
+	public String getMessage(String chaine,int nbarg){
+		String message="";
+		StringTokenizer token;
+		token = new StringTokenizer(chaine);
+		int i = 0;
+		while(token.hasMoreElements()){
+			if(i==nbarg){
+				message=token.nextToken();
+			}else if(i>nbarg){
+				message=message+" "+token.nextToken();
+			}else{
+				token.nextToken();
+			}
+			++ i;
+		}		
+		return message;
+	}
 
 }
