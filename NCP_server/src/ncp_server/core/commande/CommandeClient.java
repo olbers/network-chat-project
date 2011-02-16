@@ -8,17 +8,17 @@ import ncp_server.util.DateString;
 import ncp_server.util.db.RequeteSQL;
 import ncp_server.util.mail.Mail;
 /**
- * 
+ * Class qui gère les commande clientes
  * @author Poirier Kevin
  * @version 1.0.0
  */
 
 public class CommandeClient extends Commande {
-	
+
 	protected Server server;
 	protected RequeteSQL requeteSQL;
 	private static CommandeClient instance;
-	
+
 	/**
 	 * Constructeur de la class CommandeClient.
 	 */
@@ -27,7 +27,7 @@ public class CommandeClient extends Commande {
 		this.server=Server.getInstance();
 		this.requeteSQL=RequeteSQL.getInstance();
 	}
-	
+
 	public static CommandeClient getInstance(){
 		if(null == instance)
 			instance=new CommandeClient();
@@ -108,21 +108,17 @@ public class CommandeClient extends Commande {
 		if(!client.isActiver()){
 			String[] argument = this.recupArgument(chaine, 3);
 			String compte = argument[1];
-			String mdp = argument [2];						
-			if (mdp.equalsIgnoreCase("")){
-				boolean CheckPseudo = false;
-				ArrayList<String> testExist = this.requeteSQL.verifClient(compte);
-				if(testExist!=null){ //Pas enregistrer dans la BDD
+			String mdp = argument [2];
+			boolean CheckPseudo = false;
+			if (mdp.equalsIgnoreCase("")){				
+				if(this.server.existCompte(compte)){ //enregistrer dans la BDD
 					CheckPseudo=true;
 					this.server.envoiePrive(client, "4");
 				}else{				
-					for (int i=0;i<this.server.getListClient().size();i++){
-						if (compte.equalsIgnoreCase(this.server.getListClient().get(i).getPseudo())){
-							CheckPseudo= true;
-							this.server.envoiePrive(client, "5");
-							break;
-						}					
-					}
+					if(this.server.pseudoCo(compte)){
+						CheckPseudo= true;
+						this.server.envoiePrive(client, "5");
+					}					
 				}
 				if(!CheckPseudo){
 					client.setLvAccess(0);
@@ -131,18 +127,14 @@ public class CommandeClient extends Commande {
 					this.server.envoiePrive(client, "1");
 					this.server.activationClient(client);
 				}
-
 			}else {
 				ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
 				boolean checkConnect =false;
-				if (resultCompte != null){//Client reconnu
+				if (this.server.verifPseudoMDP(compte, mdp)){//Client reconnu
 					String [] getValBDD = this.recupArgument(resultCompte.get(0), 4);
-					for (int i=0;i<this.server.getListClient().size();i++){
-						if (Integer.parseInt(getValBDD[0])==this.server.getListClient().get(i).getBddID()){
-							checkConnect= true;
-							this.server.envoiePrive(client, "5");
-							break;
-						}					
+					if(this.server.compteCo(Integer.parseInt(getValBDD[0]))){
+						checkConnect= true;
+						this.server.envoiePrive(client, "5");
 					}
 					if(!checkConnect){
 						// Gestion des information

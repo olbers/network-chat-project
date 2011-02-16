@@ -2,6 +2,8 @@ package ncp_server;
 
 import java.io.IOException;
 
+import ncp_server.core.commande.Commande;
+
 public class mainTest {
 
 	/**
@@ -56,6 +58,8 @@ public class mainTest {
 			System.out.println(user.get(i));
 		}
 		*/
+		Commande cmd= new Commande();
+		System.out.println(cmd.getMessage("/mp Kenin Blablabla looll trop mdr", 1));
 	}
 
 }
