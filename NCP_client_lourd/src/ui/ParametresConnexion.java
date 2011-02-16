@@ -1,4 +1,4 @@
-package core;
+package ui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,8 +13,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+import core.Client;
 
-public class Connexion {
+
+
+public class ParametresConnexion {
 
 	protected JFrame jFrame = null;  //  @jve:decl-index=0:visual-constraint="378,9"
 	protected JPanel jContentPane = null;
@@ -29,7 +32,8 @@ public class Connexion {
 	protected String adresseIP=null;
 	protected int port=0;
 	protected String pseudo=null;
-	public Client client;
+	protected Fenetre fenetre;
+	protected Client client;
 
 
 	/**
@@ -37,7 +41,8 @@ public class Connexion {
 	 * 	
 	 * @return javax.swing.JFrame	
 	 */
-	public Connexion(Client client) {
+	public ParametresConnexion(Fenetre fenetre,Client client) {
+		this.fenetre=fenetre;
 		this.client=client;
 		jFrame = new JFrame();
 		jFrame.setSize(new Dimension(294, 242));
@@ -104,7 +109,7 @@ public class Connexion {
 		if (jTextFieldPseudo == null) {
 			jTextFieldPseudo = new JTextField();
 			jTextFieldPseudo.setBounds(new Rectangle(110, 13, 136, 26));
-			
+
 			jTextFieldPseudo.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
 					if(e.getKeyChar() == KeyEvent.VK_ENTER){
@@ -125,7 +130,7 @@ public class Connexion {
 		if (jTextFieldIP == null) {
 			jTextFieldIP = new JTextField();
 			jTextFieldIP.setBounds(new Rectangle(110, 58, 136, 26));
-			
+
 			jTextFieldIP.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
 					if(e.getKeyChar() == KeyEvent.VK_ENTER){
@@ -146,7 +151,7 @@ public class Connexion {
 		if (jTextFieldPort == null) {
 			jTextFieldPort = new JTextField();
 			jTextFieldPort.setBounds(new Rectangle(110, 105, 136, 26));
-			
+
 			jTextFieldPort.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
 					if(e.getKeyChar() == KeyEvent.VK_ENTER){
@@ -168,8 +173,8 @@ public class Connexion {
 			boutonValider = new JButton();
 			boutonValider.setBounds(new Rectangle(90, 157, 101, 26));
 			boutonValider.setText("Valider");
-			
-			
+
+
 			boutonValider.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					valider();
@@ -178,27 +183,27 @@ public class Connexion {
 		}
 		return boutonValider;
 	}
-	
+
 	public void valider(){
-		
+
 		adresseIP=jTextFieldIP.getText();
 		port=Integer.parseInt(jTextFieldPort.getText());
 		pseudo=jTextFieldPseudo.getText();
-		
-		
+
+
 		if((!jTextFieldPseudo.getText().isEmpty()) && (!jTextFieldIP.getText().isEmpty()) && (!jTextFieldPort.getText().isEmpty())){
-			
+
 			if((jTextFieldPseudo.getText().length()<=15) && (jTextFieldIP.getText().length()<=15) && (jTextFieldPort.getText().length()<=5)){
-				
+
 				System.out.println("Contraintes OK");
-				client.parametresConnexion(adresseIP, port, pseudo);
+				this.client.parametresConnexion(adresseIP, port, pseudo);
 				jFrame.dispose();
 			}
 			else{
 				String textContrainte="Certains champs ne sont pas conformes! \n\n" +
-					"Vérifiez que votre pseudo est de 15 caractères maximum. \n" +
-					"Vérifiez que l'adresse IP est correcte.\n" +
-					"Vérifiez que le port du serveur est bien compris entre 1 et 49151.";
+				"Vérifiez que votre pseudo est de 15 caractères maximum. \n" +
+				"Vérifiez que l'adresse IP est correcte.\n" +
+				"Vérifiez que le port du serveur est bien compris entre 1 et 49151.";
 				JOptionPane.showMessageDialog(null,
 						textContrainte,
 						"Informations de saisie",
@@ -207,7 +212,7 @@ public class Connexion {
 		}
 		else{
 			String textContrainte="Des champs sont vides!\n\n" +
-					"Vous devez remplir tous les champs.";
+			"Vous devez remplir tous les champs.";
 			JOptionPane.showMessageDialog(null,
 					textContrainte,
 					"Informations de saisie",
