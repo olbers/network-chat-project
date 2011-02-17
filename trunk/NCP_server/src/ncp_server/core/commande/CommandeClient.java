@@ -47,6 +47,8 @@ public class CommandeClient extends Commande {
 			this.md5(chaine, client);
 		}else if (commande.equalsIgnoreCase("register")){
 			this.register(chaine, client);
+		}else if(commande.equalsIgnoreCase("deconnexion")){
+			this.deconnexion(client);
 		}
 
 	}
@@ -60,24 +62,29 @@ public class CommandeClient extends Commande {
 			String[] argument= new String[4];
 			argument=this.recupArgument(chaine, 4);
 			//System.out.println(argument[1]);
-			ArrayList<String> testMail = this.requeteSQL.verifMail(argument[3]);
-			ArrayList<String> testExist = this.requeteSQL.verifClient(argument[1]);
-			if(testMail!=null){
-				//Mail utilisé
-				this.server.envoiePrive(client, "3");
-			}else if (testExist!=null){
-				//pseudo utilisé
-				this.server.envoiePrive(client, "2");
+			if(this.server.pseudoCo(argument[1]) && (!argument[1].equalsIgnoreCase(client.getPseudo()))){
+				this.server.envoiePrive(client, "5");//Pseudo déjà en ligne
 			}else{
-				this.requeteSQL.insertClient(argument[1], argument[2], argument[3],
-						0, client.getIp().toString(), new DateString().dateSQL());
-				client.setCompte(argument[1]);
-				client.setMail(argument[3]);
-				client.setBddID(Integer.parseInt((this.requeteSQL.getBDDID(argument[1]).get(0))));
-				new Mail().inscriptionMail(client);
-				this.server.envoiePrive(client, "1");//Message de confirmation
+				ArrayList<String> testMail = this.requeteSQL.verifMail(argument[3]);
+				ArrayList<String> testExist = this.requeteSQL.verifClient(argument[1]);
+				if(testMail!=null){
+					//Mail utilisé
+					this.server.envoiePrive(client, "3");
+				}else if (testExist!=null){
+					//pseudo utilisé
+					this.server.envoiePrive(client, "2");
+				}else{
+					this.requeteSQL.insertClient(argument[1], argument[2], argument[3],
+							0, client.getIp().toString(), new DateString().dateSQL());
+					client.setCompte(argument[1]);
+					client.setMail(argument[3]);
+					client.setBddID(Integer.parseInt((this.requeteSQL.getBDDID(argument[1]).get(0))));
+					new Mail().inscriptionMail(client);
+					this.server.envoiePrive(client, "1");//Message de confirmation 
+				}
 			}
 		}
+		this.server.affichListClient();
 	}
 	/**
 	 * La methode md5 Permet de verifier si le client correspond bien à ce que l'on attend.
@@ -91,11 +98,10 @@ public class CommandeClient extends Commande {
 			//System.out.println(option.lourdMD5);
 			//System.out.println(argument[1]);
 			if(!this.server.getOption().isProtectMD5() || this.server.getOption().getLourdMD5().equalsIgnoreCase(argument[1])){
-				this.server.envoiePrive(client, "1");
+				this.server.envoiePrive(client, "9"); //ok
 				client.setChMD5(true);
 			}else{
 				this.server.envoiePrive(client, "7");
-
 			}
 		}
 	}
@@ -124,7 +130,7 @@ public class CommandeClient extends Commande {
 					client.setLvAccess(0);
 					client.setPseudo(compte);
 					//methode Activer Client;					
-					this.server.envoiePrive(client, "1");
+					this.server.envoiePrive(client, "0"); //ok
 					this.server.activationClient(client);
 				}
 			}else {
@@ -144,7 +150,7 @@ public class CommandeClient extends Commande {
 						client.setMail(getValBDD[2]);
 						client.setLvAccess(Integer.parseInt(getValBDD[3]));
 						this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
-						this.server.envoiePrive(client, "1");
+						this.server.envoiePrive(client, "0");//ok
 						this.server.activationClient(client);
 					}
 				}else{
@@ -152,8 +158,10 @@ public class CommandeClient extends Commande {
 					this.server.envoiePrive(client, "6");
 				}
 			}
-
 		}
-
+		this.server.affichListClient();
+	}
+	protected void deconnexion(Client client){
+		this.server.deconnexionUtilisateur(client);
 	}
 }

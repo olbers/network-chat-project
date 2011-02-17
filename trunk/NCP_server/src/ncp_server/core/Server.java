@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.8
+ * @version 0.1.0.9
  *
  */
 
@@ -156,6 +156,14 @@ public class Server {
 	public void clientDeconnexion(Client client){
 		this.envoiePrive(client, "&deconnexion");
 		client.closeClient();
+		this.listClient.remove(client);
+		this.affichListClient();
+	}
+	public void deconnexionUtilisateur(Client client){
+		client.closeClient();
+		this.listClient.remove(client);
+		this.envoieATous("#"+client.getPseudo()+ " vient de se déconnecter.");
+		this.affichListClient();
 	}
 
 	/**
@@ -226,6 +234,7 @@ public class Server {
 	public void envoieATous(String message){
 		for(int i=0;i<this.listClient.size();i++){
 			if(this.listClient.get(i).isActiver()){
+				//System.out.println(message);
 				this.listClient.get(i).getOut().println(message);
 				this.listClient.get(i).getOut().flush();
 			}
@@ -237,6 +246,7 @@ public class Server {
 	 * @param message
 	 */
 	public void envoiePrive(Client client, String message){
+		//System.out.println(message);
 		client.getOut().println(message);
 		client.getOut().flush();
 	}
@@ -326,7 +336,7 @@ public class Server {
 			String message,messageToLog;
 			messageToLog=client.getPseudo() + ": "+chaine;
 			this.log.chat(messageToLog);
-			message="*"+new DateString().dateChat() + messageToLog;
+			message="*"+new DateString().dateChat() +" "+ messageToLog;
 			this.envoieATous(message);
 		}
 	}
@@ -361,7 +371,7 @@ public class Server {
 	/**
 	 * Permet de verifier si un pseudo est déjà connecté
 	 * @param pseudo
-	 * @return
+	 * @return boolean
 	 */
 	public boolean pseudoCo(String pseudo){
 		for (int i=0;i<this.getListClient().size();i++){
@@ -371,6 +381,12 @@ public class Server {
 		}
 		return false;
 	}
+	/**
+	 * Permet de verifier si le pseudo correspond avec le mdp.
+	 * @param compte
+	 * @param mdp
+	 * @return boolean
+	 */
 	public boolean verifPseudoMDP(String compte, String mdp){
 		ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
 		if(resultCompte!=null){
@@ -379,6 +395,11 @@ public class Server {
 			return false;
 		}
 	}
+	/**
+	 * Permet de verifier si le compte rechercher est co
+	 * @param bddID
+	 * @return boolean
+	 */
 	public boolean compteCo(int bddID){
 		for (int i=0;i<this.getListClient().size();i++){
 			if (bddID==this.getListClient().get(i).getBddID()){
@@ -386,6 +407,70 @@ public class Server {
 			}					
 		}
 		return false;
+	}
+	/**
+	 * Permer de verifier si un client est administrateur
+	 * @param client
+	 * @return boolean
+	 */
+	public boolean isAdmin(Client client){
+		if(client.getLvAccess()==2){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * Permet de verifier si un client est moderateur
+	 * @param client
+	 * @return boolean
+	 */
+	public boolean isModerateur(Client client){
+		if(client.getLvAccess()==1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * Permet de verifier si un client est banni
+	 * @param client
+	 * @return boolean
+	 */
+	public boolean isBan(Client client){
+		if(client.getLvAccess()==-1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * Permet d'envoyer un message si l'utilisateurs n'a pas les droits suffissants.
+	 * @param client
+	 */
+	public void commandeRefuse(Client client){
+		this.envoiePrive(client, "#Vous n'avez pas les droits suffisants pour effectuer cette commande.");
+	}
+	/**
+	 * Permet d'informer que l'utilisateur n'est pas en ligne
+	 * @param pseudo
+	 * @param client
+	 */
+	public void pseudoNonCo(String pseudo,Client client){
+		this.envoiePrive(client, "L'utilisateur "+pseudo+" n'est pas en ligne.");
+	}
+	/**
+	 * 
+	 * @param pseudo
+	 * @return
+	 */
+	public Client getClient(String pseudo){
+		for(int i=0;i<this.listClient.size();i++){
+			if(this.listClient.get(i).getPseudo().equalsIgnoreCase(pseudo)){
+				return this.listClient.get(i);
+			}
+		}		
+		return null;
 	}
 	/**
 	 * @return the bDD

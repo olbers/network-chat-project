@@ -2,11 +2,12 @@ package ncp_server.core.commande;
 
 import ncp_server.core.Server;
 import ncp_server.core.client.Client;
+import ncp_server.util.DateString;
 import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class CommandeUtilisateur extends Commande {
 	
@@ -43,7 +44,11 @@ public class CommandeUtilisateur extends Commande {
 		}else if(commande.equals("nick")){
 			this.nick(chaine, client);
 		}else if(commande.equals("total")){
-		this.total(client);
+			this.total(client);
+		}else if(commande.equals("who")){
+			this.who(chaine,client);
+		}else if(commande.equals("mp")){
+			this.mp(chaine,client);
 		}
 	}
 	/**
@@ -52,7 +57,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param client
 	 */
 	public void me(String chaine, Client client){
-		String message=client.getPseudo()+getMessage(chaine, 1);
+		String message=client.getPseudo()+" "+getMessage(chaine, 1);
 		this.server.getLog().chat(message);
 		this.server.envoieATous("#->"+message);		
 	}
@@ -70,16 +75,17 @@ public class CommandeUtilisateur extends Commande {
 		}else if (this.server.existCompte(newPseudo)){
 			if(client.getBddID()==Integer.parseInt(this.requeteSQL.getBDDID(newPseudo).get(0))){
 			}else{
-				this.server.envoiePrive(client, "#Pseudo enregistrer dans la BDD. Compte non concordant");
+				this.server.envoiePrive(client, "#Pseudo enregistre dans la BDD. Compte non concordant");
 				authChange=false;
 			}
 		}
 		if(authChange){
 			String oldNick=client.getPseudo();
 			client.setPseudo(newPseudo);
-			String message = oldNick+ "s'appelle desormais "+client.getPseudo();
+			String message ="#"+ oldNick+ " s'appelle desormais "+client.getPseudo();
 			this.server.getLog().chat(message);
 			this.server.envoieATous(message);
+			this.server.affichListClient();
 		}
 	}
 	/**
@@ -88,6 +94,48 @@ public class CommandeUtilisateur extends Commande {
 	 */
 	public void total(Client client){
 		this.server.envoiePrive(client, "#Il y'a actuellement "+this.server.getListClient().size()+" connecte(s)");
+	}
+	/**
+	 * Permet de connaitre des informations sur les utilisateurs.
+	 * @param chaine
+	 * @param client
+	 */
+	public void who(String chaine,Client client){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client)){
+			this.server.commandeRefuse(client);
+		}else{
+			String[] argument = recupArgument(chaine, 2);
+			if(!this.server.pseudoCo(argument[1])){
+				this.server.pseudoNonCo(argument[1], client);
+			}else{
+				Client clientWho=this.server.getClient(argument[1]);
+				if(clientWho!=null){
+					String message = "Voici les information concernant : "+clientWho.getPseudo() +
+							"[IP : "+clientWho.getIp()+"]";
+					if(clientWho.getCompte()!=null){
+						message=message + " [Nom du Compte : "+clientWho.getCompte()+"]";
+					}
+					if(clientWho.getMail()!=null){
+						message=message+ " [Mail : "+clientWho.getMail()+"]";
+					}
+					this.server.envoiePrive(client, message);
+				}
+			}
+		}		
+	}
+	public void mp(String chaine,Client clientExpe){
+		String[] argument = recupArgument(chaine, 2);
+		Client clientRecep=this.server.getClient(argument[1]);
+		String message=getMessage(chaine, 2);
+		if(clientRecep==null)
+			this.server.pseudoNonCo(argument[1], clientExpe);
+		else{
+			String date = new DateString().dateChat();
+			this.server.getLog().chat(date+" "+clientExpe.getPseudo() +" à "+clientRecep.getPseudo()+": "+message);
+			this.server.envoiePrive(clientExpe, "%"+date+" "+clientExpe.getPseudo()+": "+message);
+			this.server.envoiePrive(clientRecep, "%"+date+" "+clientExpe.getPseudo()+": "+message);
+		}
+		
 	}
 
 }

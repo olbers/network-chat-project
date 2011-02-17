@@ -2,8 +2,8 @@ package ncp_server.core.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -19,7 +19,7 @@ public class Client {
 	protected PrintWriter out;
 	protected ThreadClient threadClient;
 	protected int lvAccess;
-	protected InetAddress ip;
+	protected String ip;
 	protected long lastMessage;
 	protected boolean activer;
 	protected String mail;
@@ -42,7 +42,7 @@ public class Client {
 		this.in = in;
 		this.out = out;
 		this.lvAccess = 0;
-		this.ip = this.socketClient.getInetAddress();
+		this.ip = this.socketClient.getInetAddress().toString();
 		this.lastMessage = 0;
 		this.activer=false;
 		this.BddID=0;
@@ -52,16 +52,19 @@ public class Client {
 	 * Permet de fermer la connexion au client
 	 * @param client
 	 */
-	public void closeClient(){		
-		try {
+	public void closeClient(){
+			this.threadClient.setActif(false);
 			this.threadClient.interrupt();
-			this.in.close();
-			this.out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println(e);
-		}
-		
+			try {
+				this.in.close();
+				this.out.close();			
+				this.socketClient.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			System.out.println(this.threadClient.isAlive());
+
 	}
 	/**
 	 * Permet de créer le thread client
@@ -100,7 +103,7 @@ public class Client {
 	/**
 	 * @return the ip
 	 */
-	public InetAddress getIp() {
+	public String getIp() {
 		return ip;
 	}
 
@@ -195,7 +198,7 @@ public class Client {
 	/**
 	 * @param ip the ip to set
 	 */
-	public void setIp(InetAddress ip) {
+	public void setIp(String ip) {
 		this.ip = ip;
 	}
 	/**
@@ -228,10 +231,10 @@ public class Client {
 	public void startThread(){
 		this.threadClient.start();
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 
 }
