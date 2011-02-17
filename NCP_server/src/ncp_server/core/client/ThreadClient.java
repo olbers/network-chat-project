@@ -23,6 +23,7 @@ public class ThreadClient extends Thread {
 	 * Permet de recuperer l'objet Client.
 	 */
 	protected Client client;
+	protected boolean actif;
 	/**
 	 * @param serveur
 	 * @param socketClient
@@ -33,21 +34,28 @@ public class ThreadClient extends Thread {
 		this.serveur = Server.getInstance();
 		this.socketClient = socketClient;
 		this.client = client;
+		this.actif=true;
 	}
 	/**
 	 * Methode run de la classe ThreadClient.
 	 */
 	@Override
-	public void run()
-	{
-		while(true){
+	public void run(){
+		while(actif){
 			this.serveur.recupChaine(this.client.getIn(), this.client);
 			try {
 				sleep(50);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.actif=false;
 			}
 		}
 	}
+	/**
+	 * @param actif the actif to set
+	 */
+	public void setActif(boolean actif) {
+		this.actif = actif;
+	}
+	
 }
