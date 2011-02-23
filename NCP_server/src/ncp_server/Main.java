@@ -11,12 +11,13 @@ public class Main {
 	 * @author Poirier Kévin
 	 * @Version 0.2.1
 	 */
-	@SuppressWarnings("unused")
+
 	public static void main(String[] args) {
+
 		System.out.print("Lancement du système de log .....");
-		Log log = Log.getInstance(); //Creation de l'object de log
+		Log.getInstance(); //Creation de l'object de log
 		System.out.print("Lancement du système d'option ...");
-		Option option = Option.getInstace(); //Creation de l'object Option
+		Option.getInstace(); //Creation de l'object Option
 		System.out.print("Connexion à la BDD ..............");
 		Server server = Server.getInstance(); //Creation de la class principale Server.
 		System.out.print("Lancement du serveur ............");

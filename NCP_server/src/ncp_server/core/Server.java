@@ -117,12 +117,13 @@ public class Server {
 	 * Methode qui envoie au clients la liste de tout les connectés.
 	 */
 	public void affichListClient(){
-		String listeDePseudo="$";
+		StringBuffer listeDePseudo = new StringBuffer();
+		listeDePseudo.append("$");
 		for(int i=0;i<this.listClient.size();i++){
 			if(this.listClient.get(i).isActiver())
-				listeDePseudo=listeDePseudo+this.listClient.get(i).getPseudo()+"|";
+				listeDePseudo.append(this.listClient.get(i).getPseudo()+"|");
 		}
-		this.envoieATous(listeDePseudo);
+		this.envoieATous(listeDePseudo.toString());
 	}
 	/**
 	 * La méthode ajoutClient permet de créer un client et de l'ajouter dans la liste.
@@ -305,18 +306,18 @@ public class Server {
 	 * @return chaineModif
 	 */
 	public String suppr1Car(String chaine){
-		String chaineModif="";
+		StringBuffer chaineModif=new StringBuffer();
 		for(int i=0;i<(chaine.length()-1);i++){
-			chaineModif=chaineModif+chaine.charAt(i+1);
+			chaineModif.append(chaine.charAt(i+1));
 		}		
-		return chaineModif;
+		return chaineModif.toString();
 	}
 	/**
 	 * La methode traitementChaine permet de traiter les chaines de caracteres envoyer par les clients.
 	 * @param chaine
 	 */
 	public void traitementChaine(String chaine,Client client){
-		if(chaine!=null || !"".equals(chaine)){
+		if(!chaine.isEmpty()|| !"".equals(chaine)){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
 				this.comCli.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
