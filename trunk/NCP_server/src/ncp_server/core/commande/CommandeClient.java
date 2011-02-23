@@ -59,7 +59,7 @@ public class CommandeClient extends Commande {
 	 */
 	public void register(String chaine, Client client){
 		if(client.getBddID()==0){
-			String[] argument= new String[4];
+			String[] argument;
 			argument=this.recupArgument(chaine, 4);
 			//System.out.println(argument[1]);
 			if(this.server.pseudoCo(argument[1]) && (!argument[1].equalsIgnoreCase(client.getPseudo()))){
@@ -93,7 +93,7 @@ public class CommandeClient extends Commande {
 	 */	
 	public void md5(String chaine, Client client){
 		if (!client.isActiver()){
-			String[] argument= new String[2];
+			String[] argument;
 			argument=this.recupArgument(chaine, 2);
 			//System.out.println(option.lourdMD5);
 			//System.out.println(argument[1]);

@@ -87,7 +87,7 @@ public class Option {
 	 * Variable qui contient le hash md5 du client Android.
 	 * @since 1.1.1
 	 */
-	protected String AndroidMD5;
+	protected String androidMD5;
 	/**
 	 * Variable qui contient l'adresse du serveur smtp
 	 * @since 1.1.2
@@ -128,7 +128,7 @@ public class Option {
 	 * @see Option#logChat
 	 * @see Option#log
 	 * @see Option#protectMD5
-	 * @see Option#AndroidMD5
+	 * @see Option#androidMD5
 	 * @see Option#lourdMD5
 	 * @see Option#optionFile
 	 */
@@ -147,7 +147,7 @@ public class Option {
 		this.logChat=true;
 		this.log=Log.getInstance();
 		this.protectMD5=true;
-		this.AndroidMD5="0";
+		this.androidMD5="0";
 		this.lourdMD5="0";
 		this.smtp= "";
 		this.smtpLog = "";
@@ -156,7 +156,7 @@ public class Option {
 		this.inscriptionMail = "";
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
-			this.Recup(optionFile);
+			this.recup(optionFile);
 			System.out.println("[OK]");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -187,7 +187,7 @@ public class Option {
 	 * @since 1.1.1
 	 */
 	public String getAndroidMD5() {
-		return AndroidMD5;
+		return androidMD5;
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class Option {
 	 * 
 	 */
 	//Gerer les exception correctement
-	public void Recup(BufferedReader optionFile) {
+	public void recup(BufferedReader optionFile) {
 		String option=null,resultOption=null,ligne,mot;
 		StringTokenizer token;
 		try {
@@ -378,7 +378,7 @@ public class Option {
 	 * @since 1.1.1
 	 */
 	public void setAndroidMD5(String androidMD5) {
-		AndroidMD5 = androidMD5;
+		this.androidMD5 = androidMD5;
 	}
 	/**
 	 * Setter de la variable dbMySQL
@@ -569,7 +569,7 @@ public class Option {
 				+ ", dbMySQL=" + dbMySQL + ", userMySQL=" + userMySQL
 				+ ", pwdMySQL=" + pwdMySQL + ", log=" + log + ", logChat="
 				+ logChat + ", protectMD5=" + protectMD5 + ", lourdMD5="
-				+ lourdMD5 + ", AndroidMD5=" + AndroidMD5 + ", smtp=" + smtp
+				+ lourdMD5 + ", AndroidMD5=" + androidMD5 + ", smtp=" + smtp
 				+ ", smtpLog=" + smtpLog + ", smtpMdp=" + smtpMdp
 				+ ", adminMail=" + adminMail + ", inscriptionMail="
 				+ inscriptionMail + "]";

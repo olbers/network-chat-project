@@ -24,7 +24,7 @@ public class Client {
 	protected boolean activer;
 	protected String mail;
 	protected String compte;
-	protected int BddID;
+	protected int bddID;
 	protected boolean chMD5;
 	/**COnstructeur de la classe
 	 * @param id
@@ -45,7 +45,7 @@ public class Client {
 		this.ip = this.socketClient.getInetAddress().toString();
 		this.lastMessage = 0;
 		this.activer=false;
-		this.BddID=0;
+		this.bddID=0;
 		this.chMD5=false;
 	}
 	/**
@@ -77,7 +77,7 @@ public class Client {
 	 * @return the bddID
 	 */
 	public int getBddID() {
-		return BddID;
+		return bddID;
 	}
 	/**
 	 * @return the compte
@@ -180,7 +180,7 @@ public class Client {
 	 * @param bddID the bddID to set
 	 */
 	public void setBddID(int bddID) {
-		BddID = bddID;
+		this.bddID = bddID;
 	}
 	/**
 	 * @param chMD5 the chMD5 to set
