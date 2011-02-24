@@ -13,7 +13,6 @@ public class ThreadConnexion extends Thread {
 	protected boolean authCo; //Authorisation de connexion
 	/**
 	 * Constructeur de Thread.
-	 * @param serv
 	 */
 	public ThreadConnexion(){
 		super();

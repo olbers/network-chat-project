@@ -38,8 +38,6 @@ public class Mail {
 	protected final String smtpMdp;
 	/**
 	 * Constructeur
-	 * @param option
-	 * @param log
 	 */
 	public Mail(){
 		super();

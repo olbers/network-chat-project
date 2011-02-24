@@ -463,7 +463,7 @@ public class Server {
 	/**
 	 * 
 	 * @param pseudo
-	 * @return
+	 * @return Client
 	 */
 	public Client getClient(String pseudo){
 		for(int i=0;i<this.listClient.size();i++){
@@ -491,7 +491,6 @@ public class Server {
 	 * @param clientABan
 	 * @param banniseur
 	 * @param raison
-	 * @param temps
 	 */
 	public void ban(Client clientABan,Client banniseur,String raison ){
 		if(raison.isEmpty()||raison.equalsIgnoreCase(""))

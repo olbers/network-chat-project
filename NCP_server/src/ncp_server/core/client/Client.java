@@ -49,7 +49,6 @@ public class Client {
 	}
 	/**
 	 * Permet de fermer la connexion au client
-	 * @param client
 	 */
 	public void closeClient(){
 			this.threadClient.setActif(false);
@@ -65,7 +64,6 @@ public class Client {
 	}
 	/**
 	 * Permet de créer le thread client
-	 * @param serveur
 	 */
 	public void createThread(){
 		this.threadClient=new ThreadClient(this.socketClient, this);
