@@ -25,7 +25,6 @@ public class ThreadClient extends Thread {
 	protected Client client;
 	protected boolean actif;
 	/**
-	 * @param serveur
 	 * @param socketClient
 	 * @param client
 	 */
