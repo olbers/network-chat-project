@@ -4,14 +4,12 @@ import ncp_server.core.Server;
 import ncp_server.util.Log;
 import ncp_server.util.option.Option;
 
+/**
+ * La class Main permet de lancer l'application, et creer les premier objet neccessaire au bon fonctionnement de l'application.
+ * @author Poirier Kévin
+ * @version 0.2.1
+ */
 public class Main {
-
-	/**
-	 * La class Main permet de lancer l'application, et creer les premier objet neccessaire au bon fonctionnement de l'application.
-	 * @author Poirier Kévin
-	 * @Version 0.2.1
-	 */
-
 	public static void main(String[] args) {
 
 		System.out.print("Lancement du système de log .....");

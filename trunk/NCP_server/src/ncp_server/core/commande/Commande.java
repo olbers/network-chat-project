@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 /**
  * Cette classe permettra d'implémenté les methodes de bases pour les commandes
  * @author Poirier Kevin
- * @Version 1.0.0
+ * @version 1.0.0
  */
 
 public class Commande {	
@@ -43,7 +43,7 @@ public class Commande {
 	 * Permet de supprimer les commandes de la chaine
 	 * @param chaine
 	 * @param nbarg
-	 * @return
+	 * @return message
 	 */
 	public String getMessage(String chaine,int nbarg){
 		String message="";

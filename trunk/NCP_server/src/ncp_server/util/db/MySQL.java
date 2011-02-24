@@ -52,7 +52,6 @@ public class MySQL {
 	/**
 	 * Constructeur de la class MySQL.
 	 * Recupère les options du serveur pour la base de données à partir du fichier
-	 * @param option
 	 * @see Option
 	 */
 	public MySQL(){
@@ -195,7 +194,6 @@ public class MySQL {
 	}
 	/**
 	 * Methode qui permet de faire des INSERT / UPDATE / DROP
-	 * @param requete
 	 */
 	public void updateSQL(PreparedStatement prState){
 		try {
