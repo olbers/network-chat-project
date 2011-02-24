@@ -10,7 +10,7 @@ import ncp_server.util.mail.Mail;
 /**
  * Class qui gère les commande clientes
  * @author Poirier Kevin
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 public class CommandeClient extends Commande {
@@ -149,9 +149,14 @@ public class CommandeClient extends Commande {
 						client.setCompte(getValBDD[1]);
 						client.setMail(getValBDD[2]);
 						client.setLvAccess(Integer.parseInt(getValBDD[3]));
-						this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
-						this.server.envoiePrive(client, "0");//ok
-						this.server.activationClient(client);
+						if(client.getLvAccess()==-1){
+							this.server.envoiePrive(client, "10"); //COmpte banni trouvé un message d'erreur
+							this.server.clientDeconnexion(client);
+						}else{
+							this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
+							this.server.envoiePrive(client, "0");//ok
+							this.server.activationClient(client);
+						}
 					}
 				}else{
 					//Utilisateur enregistrer

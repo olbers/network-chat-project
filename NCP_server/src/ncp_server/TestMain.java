@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import ncp_server.core.commande.Commande;
 
-public class mainTest {
+public class TestMain {
 
 	/**
 	 * @param args

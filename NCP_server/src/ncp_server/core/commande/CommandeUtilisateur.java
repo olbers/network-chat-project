@@ -7,7 +7,7 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 0.0.2
+ * @version 1.0.0
  */
 public class CommandeUtilisateur extends Commande {
 	
@@ -39,17 +39,22 @@ public class CommandeUtilisateur extends Commande {
 	public void traitementCommandeUtilisateur(String chaine,Client client){
 		String commande;
 		commande=recupCommande(chaine);
-		if(commande.equalsIgnoreCase("me")){
+		if(commande.equalsIgnoreCase("me"))
 			this.me(chaine, client);
-		}else if(commande.equals("nick")){
+		else if(commande.equals("nick"))
 			this.nick(chaine, client);
-		}else if(commande.equals("total")){
+		else if(commande.equals("total"))
 			this.total(client);
-		}else if(commande.equals("who")){
+		else if(commande.equals("who"))
 			this.who(chaine,client);
-		}else if(commande.equals("mp")){
+		else if(commande.equals("mp"))
 			this.mp(chaine,client);
-		}
+		else if(commande.equalsIgnoreCase("kick"))
+			this.kick(chaine,client);
+		else if(commande.equalsIgnoreCase("ban"))
+			this.ban(chaine, client);
+		else if(commande.equalsIgnoreCase("unban"))
+			this.unBan(chaine, client);
 	}
 	/**
 	 * Gère la commande me
@@ -101,9 +106,9 @@ public class CommandeUtilisateur extends Commande {
 	 * @param client
 	 */
 	public void who(String chaine,Client client){
-		if (!this.server.isAdmin(client) && !this.server.isModerateur(client)){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
-		}else{
+		else{
 			String[] argument = recupArgument(chaine, 2);
 			if(!this.server.pseudoCo(argument[1])){
 				this.server.pseudoNonCo(argument[1], client);
@@ -123,6 +128,11 @@ public class CommandeUtilisateur extends Commande {
 			}
 		}		
 	}
+	/**
+	 * Permet d'envoyer des message privé
+	 * @param chaine
+	 * @param clientExpe
+	 */
 	public void mp(String chaine,Client clientExpe){
 		String[] argument = recupArgument(chaine, 2);
 		Client clientRecep=this.server.getClient(argument[1]);
@@ -134,8 +144,57 @@ public class CommandeUtilisateur extends Commande {
 			this.server.getLog().chat(date+" "+clientExpe.getPseudo() +" à "+clientRecep.getPseudo()+": "+message);
 			this.server.envoiePrive(clientExpe, "%"+date+" "+clientExpe.getPseudo()+": "+message);
 			this.server.envoiePrive(clientRecep, "%"+date+" "+clientExpe.getPseudo()+": "+message);
+		}		
+	}
+	/**
+	 * Commande qui permet de kick un utilisateur
+	 * @param chaine
+	 * @param client
+	 */
+	public void kick(String chaine,Client client){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
+			this.server.commandeRefuse(client);
+		else{
+			String[] argument = recupArgument(chaine, 2);
+			String message=getMessage(chaine, 2);
+			if(this.server.pseudoCo(argument[1])){
+				Client clientKicker = this.server.getClient(argument[1]);
+				this.server.kick(clientKicker, client, message);
+			}else{
+				this.server.pseudoNonCo(argument[1], client);
+			}
 		}
-		
+	}
+	
+	public void ban(String chaine,Client client){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
+			this.server.commandeRefuse(client);
+		else{
+			String[] argument = recupArgument(chaine, 2);
+			String message=getMessage(chaine, 2);
+			if(this.server.pseudoCo(argument[1])){
+				Client clientBan = this.server.getClient(argument[1]);
+				if(clientBan.getCompte()==null){
+					this.server.envoiePrive(client, clientBan.getPseudo()+" n'a pas de compte, cependant vous pouvez le kick ou bannir son ip.");
+				}else{
+					this.server.ban(clientBan, client, message);
+				}					
+			}else{
+				this.server.pseudoNonCo(argument[1], client);
+			}			
+		}
+	}
+	
+	public void unBan(String chaine, Client client){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
+			this.server.commandeRefuse(client);
+		else{
+			String[] argument = recupArgument(chaine, 2);
+			if(this.server.existCompte(argument[1]))
+				this.server.unban(argument[1], client);
+			else
+				this.server.envoiePrive(client, "Le compte: "+ argument[1]+" n'existe pas.");
+		}
 	}
 
 }
