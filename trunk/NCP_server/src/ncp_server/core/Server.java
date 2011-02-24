@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.10
+ * @version 0.2.0.0
  *
  */
 
