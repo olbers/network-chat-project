@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="NCP_server" basedir="." default="compile">
+	
+	<property name="src" location="src" />
+	<property name="lib" location="lib" />
+	<property name="base.dir" location="." />
+	<property name="build" location="build" />
+	<property name="build.lib" location="${build}/lib" />
+	<property name="dist" location="dist" />
+	<property name="dist.temp" location="${dist}/temp" />
+	<property name="dist.lib" location="${dist.temp}/lib" />
+	<property name="dist.log" location="${dist.temp}/log" />
+	<property name="license" location="LICENSE" />
+	<property name="log" location="log" />
+	<property name="main-class" location="ncp_server.Main"/>
+	
+	
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<!-- convert the libraries to be included in the 
+  		Class-Path attribute of the MANIFEST.MF file -->
+	<pathconvert property="class-path.lib" pathsep=" ">
+  		<path refid="classpath"/>
+  		<map from="${lib}" to="lib"/>
+	</pathconvert>
+	
+	<tstamp>
+		<format property="build.tstamp" pattern="dd-MM-yyyy__HH:mm" />
+	</tstamp>
+	
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist.temp}" />
+	</target>
+	
+	<target name="clean-all">
+		<delete dir="${build}" />
+		<delete dir="${dist.temp}" />
+		<delete dir="${dist}"/>
+	</target>
+	
+	<target name="clean-log">
+		<delete file="./log/chat.log" />
+		<delete file="./log/err.log" />
+	</target>
+	
+	<target name="init_compile">
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<target name="compile" depends="clean,init_compile">		
+		<javac destdir="${build}" >
+			<src path="${src}"/>
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+	
+	<target name="init_create-jar">
+		<mkdir dir="${dist}"/>
+		<mkdir dir="${dist.temp}"/>
+		<mkdir dir="${dist.lib}"/>
+	</target>	
+	
+	<target name="create-jar" depends="clean,init_create-jar,info_build,compile">		
+		<jar destfile="${dist.temp}/${ant.project.name}.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Main-Class" value="ncp_server.Main"/>
+				<attribute name="Class-Path" value="${class-path.lib}"/>
+			</manifest>
+		</jar>
+		<copy todir="${dist.lib}">
+			<fileset dir="${lib}">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="prepare_zip">
+		<mkdir dir="${dist.log}"/>
+		<copy todir="${dist.temp}">
+			<fileset dir="${license}">
+				<include name="*.txt"/>
+			</fileset>
+		</copy>
+		<copy todir="${dist.temp}">
+			<fileset dir="${base.dir}">
+				<include name="option.conf"/>
+				<include name="db.sql"/>
+				<include name="Start_Server.bat"/>
+				<include name="Start_Server.sh"/>
+				<include name="BuildInfo.txt"/>
+				<include name="ChangeLog.txt"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="create-zip" depends="create-jar,prepare_zip">
+		<property name="zip_name" value="${ant.project.name}_${build.tstamp_fic}"/>
+		<zip destfile="${dist}/${zip_name}.zip" basedir="${dist.temp}"/>
+	</target>		
+	
+	<target name="info_build">
+		<property name="revision" value="HEAD"/>
+		<tstamp>
+			<format property="build.tstamp" pattern="dd-MM-yyyy__HH:mm" />
+			<format property="build.tstamp_fic" pattern="dd-MM-yyyy" />
+		</tstamp>
+        <exec executable="svn" outputproperty="ncp.revision">
+            <arg line="log ${homedir}/.. -r ${revision} -q"/>
+        </exec>
+		<concat destfile="${dist.temp}/BuildInfo.txt">
+			SVN-info:
+			${ncp.revision}
+			BuildDate=${build.tstamp}
+		</concat>
+	</target>
+	
+	
+</project>
