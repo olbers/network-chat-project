@@ -20,7 +20,6 @@ public class RequeteSQL {
 	private static RequeteSQL instance;
 	/**
 	 * Constructeur
-	 * @param bdd
 	 */
 	public RequeteSQL() {
 		super();
@@ -37,7 +36,7 @@ public class RequeteSQL {
 	/**
 	 * Permet de recuperer le compte si il existe et que le mot de passe corresponds.
 	 * @param compte
-	 * @param mail
+	 * @param mdp
 	 * @return Renvoi l'arrayList contenant le nom du compte si mot de passe ok.
 	 */
 	public ArrayList<String> connexionClient (String compte, String mdp){
@@ -82,7 +81,7 @@ public class RequeteSQL {
 	/**
 	 * Permet de recupérer le niveau d'accès d'un compte.
 	 * @param compte
-	 * @return
+	 * @return arrayList
 	 */
 	public ArrayList<String> getlvAccess (String compte){
 		ArrayList<String> resultat=null;

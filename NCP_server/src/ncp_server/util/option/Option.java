@@ -167,7 +167,7 @@ public class Option {
 	}
 	/**
 	 * Methode singleton qui permet d'assurer une seul instance de la classe.
-	 * @return
+	 * @return instance
 	 */
 	public static Option getInstace(){
 		if(null == instance){
