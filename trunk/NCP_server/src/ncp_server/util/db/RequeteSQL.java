@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * La class RequeteSQL va traiter toutes les requetes SQL via un des prepared Statement
  * @author Poirier Kevin 
- * @version 0.1.1
+ * @version 0.1.2
  */
 
 public class RequeteSQL {
@@ -80,6 +80,26 @@ public class RequeteSQL {
 		return resultat;
 	}
 	/**
+	 * Permet de recupérer le niveau d'accès d'un compte.
+	 * @param compte
+	 * @return
+	 */
+	public ArrayList<String> getlvAccess (String compte){
+		ArrayList<String> resultat=null;
+		ArrayList<String> element = new ArrayList<String>();
+		element.add("lvAccess");
+		String sql = "Select lvAccess FROM user WHERE compte = ?";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setString(1, compte);
+			resultat = this.bdd.selecSQL(preState, element);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);			
+		}
+		return resultat;
+	}
+	/**
 	 * Permet d'inserer un client dans la BDD
 	 * @param compte
 	 * @param mdp
@@ -116,6 +136,19 @@ public class RequeteSQL {
 		try {
 			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
 			preState.setString(1, ip);
+			preState.setInt(2, id);
+			this.bdd.updateSQL(preState);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);
+		}
+	}
+	
+	public void updatelvAccess(int id,int access){
+		String sql="UPDATE user SET lvAccess = ? WHERE id = ?";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setInt(1, access);
 			preState.setInt(2, id);
 			this.bdd.updateSQL(preState);
 			} catch (SQLException e) {
@@ -163,5 +196,6 @@ public class RequeteSQL {
 		}
 		return resultat;
 	}
+
 
 }

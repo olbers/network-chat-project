@@ -2,14 +2,13 @@ package ncp_server.core.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
  * La class Client, permet la gestion de tout les clients connectés au serveur.
  * @author Poirier Kévin
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class Client {
 	protected int id;
@@ -63,8 +62,6 @@ public class Client {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			System.out.println(this.threadClient.isAlive());
-
 	}
 	/**
 	 * Permet de créer le thread client

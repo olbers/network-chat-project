@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.1.0.9
+ * @version 0.1.0.10
  *
  */
 
@@ -322,7 +322,7 @@ public class Server {
 				this.comCli.traitementCommandeClient(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
 				this.commUser.traitementCommandeUtilisateur(this.suppr1Car(chaine),client);
-			}else {
+			}else if (chaine.substring(0,1).equals("~")) {
 				this.traitementMessageAll(chaine, client);
 			}
 		}
@@ -473,6 +473,50 @@ public class Server {
 		}		
 		return null;
 	}
+	/**
+	 * Methode pour kick un client
+	 * @param clientAKicker
+	 * @param kicker
+	 * @param raison
+	 */
+	public void kick(Client clientAKicker,Client kicker,String raison){
+		if(raison.isEmpty()|| raison.equalsIgnoreCase(""))
+			this.envoieATous(clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+".");
+		else
+			this.envoieATous(clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+"(Raison: "+raison+").");		
+		this.clientDeconnexion(clientAKicker);
+	}
+	/**
+	 * Permet de bannir un compte.
+	 * @param clientABan
+	 * @param banniseur
+	 * @param raison
+	 * @param temps
+	 */
+	public void ban(Client clientABan,Client banniseur,String raison ){
+		if(raison.isEmpty()||raison.equalsIgnoreCase(""))
+			this.envoieATous(clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+".");
+		else
+			this.envoieATous(clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
+		this.clientDeconnexion(clientABan);
+		this.requeteSQL.updatelvAccess(clientABan.getBddID(), -1);
+	}
+	/**
+	 * Permet de débannir un compte. Attention la vérification de l'existence du compte doit être fait en amont.
+	 * @param compte
+	 * @param client
+	 */
+	public void unban(String compte,Client client){
+		int id = Integer.parseInt(this.requeteSQL.getBDDID(compte).get(0));
+		if(Integer.parseInt(this.requeteSQL.getlvAccess(compte).get(0))==-1){
+			this.requeteSQL.updatelvAccess(id, 0);
+			this.envoiePrive(client, "Le compte: "+compte+" n'est désormains plus banni.");
+		}else{
+			this.envoiePrive(client, "Le compte: "+compte+" n'est pas banni.");
+		}
+		
+	}
+		
 	/**
 	 * @return the bDD
 	 */
