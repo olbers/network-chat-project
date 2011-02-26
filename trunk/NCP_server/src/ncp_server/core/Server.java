@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.0
+ * @version 0.2.0.1
  *
  */
 
@@ -76,7 +76,7 @@ public class Server {
 	 * L'attribut requeteSQL permet de gerer la class qui gère les requetes SQL.
 	 */
 	protected RequeteSQL requeteSQL;
-	
+
 	private static Server instance;
 	protected CommandeClient comCli;
 	protected CommandeUtilisateur commUser;
@@ -282,7 +282,7 @@ public class Server {
 			if(in.ready()){
 				chaineRecu = in.readLine();;
 				if (chaineRecu!=null && !chaineRecu.equals("")){
-					this.traitementChaine(chaineRecu,client);
+					this.traitementChaine(this.inhibHTLM(chaineRecu),client);
 				}
 			}
 
@@ -292,7 +292,7 @@ public class Server {
 		}
 
 	}
-	
+
 	/**
 	 * @param autorisationConnexion the autorisationConnexion to set
 	 */
@@ -323,7 +323,7 @@ public class Server {
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
 				this.commUser.traitementCommandeUtilisateur(this.suppr1Car(chaine),client);
 			}else if (chaine.substring(0,1).equals("~")) {
-				this.traitementMessageAll(chaine, client);
+				this.traitementMessageAll(this.suppr1Car(chaine), client);
 			}
 		}
 	}
@@ -513,9 +513,52 @@ public class Server {
 		}else{
 			this.envoiePrive(client, "Le compte: "+compte+" n'est pas banni.");
 		}
-		
+
 	}
-		
+	/**
+	 * Permet de retirer toute les balises html sauf <b> et <i>
+	 * @param message
+	 * @return String
+	 */
+	public String inhibHTLM(String message){
+		String mot;
+		int i;
+		boolean ecrit=true;
+		StringBuffer phrase = new StringBuffer();
+		StringBuffer motInhib = new StringBuffer();
+		StringTokenizer token = new StringTokenizer(message);
+
+		while(token.hasMoreTokens()){
+			mot=token.nextToken();			
+			if(mot.contains("<") && mot.contains(">")){
+				if(mot.contains("<b>") || mot.contains("</b>") || mot.contains("<i>")||
+						mot.contains("</i>") || mot.contains("<s>") || mot.contains("</s>")){
+					motInhib.setLength(0);
+					for (i=0;i<mot.length();i++){					
+						if(mot.substring(i).equalsIgnoreCase("<")){
+							ecrit=false;
+						}
+						if(mot.substring(i).equalsIgnoreCase(">")){
+							ecrit=true;
+						}
+						if(ecrit){
+							motInhib.append(mot.charAt(i));
+						}					
+					}
+					if(motInhib.length()!=0)
+						phrase.append(motInhib.toString()+" ");
+				}
+				else{
+					phrase.append(mot+" ");
+				}
+			}
+			else{
+				phrase.append(mot+" ");
+			}
+		}		
+		return phrase.toString();
+	}
+
 	/**
 	 * @return the bDD
 	 */
