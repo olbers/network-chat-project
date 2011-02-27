@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.3
+ * @version 0.2.0.4
  *
  */
 
@@ -458,7 +458,7 @@ public class Server {
 	 * @param client
 	 */
 	public void pseudoNonCo(String pseudo,Client client){
-		this.envoiePrive(client, "L'utilisateur "+pseudo+" n'est pas en ligne.");
+		this.envoiePrive(client, "#L'utilisateur "+pseudo+" n'est pas en ligne.");
 	}
 	/**
 	 * 
@@ -481,9 +481,9 @@ public class Server {
 	 */
 	public void kick(Client clientAKicker,Client kicker,String raison){
 		if(raison.isEmpty()|| raison.equalsIgnoreCase(""))
-			this.envoieATous(clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+".");
+			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+".");
 		else
-			this.envoieATous(clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+"(Raison: "+raison+").");		
+			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+"(Raison: "+raison+").");		
 		this.clientDeconnexion(clientAKicker);
 	}
 	/**
@@ -494,9 +494,9 @@ public class Server {
 	 */
 	public void ban(Client clientABan,Client banniseur,String raison ){
 		if(raison.isEmpty()||raison.equalsIgnoreCase(""))
-			this.envoieATous(clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+".");
+			this.envoieATous("#"+clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+".");
 		else
-			this.envoieATous(clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
+			this.envoieATous("#"+clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
 		this.clientDeconnexion(clientABan);
 		this.requeteSQL.updatelvAccess(clientABan.getBddID(), -1);
 	}
@@ -509,9 +509,9 @@ public class Server {
 		int id = Integer.parseInt(this.requeteSQL.getBDDID(compte).get(0));
 		if(Integer.parseInt(this.requeteSQL.getlvAccess(compte).get(0))==-1){
 			this.requeteSQL.updatelvAccess(id, 0);
-			this.envoiePrive(client, "Le compte: "+compte+" n'est désormains plus banni.");
+			this.envoiePrive(client, "#Le compte: "+compte+" n'est désormains plus banni.");
 		}else{
-			this.envoiePrive(client, "Le compte: "+compte+" n'est pas banni.");
+			this.envoiePrive(client, "#Le compte: "+compte+" n'est pas banni.");
 		}
 
 	}
@@ -532,7 +532,7 @@ public class Server {
 		while(token.hasMoreTokens()){
 			ecrit=true;
 			isExistINF=false;
-			mot=token.nextToken();	
+			mot=token.nextToken();
 			//Vérifie que le mot contient le charactère > et <
 			if(mot.contains("<") && mot.contains(">")){
 				//vérifie que la phrase contient les balises autorisé.
