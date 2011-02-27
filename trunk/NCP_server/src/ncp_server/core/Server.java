@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.1
+ * @version 0.2.0.2
  *
  */
 
@@ -282,7 +282,7 @@ public class Server {
 			if(in.ready()){
 				chaineRecu = in.readLine();;
 				if (chaineRecu!=null && !chaineRecu.equals("")){
-					this.traitementChaine(this.inhibHTLM(chaineRecu),client);
+					this.traitementChaine(chaineRecu,client);
 				}
 			}
 
@@ -319,11 +319,11 @@ public class Server {
 	public void traitementChaine(String chaine,Client client){
 		if(!chaine.isEmpty()|| !"".equals(chaine)){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
-				this.comCli.traitementCommandeClient(this.suppr1Car(chaine),client);
+				this.comCli.traitementCommandeClient(this.inhibHTLM(this.suppr1Car(chaine)),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
-				this.commUser.traitementCommandeUtilisateur(this.suppr1Car(chaine),client);
+				this.commUser.traitementCommandeUtilisateur(this.inhibHTLM(this.suppr1Car(chaine)),client);
 			}else if (chaine.substring(0,1).equals("~")) {
-				this.traitementMessageAll(this.suppr1Car(chaine), client);
+				this.traitementMessageAll(this.inhibHTLM(this.suppr1Car(chaine)), client);
 			}
 		}
 	}
@@ -523,39 +523,45 @@ public class Server {
 	public String inhibHTLM(String message){
 		String mot;
 		int i;
-		boolean ecrit=true;
+		boolean ecrit;
+		boolean isExistINF;
 		StringBuffer phrase = new StringBuffer();
 		StringBuffer motInhib = new StringBuffer();
 		StringTokenizer token = new StringTokenizer(message);
 
 		while(token.hasMoreTokens()){
-			mot=token.nextToken();			
+			ecrit=true;
+			isExistINF=false;
+			mot=token.nextToken();	
+			//Vérifie que le mot contient le charactère > et <
 			if(mot.contains("<") && mot.contains(">")){
+				//vérifie que la phrase contient les balises autorisé.
 				if(mot.contains("<b>") || mot.contains("</b>") || mot.contains("<i>")||
 						mot.contains("</i>") || mot.contains("<s>") || mot.contains("</s>")){
+					phrase.append(mot+" ");
+				}else{
+					//Permet d'afficher les char si il ne sont pas des balises même si ils contiennent < et >
 					motInhib.setLength(0);
-					for (i=0;i<mot.length();i++){					
-						if(mot.substring(i).equalsIgnoreCase("<")){
+					for (i=0;i<mot.length();i++){							
+						if (mot.charAt(i)=='>')
+							isExistINF=true;
+										
+						if (mot.charAt(i)=='<'&& !isExistINF)
 							ecrit=false;
-						}
-						if(mot.substring(i).equalsIgnoreCase(">")){
-							ecrit=true;
-						}
+						else if(!ecrit && mot.charAt(i-1)=='>')
+							ecrit=true;						
+						
 						if(ecrit){
 							motInhib.append(mot.charAt(i));
 						}					
 					}
 					if(motInhib.length()!=0)
-						phrase.append(motInhib.toString()+" ");
-				}
-				else{
-					phrase.append(mot+" ");
-				}
-			}
-			else{
+						phrase.append(motInhib.toString()+" ");	
+				}				
+			}else{				
 				phrase.append(mot+" ");
 			}
-		}		
+		}
 		return phrase.toString();
 	}
 
