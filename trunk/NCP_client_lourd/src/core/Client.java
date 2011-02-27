@@ -48,7 +48,7 @@ public class Client {
 			clavier = new BufferedReader(new InputStreamReader(System.in));
 			ThreadEcoute ecoute = new ThreadEcoute(this);
 			ecoute.start();
-			this.connexion(adresseIP, port);
+			System.out.println("Normalement il est connecté.");
 		}
 		else{
 			erreurCo=true;
@@ -59,23 +59,35 @@ public class Client {
 
 	public boolean connexion(String serveurIP, int port) {
 		System.out.println("Connexion au serveur...");
+		boolean conecte=false;
 		try {
 			this.socketClient = new Socket(serveurIP, port);
 			this.versServeur = new PrintWriter(socketClient.getOutputStream());
 			this.depuisServeur = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-			return true;
+			conecte=true;
 		} catch (UnknownHostException e) {
 			System.out.println("Serveur " + serveurIP + ":" + port + " inconnu");
+			conecte=false;
 		} catch (IOException e) {
 			System.out.println("Erreur Input/Output");
 			e.printStackTrace();
+			conecte=false;
 		}
-		return false;
+		return conecte;
 	}
 
 	public void envoiMessageGeneral(String message) {
-		this.versServeur.println(message);
-		this.versServeur.flush();
+		if(! message.equals("")){
+			if(message.substring(0,1).equalsIgnoreCase("/") || message.substring(0,1).equalsIgnoreCase("@")){
+				this.versServeur.println(message);
+				this.versServeur.flush();
+			}
+			else{
+				message="~"+message;
+				this.versServeur.println(message);
+				this.versServeur.flush();
+			}
+		}
 	}
 
 	public String typeMessage(String message){
@@ -93,17 +105,47 @@ public class Client {
 		}
 		else if(message.substring(0,1).equalsIgnoreCase("&")){	// COMMANDE SERVER
 			if(message.equalsIgnoreCase("&verif")){
-				// Renvoyer HASH MD5 de l'application au serveur
+				envoiMessageGeneral("@md5 0");
 			}
 			/* Incorporer ici les nouvelles commandes */
 			else{
 				System.err.println("Commande non supportée");
 			}
-
 		}
 		else if(message.substring(0,1).equalsIgnoreCase("#")){	// MESSAGE SYSTEM
 			message=supprChar(message);
 			messageSystem(message);
+		}
+		else if(message.substring(0,1).equals("0")){
+			System.out.println("Connexion au serveur OK");
+		}
+		else if(message.substring(0,1).equals("1")){
+			System.out.println("Enregistrement OK");
+		}
+		else if(message.substring(0,1).equals("2")){
+			System.out.println("Pseudo déja dans bdd, impossible de l'enregistrer");
+		}
+		else if(message.substring(0,1).equals("3")){
+			System.out.println("Mail déjà enregistré");
+		}
+		else if(message.substring(0,1).equals("4")){
+			System.out.println("Connexion impossible, le pseudo est réservé");
+		}
+		else if(message.substring(0,1).equals("5")){
+			System.out.println("Utilisateur déjà en ligne");
+		}
+		else if(message.substring(0,1).equals("6")){
+			System.out.println("erreur mdp");
+		}
+		else if(message.substring(0,1).equals("7")){
+			System.out.println("trop de connexions");
+		}
+		else if(message.substring(0,1).equals("8")){
+			System.err.println("Application non conforme!");
+		}
+		else if(message.substring(0,1).equals("9")){
+			System.out.println("MD5 OK");
+			envoiMessageGeneral("@connect "+pseudo);
 		}
 		else{
 			System.err.println("SYNTAX MESSAGE ERROR: The message sent by server is not allowed by the protocol.");
@@ -112,12 +154,13 @@ public class Client {
 	}
 
 	public void listerConnectes(String message) {
-
+		this.clientsConnectes.clear();
 		StringTokenizer st = new StringTokenizer(message,"|");
 		while (st.hasMoreTokens()) {
 			//System.out.println(st.nextToken());
 			this.clientsConnectes.add(st.nextToken());
 		}
+		
 		this.fenetre.getJListClients().setListData(this.getClientsConnectes());
 
 	}
@@ -142,7 +185,7 @@ public class Client {
 	}
 	
 	public void messageSystem(String message){	// Print message system en rouge.
-		message="<font color='red'><b>"+message+"</b></font>";
+		message="<font color='red'>"+message+"</font>";
 		messagesGeneral.add(message);
 		printMessageGeneral();
 	}
@@ -182,8 +225,8 @@ public class Client {
 
 	public void deconnexion(){
 
-		if(ecoute != null){
-			commandeDeconnexion="&deconnexion";
+		//if(ecoute != null){
+			commandeDeconnexion="@deconnexion";
 			envoiMessageGeneral(commandeDeconnexion);
 
 			try {
@@ -195,11 +238,11 @@ public class Client {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		//}
 	}
 
 	public void erreurConnexion(){
-		String messageErreur="Connexion impossible au serveur: vérifiez les paramètres de connexion!";
+		String messageErreur="<html><font color='red'>Connexion impossible au serveur: vérifiez les paramètres de connexion!</font></html>";
 		messageGeneral(messageErreur);
 		printMessageGeneral();
 	}
@@ -208,6 +251,7 @@ public class Client {
 		this.adresseIP=adresseIP;
 		this.port=port;
 		this.pseudo=pseudo;
+		verifConnexion();
 	}
 
 	public BufferedReader getDepuisServeur() {

@@ -3,6 +3,7 @@ package ui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.GridBagLayout;
@@ -87,8 +88,9 @@ public class ParametresConnexion {
 			jLabel.setBounds(new Rectangle(36, 16, 56, 19));
 			jLabel.setText("Pseudo: ");
 			jPanel = new JPanel();
+			jPanel.setBackground(new Color(205, 219, 242));
 			jPanel.setLayout(null);
-			jPanel.setBounds(new Rectangle(0, 0, 278, 203));
+			jPanel.setBounds(new Rectangle(0, 0, 294, 242));
 			jPanel.add(jLabel, null);
 			jPanel.add(AdresseIP, null);
 			jPanel.add(Port, null);
@@ -109,6 +111,7 @@ public class ParametresConnexion {
 		if (jTextFieldPseudo == null) {
 			jTextFieldPseudo = new JTextField();
 			jTextFieldPseudo.setBounds(new Rectangle(110, 13, 136, 26));
+			jTextFieldPseudo.setBackground(new Color(253, 241, 230));
 
 			jTextFieldPseudo.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
@@ -130,6 +133,7 @@ public class ParametresConnexion {
 		if (jTextFieldIP == null) {
 			jTextFieldIP = new JTextField();
 			jTextFieldIP.setBounds(new Rectangle(110, 58, 136, 26));
+			jTextFieldIP.setBackground(new Color(253, 241, 230));
 
 			jTextFieldIP.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
@@ -151,6 +155,7 @@ public class ParametresConnexion {
 		if (jTextFieldPort == null) {
 			jTextFieldPort = new JTextField();
 			jTextFieldPort.setBounds(new Rectangle(110, 105, 136, 26));
+			jTextFieldPort.setBackground(new Color(253, 241, 230));
 
 			jTextFieldPort.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
