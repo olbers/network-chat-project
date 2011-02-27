@@ -2,13 +2,18 @@ package ncp_server.core.commande;
 
 import java.util.StringTokenizer;
 
+import ncp_server.core.client.Client;
+
 /**
  * Cette classe permettra d'implémenté les methodes de bases pour les commandes
  * @author Poirier Kevin
- * @version 1.0.0
+ * @version 1.1.0
  */
 
-public class Commande {	
+public abstract class Commande {	
+	
+	
+	protected abstract void traitementCommande(String chaine,Client client);
 	/**
 	 * Permer de recuperer les argument qui ont été envoyer.
 	 * @param chaine
