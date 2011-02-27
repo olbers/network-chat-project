@@ -10,7 +10,7 @@ import ncp_server.util.mail.Mail;
 /**
  * Class qui gère les commande clientes
  * @author Poirier Kevin
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 public class CommandeClient extends Commande {
@@ -38,7 +38,7 @@ public class CommandeClient extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void traitementCommandeClient(String chaine,Client client){
+	public void traitementCommande(String chaine,Client client){
 		String commande;
 		commande=recupCommande(chaine);
 		if (commande.equalsIgnoreCase("connect")){
@@ -57,7 +57,7 @@ public class CommandeClient extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void register(String chaine, Client client){
+	private void register(String chaine, Client client){
 		if(client.getBddID()==0){
 			String[] argument;
 			argument=this.recupArgument(chaine, 4);
@@ -91,7 +91,7 @@ public class CommandeClient extends Commande {
 	 * @param chaine
 	 * @param client
 	 */	
-	public void md5(String chaine, Client client){
+	private void md5(String chaine, Client client){
 		if (!client.isActiver()){
 			String[] argument;
 			argument=this.recupArgument(chaine, 2);
@@ -110,7 +110,7 @@ public class CommandeClient extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void connect(String chaine, Client client){
+	private void connect(String chaine, Client client){
 		if(!client.isActiver()){
 			String[] argument = this.recupArgument(chaine, 3);
 			String compte = argument[1];
@@ -166,7 +166,7 @@ public class CommandeClient extends Commande {
 		}
 		this.server.affichListClient();
 	}
-	protected void deconnexion(Client client){
+	private void deconnexion(Client client){
 		this.server.deconnexionUtilisateur(client);
 	}
 }

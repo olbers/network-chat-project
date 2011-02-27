@@ -20,7 +20,7 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.2
+ * @version 0.2.0.3
  *
  */
 
@@ -319,9 +319,9 @@ public class Server {
 	public void traitementChaine(String chaine,Client client){
 		if(!chaine.isEmpty()|| !"".equals(chaine)){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
-				this.comCli.traitementCommandeClient(this.inhibHTLM(this.suppr1Car(chaine)),client);
+				this.comCli.traitementCommande(this.inhibHTLM(this.suppr1Car(chaine)),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
-				this.commUser.traitementCommandeUtilisateur(this.inhibHTLM(this.suppr1Car(chaine)),client);
+				this.commUser.traitementCommande(this.inhibHTLM(this.suppr1Car(chaine)),client);
 			}else if (chaine.substring(0,1).equals("~")) {
 				this.traitementMessageAll(this.inhibHTLM(this.suppr1Car(chaine)), client);
 			}

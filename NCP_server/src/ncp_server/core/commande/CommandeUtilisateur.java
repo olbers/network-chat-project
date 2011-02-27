@@ -7,7 +7,7 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class CommandeUtilisateur extends Commande {
 	
@@ -36,7 +36,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void traitementCommandeUtilisateur(String chaine,Client client){
+	public void traitementCommande(String chaine,Client client){
 		String commande;
 		commande=recupCommande(chaine);
 		if(commande.equalsIgnoreCase("me"))
@@ -61,7 +61,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void me(String chaine, Client client){
+	private void me(String chaine, Client client){
 		String message=client.getPseudo()+" "+getMessage(chaine, 1);
 		this.server.getLog().chat(message);
 		this.server.envoieATous("#->"+message);		
@@ -71,7 +71,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void nick(String chaine,Client client){
+	private void nick(String chaine,Client client){
 		boolean authChange = true;
 		String newPseudo = getMessage(chaine, 1);
 		if(this.server.pseudoCo(newPseudo)){
@@ -97,7 +97,7 @@ public class CommandeUtilisateur extends Commande {
 	 * Permet d'envoyer le nombre total de connectes.
 	 * @param client
 	 */
-	public void total(Client client){
+	private void total(Client client){
 		this.server.envoiePrive(client, "#Il y'a actuellement "+this.server.getListClient().size()+" connecte(s)");
 	}
 	/**
@@ -105,7 +105,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void who(String chaine,Client client){
+	private void who(String chaine,Client client){
 		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
 		else{
@@ -133,7 +133,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param chaine
 	 * @param clientExpe
 	 */
-	public void mp(String chaine,Client clientExpe){
+	private void mp(String chaine,Client clientExpe){
 		String[] argument = recupArgument(chaine, 2);
 		Client clientRecep=this.server.getClient(argument[1]);
 		String message=getMessage(chaine, 2);
@@ -151,7 +151,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param chaine
 	 * @param client
 	 */
-	public void kick(String chaine,Client client){
+	private void kick(String chaine,Client client){
 		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
 		else{
@@ -166,7 +166,7 @@ public class CommandeUtilisateur extends Commande {
 		}
 	}
 	
-	public void ban(String chaine,Client client){
+	private void ban(String chaine,Client client){
 		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
 		else{
@@ -185,7 +185,7 @@ public class CommandeUtilisateur extends Commande {
 		}
 	}
 	
-	public void unBan(String chaine, Client client){
+	private void unBan(String chaine, Client client){
 		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
 		else{
