@@ -20,7 +20,6 @@ public class Main {
 		Server server = Server.getInstance(); //Creation de la class principale Server.
 		System.out.print("Lancement du serveur ............");
 		server.createServer();
-
 	}
 
 }

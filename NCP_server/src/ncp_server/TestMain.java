@@ -7,6 +7,7 @@ import ncp_server.core.commande.Commande;
 import ncp_server.util.Log;
 import ncp_server.util.option.Option;
 
+@SuppressWarnings("unused")
 public class TestMain {
 
 	/**
