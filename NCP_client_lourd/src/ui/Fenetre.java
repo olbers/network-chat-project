@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -57,7 +58,7 @@ public class Fenetre extends JFrame {
 		super();
 		this.client = new Client(this);
 		getJFrame();
-		this.client.verifConnexion();
+		//this.client.verifConnexion();
 	}
 
 
@@ -72,6 +73,7 @@ public class Fenetre extends JFrame {
 		});
 
 		this.menu1.add(item4);
+		
 		item4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,KeyEvent.CTRL_DOWN_MASK));
 		item4.addActionListener (new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -111,6 +113,11 @@ public class Fenetre extends JFrame {
 		menu2.setMnemonic('A');
 
 		jFrame.setJMenuBar(menuBar);
+		menuBar.setBackground(new Color(232,241,242));
+		item1.setBackground(new Color(197,218,219));
+		item2.setBackground(new Color(197,218,219));
+		item3.setBackground(new Color(197,218,219));
+		item4.setBackground(new Color(197,218,219));
 	}
 
 	/* Définition des composantes graphiques */
@@ -145,6 +152,7 @@ public class Fenetre extends JFrame {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);
 			jContentPane.add(getJTabbedPane(), null);
+			jContentPane.setBackground(new Color(232,241,242));
 		}
 		return jContentPane;
 	}
@@ -262,10 +270,10 @@ public class Fenetre extends JFrame {
 					if(e.getKeyChar() == KeyEvent.VK_ENTER){
 						
 						/* Méthode pour envoyer un message général */
-						
-//						texteEnvoiGeneral= saisieGeneral.getText();
-//						saisieGeneral.setText("");		// On vide le champ de texte.
-//						envoiMessageGeneral(texteEnvoiGeneral);
+						String texteEnvoiGeneral="";
+						texteEnvoiGeneral= saisieGeneral.getText();
+						saisieGeneral.setText("");		// On vide le champ de texte.
+						client.envoiMessageGeneral(texteEnvoiGeneral);
 					}
 				}
 			});
@@ -287,10 +295,10 @@ public class Fenetre extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					
 					/* méthode pour envoyer un message général */
-					
-//					texteEnvoiGeneral= saisieGeneral.getText();
-//					saisieGeneral.setText("");		// On vide le champ de texte.
-//					envoiMessageGeneral(texteEnvoiGeneral);
+					String texteEnvoiGeneral="";
+					texteEnvoiGeneral= saisieGeneral.getText();
+					saisieGeneral.setText("");		// On vide le champ de texte.
+					client.envoiMessageGeneral(texteEnvoiGeneral);
 				}
 			});
 		}
@@ -374,136 +382,4 @@ public class Fenetre extends JFrame {
 		}
 		return jTextPaneGeneral;
 	}
-
-	//	public boolean connexion(String serveurIP, int port) {
-	//		System.out.println("Connexion au serveur...");
-	//		try {
-	//			this.socketClient = new Socket(serveurIP, port);
-	//			this.versServeur = new PrintWriter(socketClient.getOutputStream());
-	//			this.depuisServeur = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-	//			return true;
-	//		} catch (UnknownHostException e) {
-	//			System.out.println("Serveur " + serveurIP + ":" + port + " inconnu");
-	//		} catch (IOException e) {
-	//			System.out.println("Erreur Input/Output");
-	//			e.printStackTrace();
-	//		}
-	//		return false;
-	//	}
-
-	//	public void envoiMessageGeneral(String message) {
-	//		this.versServeur.println(message);
-	//		this.versServeur.flush();
-	//	}
-	//
-	//	public void envoiEvennement(String message){
-	//		this.versServeur.println(message);
-	//		this.versServeur.flush();
-	//	}
-
-	//	public String typeMessage(String message){
-	//		if(message.substring(0,1).equalsIgnoreCase("%")){
-	//			message=supprChar(message);
-	//			messagePrive(message);
-	//		}
-	//		else if(message.substring(0,1).equalsIgnoreCase("*")){
-	//			message=supprChar(message);
-	//			messageGeneral(message);
-	//		}
-	//		else if(message.substring(0,1).equalsIgnoreCase("$")){
-	//			// LISTE CONNECTES
-	//		}
-	//		else if(message.substring(0,1).equalsIgnoreCase("&")){
-	//			if(message.equalsIgnoreCase("&verif")){
-	//				// Renvoyer HASH MD5 de l'application au serveur
-	//			}
-	//			/* Incorporer ici les nouvelles commandes */
-	//			else{
-	//				System.err.println("Commande non supportée");
-	//			}
-	//
-	//		}
-	//		else if(message.substring(0,1).equalsIgnoreCase("#")){
-	//			messageSystem(message);
-	//		}
-	//		else{
-	//			System.err.println("SYNTAX MESSAGE ERROR: The message sent by server is not allowed by the protocol.");
-	//		}
-	//		return message;
-	//	}
-
-	//	public void messagePrive(String message) {		// Revoir selon ARRAYLIST
-	//		texteMP=texteMP+message;
-	//		jTextPaneMP.setText(texteMP+message);
-	//	}
-	//	public void messageSystem(String message){	// Print message system en rouge.
-	//
-	//		jTextPane.setEnabled(false);
-	//		jTextPane.setForeground(Color.RED);
-	//		jTextPane.setText(jTextPane.getText()+"\n"+message);//jTextPane.getText()+"\n"+message
-	//	}
-	//
-	//
-	//	public String supprChar(String message){
-	//		String chaineModif="";
-	//		for(int i=0;i<message.length()-1;i++){
-	//			chaineModif=chaineModif+message.charAt(i+1);
-	//		}
-	//		return chaineModif;
-	//	}
-
-	//	public void messageGeneral(String message) {
-	//		jTextPane.setText(jTextPane.getText()+"\n"+message); // Modifier avec ARRAYLIST
-	//	}
-	//
-	//	public void deconnexion(){
-	//
-	//		if(ecoute != null){
-	//			commandeDeconnexion="&deconnexion";
-	//			envoiEvennement(commandeDeconnexion);
-	//
-	//			try {
-	//				ecoute.stop();
-	//				this.depuisServeur.close();
-	//				this.versServeur.close();
-	//				this.socketClient.close();
-	//			} catch (IOException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//		}
-	//	}
-	//
-	//	public void erreurConnexion(){
-	//		String messageErreur=jTextPane.getText()+"\n"+"Connexion impossible au serveur: vérifiez les paramètres de connexion!";
-	//		jTextPane.setText(messageErreur);
-	//	}
-	//
-	//	public void parametresConnexion(String adresseIP,int port,String pseudo){
-	//		this.adresseIP=adresseIP;
-	//		this.port=port;
-	//		this.pseudo=pseudo;
-	//	}
-
-	//	public void run() {
-	//		// TODO Auto-generated method stub
-	//		while(true){
-	//			String message=null;
-	//			depuisServeur=null;
-	//			try {
-	//				if(this.depuisServeur.ready()){
-	//					message = this.depuisServeur.readLine();
-	//					if(message != null){
-	//						typeMessage(message);
-	//					}
-	//				}
-	//
-	//			} catch (IOException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//		}
-	//	}
-
-
 }

@@ -16,10 +16,10 @@ public class ThreadEcoute extends Thread {
 		// TODO Auto-generated method stub
 		while(true){
 			String message=null;
-			client.depuisServeur=null;
 			try {
 				if(this.client.getDepuisServeur().ready()){
 					message = this.client.getDepuisServeur().readLine();
+					System.out.println(message);
 					if(message != null){
 						this.client.typeMessage(message);
 					}

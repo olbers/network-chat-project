@@ -1,8 +1,10 @@
 package ui;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JTextField;
 import java.awt.Rectangle;
@@ -11,6 +13,7 @@ import javax.swing.JPasswordField;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
+import javax.swing.border.BevelBorder;
 
 public class Register {
 
@@ -70,7 +73,7 @@ public class Register {
 			jLabelMail.setBounds(new Rectangle(15, 8, 26, 16));
 			jLabelMDP = new JLabel();
 			jLabelMDP.setText("Mot de passe:");
-			jLabelMDP.setBounds(new Rectangle(15, 5, 79, 16));
+			jLabelMDP.setBounds(new Rectangle(15, 8, 79, 16));
 			jLabelPseudo = new JLabel();
 			jLabelPseudo.setText("Pseudo:");
 			jLabelPseudo.setBounds(new Rectangle(15, 8, 46, 16));
@@ -81,6 +84,7 @@ public class Register {
 			jContentPane.add(getJButtonAnnuler(), null);
 			jContentPane.add(getJPanelMDP(), null);
 			jContentPane.add(getJPanelMail(), null);
+			jContentPane.setBackground(new Color(205, 219, 242));
 		}
 		return jContentPane;
 	}
@@ -158,10 +162,12 @@ public class Register {
 	private JPanel getJPanelPseudo() {
 		if (jPanelPseudo == null) {
 			jPanelPseudo = new JPanel();
+			jPanelPseudo.setBackground(new Color(253, 241, 230));
 			jPanelPseudo.setLayout(null);
-			jPanelPseudo.setBounds(new Rectangle(109, 13, 144, 68));
+			jPanelPseudo.setBounds(new Rectangle(119, 12, 144, 68));
 			jPanelPseudo.add(jLabelPseudo, null);
 			jPanelPseudo.add(getTextPseudo(), null);
+			jPanelPseudo.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		}
 		return jPanelPseudo;
 	}
@@ -178,6 +184,12 @@ public class Register {
 			jButtonValider = new JButton();
 			jButtonValider.setBounds(new Rectangle(45, 240, 102, 26));
 			jButtonValider.setText("Valider");
+			jButtonValider.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					
+					jFrame.dispose();
+				}
+			});
 		}
 		return jButtonValider;
 	}
@@ -192,6 +204,11 @@ public class Register {
 			jButtonAnnuler = new JButton();
 			jButtonAnnuler.setBounds(new Rectangle(220, 240, 102, 26));
 			jButtonAnnuler.setText("Annuler");
+			jButtonAnnuler.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					jFrame.dispose();
+				}
+			});
 		}
 		return jButtonAnnuler;
 	}
@@ -207,12 +224,14 @@ public class Register {
 			jLabelConfirmationMDP.setBounds(new Rectangle(15, 75, 102, 16));
 			jLabelConfirmationMDP.setText("Confirmation:");
 			jPanelMDP = new JPanel();
+			jPanelMDP.setBackground(new Color(253, 241, 230));
 			jPanelMDP.setLayout(null);
 			jPanelMDP.setBounds(new Rectangle(15, 90, 155, 133));
 			jPanelMDP.add(jLabelMDP, null);
 			jPanelMDP.add(getJPasswordMDP(), null);
 			jPanelMDP.add(getJPasswordMDP2(), null);
 			jPanelMDP.add(jLabelConfirmationMDP, null);
+			jPanelMDP.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		}
 		return jPanelMDP;
 	}
@@ -228,12 +247,14 @@ public class Register {
 			jLabelConfirmationMail.setBounds(new Rectangle(15, 75, 102, 16));
 			jLabelConfirmationMail.setText("Confirmation:");
 			jPanelMail = new JPanel();
+			jPanelMail.setBackground(new Color(253, 241, 230));
 			jPanelMail.setLayout(null);
-			jPanelMail.setBounds(new Rectangle(195, 90, 155, 133));
+			jPanelMail.setBounds(new Rectangle(201, 90, 155, 133));
 			jPanelMail.add(getJTextMail(), null);
 			jPanelMail.add(getJTextMail2(), null);
 			jPanelMail.add(jLabelMail, null);
 			jPanelMail.add(jLabelConfirmationMail, null);
+			jPanelMail.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		}
 		return jPanelMail;
 	}
