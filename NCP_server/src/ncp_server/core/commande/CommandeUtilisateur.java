@@ -104,7 +104,7 @@ public class CommandeUtilisateur extends Commande {
 	 * @param client
 	 */
 	private void total(Client client){
-		this.server.envoiePrive(client, "#Il y'a actuellement "+this.server.getListClient().size()+" connecte(s)");
+		this.server.envoiePrive(client, "#Il y a actuellement "+this.server.getListClient().size()+" connecte(s)");
 	}
 	/**
 	 * Permet de connaitre des informations sur les utilisateurs.

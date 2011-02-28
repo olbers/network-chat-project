@@ -21,13 +21,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.5
+ * @version 0.2.0.6
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.5";
+	public static final String version = "0.2.0.6";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -495,9 +495,9 @@ public class Server {
 	 */
 	public void kick(Client clientAKicker,String kicker,String raison){
 		if(raison.isEmpty()|| raison.equalsIgnoreCase(""))
-			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker+".");
+			this.envoieATous("#"+clientAKicker.getPseudo() + " a été kick par "+kicker+".");
 		else
-			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker+"(Raison: "+raison+").");		
+			this.envoieATous("#"+clientAKicker.getPseudo() + " a été kick par "+kicker+"(Raison: "+raison+").");		
 		this.clientDeconnexion(clientAKicker);
 	}
 	/**
@@ -508,9 +508,9 @@ public class Server {
 	 */
 	public void ban(Client clientABan,Client banniseur,String raison ){
 		if(raison.isEmpty()||raison.equalsIgnoreCase(""))
-			this.envoieATous("#"+clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+".");
+			this.envoieATous("#"+clientABan.getPseudo() + " a été banni par "+banniseur.getPseudo()+".");
 		else
-			this.envoieATous("#"+clientABan.getPseudo() + " à été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
+			this.envoieATous("#"+clientABan.getPseudo() + " a été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
 		this.clientDeconnexion(clientABan);
 		this.requeteSQL.updatelvAccess(clientABan.getBddID(), -1);
 	}
