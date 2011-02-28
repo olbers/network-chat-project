@@ -4,6 +4,7 @@ package ncp_server.util.db;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 /**
  * La class RequeteSQL va traiter toutes les requetes SQL via un des prepared Statement
  * @author Poirier Kevin 
- * @version 0.1.2
+ * @version 0.1.3
  */
 
 public class RequeteSQL {
@@ -99,6 +100,25 @@ public class RequeteSQL {
 		return resultat;
 	}
 	/**
+	 * Permet de recupérer les ip banni.
+	 * @return ArrayList<String>
+	 */
+	public ArrayList<String> getBanIP(){
+		ArrayList<String> resultat=null;
+		ArrayList<String> element = new ArrayList<String>();
+		element.add("ip");
+		element.add("finBan");
+		String sql = "Select * FROM ban";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			resultat = this.bdd.selecSQL(preState, element);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);			
+		}
+		return resultat;		
+	}
+	/**
 	 * Permet d'inserer un client dans la BDD
 	 * @param compte
 	 * @param mdp
@@ -126,6 +146,39 @@ public class RequeteSQL {
 
 	}
 	/**
+	 * Permet d'ajouter une ip banni
+	 * @param ip
+	 * @param timestamp
+	 */
+	public void insertBanIP(String ip,Timestamp timestamp ){
+		String sql="INSERT INTO ban (ip,finBan) VALUES" +
+		" (?,?)";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setString(1, ip);
+			preState.setTimestamp(2, timestamp);
+			this.bdd.updateSQL(preState);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);
+		}
+	}
+	/**
+	 * Permet d'effacer les ip banni
+	 * @param ip
+	 */
+	public void delBanIP(String ip){
+		String sql = "DELETE FROM ban WHERE ip = ? LIMIT 1";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setString(1, ip);
+			this.bdd.updateSQL(preState);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);
+		}
+	}
+	/**
 	 * Permet de mettre à jour l'ip d'un client dans la BDD
 	 * @param ip
 	 * @param id
@@ -141,6 +194,24 @@ public class RequeteSQL {
 			// TODO Auto-generated catch block
 			this.bdd.displaySQLErrors(e);
 		}
+	}
+	/**
+	 * Permet de mettre à jour la dernière connexion.
+	 * @param lastCo
+	 * @param id
+	 */
+	public void updateLastCo(String lastCo,int id){
+		String sql = "UPDATE user SET lastConnection = ? WHERE id = ?";
+		try {
+			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
+			preState.setString(1, lastCo);
+			preState.setInt(2, id);
+			this.bdd.updateSQL(preState);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			this.bdd.displaySQLErrors(e);
+		}
+		
 	}
 	
 	public void updatelvAccess(int id,int access){

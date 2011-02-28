@@ -150,9 +150,10 @@ public class CommandeClient extends Commande {
 						client.setMail(getValBDD[2]);
 						client.setLvAccess(Integer.parseInt(getValBDD[3]));
 						if(client.getLvAccess()==-1){
-							this.server.envoiePrive(client, "10"); //COmpte banni trouvé un message d'erreur
+							this.server.envoiePrive(client, "a"); //COmpte banni trouvé un message d'erreur
 							this.server.clientDeconnexion(client);
 						}else{
+							this.requeteSQL.updateLastCo(new DateString().dateSQL(), client.getBddID());
 							this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
 							this.server.envoiePrive(client, "0");//ok
 							this.server.activationClient(client);
@@ -166,6 +167,10 @@ public class CommandeClient extends Commande {
 		}
 		this.server.affichListClient();
 	}
+	/**
+	 * Merthode qui deconnecte le client.
+	 * @param client
+	 */
 	private void deconnexion(Client client){
 		this.server.deconnexionUtilisateur(client);
 	}

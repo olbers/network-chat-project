@@ -7,10 +7,10 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class CommandeUtilisateur extends Commande {
-	
+
 	protected Server server;
 	protected RequeteSQL requeteSQL;
 	private static CommandeUtilisateur instance;
@@ -55,6 +55,12 @@ public class CommandeUtilisateur extends Commande {
 			this.ban(chaine, client);
 		else if(commande.equalsIgnoreCase("unban"))
 			this.unBan(chaine, client);
+		else if(commande.equalsIgnoreCase("info"))
+			this.info(client);
+		else if(commande.equalsIgnoreCase("banIP"))
+			this.banIp(chaine, client);
+		else if(commande.equalsIgnoreCase("unbanIP"))
+			this.unBanIP(chaine, client);
 	}
 	/**
 	 * Gère la commande me
@@ -116,7 +122,7 @@ public class CommandeUtilisateur extends Commande {
 				Client clientWho=this.server.getClient(argument[1]);
 				if(clientWho!=null){
 					String message = "Voici les information concernant : "+clientWho.getPseudo() +
-							"[IP : "+clientWho.getIp()+"]";
+					"[IP : "+clientWho.getIp()+"]";
 					if(clientWho.getCompte()!=null){
 						message=message + " [Nom du Compte : "+clientWho.getCompte()+"]";
 					}
@@ -159,13 +165,17 @@ public class CommandeUtilisateur extends Commande {
 			String message=getMessage(chaine, 2);
 			if(this.server.pseudoCo(argument[1])){
 				Client clientKicker = this.server.getClient(argument[1]);
-				this.server.kick(clientKicker, client, message);
+				this.server.kick(clientKicker, client.getPseudo(), message);
 			}else{
 				this.server.pseudoNonCo(argument[1], client);
 			}
 		}
 	}
-	
+	/**
+	 * Commande qui permet de bannir un utilisateur
+	 * @param chaine
+	 * @param client
+	 */
 	private void ban(String chaine,Client client){
 		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
@@ -184,7 +194,11 @@ public class CommandeUtilisateur extends Commande {
 			}			
 		}
 	}
-	
+	/**
+	 * Commande qui permet de débannir un utilisateur
+	 * @param chaine
+	 * @param client
+	 */
 	private void unBan(String chaine, Client client){
 		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
 			this.server.commandeRefuse(client);
@@ -196,5 +210,77 @@ public class CommandeUtilisateur extends Commande {
 				this.server.envoiePrive(client, "Le compte: "+ argument[1]+" n'existe pas.");
 		}
 	}
+	/**
+	 * Permet d'avoir des informations sur le serveur
+	 * @param client
+	 */
+	private void info(Client client){
+		this.server.envoiePrive(client, "#Le serveur est actuellement en version : "+Server.version);
+	}
+	/**
+	 * Permet de bannir une ip
+	 * @param chaine
+	 * @param client
+	 */
+	public void banIp(String chaine, Client client){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
+			this.server.commandeRefuse(client);
+		else{
+			boolean verif=true;
+			String ip="";
+			int banTime=0;
+			String[] argument = recupArgument(chaine, 3);
+			if ( argument[1].matches( "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$" ) == false )
+			{
+				this.server.envoiePrive(client, "#L'IP n'est pas dans un format valide.  Format valide: [0-255].[0-255].[0-255].[0-255]" );
+				verif=false;
+			}else{
+				ip = "/"+argument[1];
+			}
 
+			try{
+				banTime = Integer.parseInt(argument[2]);
+			}catch (NumberFormatException e) {
+				this.server.envoiePrive(client, "#Attention le second paramètre n'est pas un nombre");
+				verif=false;
+			}
+
+			if(verif){
+				if(!this.server.ipIsBan(ip)){
+					this.server.banIP(ip, banTime, client.getPseudo());
+					this.server.envoiePrive(client, "#L'ip "+ argument[1]+" à été banni.");
+				}else{
+					this.server.envoiePrive(client, "#L'ip:" +argument[1]+" est déjà banni");
+				}
+			}	
+		}
+	}
+	/**
+	 * Permet de débannir une ip.
+	 * @param chaine
+	 * @param client
+	 */
+	public void unBanIP(String chaine, Client client){
+		if (!this.server.isAdmin(client) && !this.server.isModerateur(client))
+			this.server.commandeRefuse(client);
+		else{
+			boolean verif = true;
+			String[] argument = recupArgument(chaine, 2);
+			if ( argument[1].matches( "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$" ) == false )
+			{
+				this.server.envoiePrive(client, "#L'IP n'est pas dans un format valide.  Format valide: [0-255].[0-255].[0-255].[0-255]" );
+				verif=false;
+			}
+			String ip = "/"+argument[1];
+			if(verif){
+				if(this.server.ipIsBan(ip)){
+					this.server.unBanIP(ip);
+					this.server.envoiePrive(client, "#L'IP "+argument[1]+" n'est plus banni");
+				}else{
+					this.server.envoiePrive(client, "#L'IP "+argument[1]+" n'est pas banni.");
+				}				
+			}
+		}
+
+	}
 }
