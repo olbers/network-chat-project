@@ -7,11 +7,11 @@ import ncp_server.util.option.Option;
 /**
  * La class Main permet de lancer l'application, et creer les premier objet neccessaire au bon fonctionnement de l'application.
  * @author Poirier Kévin
- * @version 0.2.1
+ * @version 0.2.2
  */
 public class Main {
 	public static void main(String[] args) {
-
+		System.out.println("Lancement du NCP_Serveur. Version : "+Server.version);
 		System.out.print("Lancement du système de log .....");
 		Log.getInstance(); //Creation de l'object de log
 		System.out.print("Lancement du système d'option ...");

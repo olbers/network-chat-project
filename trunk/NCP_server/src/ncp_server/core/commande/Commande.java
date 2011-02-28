@@ -41,7 +41,9 @@ public abstract class Commande {
 	public String recupCommande(String chaine){
 		StringTokenizer token;
 		token = new StringTokenizer(chaine);
-		chaine = token.nextToken();
+		if(token.hasMoreTokens()){
+			chaine = token.nextToken();
+		}
 		return chaine;
 	}
 	/**

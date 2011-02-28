@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -20,11 +21,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.4
+ * @version 0.2.0.5
  *
  */
 
 public class Server {
+
+	public static final String version = "0.2.0.5";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -78,8 +81,13 @@ public class Server {
 	protected RequeteSQL requeteSQL;
 
 	private static Server instance;
+
 	protected CommandeClient comCli;
+
 	protected CommandeUtilisateur commUser;
+
+	protected ArrayList<String[]> ListBanIP;
+
 	/**
 	 * Constructeur de la class Server.
 	 * @param log
@@ -92,7 +100,9 @@ public class Server {
 		this.listClient = new ArrayList<Client>();
 		this.autorisationConnexion=true;
 		this.BDD=MySQL.getInstance();
-		this.requeteSQL= RequeteSQL.getInstance();		
+		this.requeteSQL= RequeteSQL.getInstance();
+		this.ListBanIP = new ArrayList<String[]>();
+		this.updateListBanIP();
 	}
 	/**
 	 * Methode singleton qui permet d'assurer une seul instance de la classe.
@@ -352,6 +362,10 @@ public class Server {
 			this.envoiePrive(client, "&verif");
 			client.createThread();
 			client.startThread();
+			if(this.ipIsBan(client.getSocketClient().getInetAddress().toString())){
+				this.envoiePrive(client, "b");//ip banni
+				this.clientDeconnexion(client);
+			}
 		}else{
 			this.envoiePrive(client, "7");
 		}
@@ -479,11 +493,11 @@ public class Server {
 	 * @param kicker
 	 * @param raison
 	 */
-	public void kick(Client clientAKicker,Client kicker,String raison){
+	public void kick(Client clientAKicker,String kicker,String raison){
 		if(raison.isEmpty()|| raison.equalsIgnoreCase(""))
-			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+".");
+			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker+".");
 		else
-			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker.getPseudo()+"(Raison: "+raison+").");		
+			this.envoieATous("#"+clientAKicker.getPseudo() + " à été kicker par "+kicker+"(Raison: "+raison+").");		
 		this.clientDeconnexion(clientAKicker);
 	}
 	/**
@@ -545,12 +559,12 @@ public class Server {
 					for (i=0;i<mot.length();i++){							
 						if (mot.charAt(i)=='>')
 							isExistINF=true;
-										
+
 						if (mot.charAt(i)=='<'&& !isExistINF)
 							ecrit=false;
 						else if(!ecrit && mot.charAt(i-1)=='>')
 							ecrit=true;						
-						
+
 						if(ecrit){
 							motInhib.append(mot.charAt(i));
 						}					
@@ -563,6 +577,66 @@ public class Server {
 			}
 		}
 		return phrase.toString();
+	}
+	/**
+	 * Permet de mettre à jour la liste des ip banni.
+	 */
+	public void updateListBanIP(){
+		ArrayList<String> result = this.requeteSQL.getBanIP();
+		int i;
+		this.ListBanIP.clear();
+		if(result!=null){
+			for(i=0;i<result.size();i++){
+				this.ListBanIP.add(i, this.recupArgument(result.get(i), 2));
+			}
+		}
+	}
+	/**
+	 * Permet de savoir si une ip est banni
+	 * @param ip
+	 * @return boolean
+	 */
+	public boolean ipIsBan(String ip){
+		for (int i = 0; i<this.ListBanIP.size();i++){
+			if(this.ListBanIP.get(i)[0].equalsIgnoreCase(ip)){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Recupère un client si il y'a une concordance avec l'ip.
+	 * @param ip
+	 * @return Client
+	 */
+	public Client clientIP(String ip){
+		for(int i = 0; i<this.listClient.size();i++){
+			if(this.listClient.get(i).getIp().equalsIgnoreCase(ip)){
+				return this.listClient.get(i);
+			}
+		}
+		return null;
+	}
+	/**
+	 * Permet de bannir une ip. Les vérification doivent avoir été faite avant.
+	 * @param ip
+	 * @param tempsBan
+	 */
+	public void banIP(String ip, int tempsBan, String banisseur){
+		this.requeteSQL.insertBanIP(ip, new Timestamp(System.currentTimeMillis()+tempsBan));
+		Client clientKick=this.clientIP(ip);
+		if(clientKick!=null){
+			this.kick(clientKick, banisseur, "Ip Banni");
+		}
+		this.updateListBanIP();
+	}
+	/**
+	 * Permet de retirer des ip banni. Attention la vérification que l'ip est banni doit être fait avant.
+	 * @param ip
+	 */
+	public void unBanIP(String ip){
+		this.requeteSQL.delBanIP(ip);
+		this.updateListBanIP();
 	}
 
 	/**

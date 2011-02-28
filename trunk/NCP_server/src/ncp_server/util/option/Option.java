@@ -157,6 +157,7 @@ public class Option {
 		try {
 			this.optionFile = new BufferedReader(new FileReader("option.conf"));
 			this.recup(optionFile);
+			//System.out.println(this.toString());
 			System.out.println("[OK]");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
