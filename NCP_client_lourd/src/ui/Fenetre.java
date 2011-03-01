@@ -2,7 +2,9 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -25,12 +27,13 @@ import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 
 import core.Client;
+import javax.swing.JLabel;
 
 
 
 public class Fenetre extends JFrame {
 
-	protected JFrame jFrame = null; 
+	public JFrame jFrame = null; 
 	protected JPanel jContentPane = null;
 	protected JTextField saisieGeneral = null;
 	protected JButton boutonEnvoyerGeneral = null;
@@ -52,13 +55,14 @@ public class Fenetre extends JFrame {
 	protected JScrollPane jScrollPane = null;
 	protected JList jListClients = null;
 	protected Client client;
-	private JTextPane jTextPaneGeneral = null;
+	protected JTextPane jTextPaneGeneral = null;
+	public JLabel jLabelTotal = null;
+	
 	/* Constructeur */
 	public Fenetre() {	
 		super();
 		this.client = new Client(this);
 		getJFrame();
-		//this.client.verifConnexion();
 	}
 
 
@@ -73,7 +77,7 @@ public class Fenetre extends JFrame {
 		});
 
 		this.menu1.add(item4);
-		
+
 		item4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,KeyEvent.CTRL_DOWN_MASK));
 		item4.addActionListener (new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -127,15 +131,18 @@ public class Fenetre extends JFrame {
 	 * 	
 	 * @return javax.swing.JFrame	
 	 */
-	protected JFrame getJFrame() {
+	public JFrame getJFrame() {
 		if (jFrame == null) {
 			jFrame = new JFrame();
-			jFrame.setTitle("ClientChatV1.0");								// Définition du titre de la fenêtre
+			jFrame.setTitle("NCP Client v1.0");								// Définition du titre de la fenêtre
 			jFrame.setSize(new Dimension(700, 500));						// Définit une taille de la fenêtre. (700 par 500).
 			jFrame.setContentPane(getJContentPane());						// Panel de la fenêtre.
 			jFrame.setLocationRelativeTo(null);								// On positionne la fenètre au centre de l'écran					
-			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			// Le processus se termine correctement lorsque l'on ferme la fenêtre
+			//jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			// Le processus se termine correctement lorsque l'on ferme la fenêtre
+			jFrame.addWindowListener(new MyWindowListener(this.client));
 			jFrame.setResizable(false);										// On rend la fenêtre non redimentionnable
+			Image icone = Toolkit.getDefaultToolkit().getImage("./logoSimple.png");
+			jFrame.setIconImage(icone);
 			menu();
 			jFrame.setVisible(true);
 		}
@@ -181,6 +188,8 @@ public class Fenetre extends JFrame {
 	 */
 	protected JPanel getJPanelGeneral() {
 		if (jPanelGeneral == null) {
+			jLabelTotal = new JLabel();
+			jLabelTotal.setBounds(new Rectangle(565, 332, 94, 19));
 			jPanelGeneral = new JPanel();
 			jPanelGeneral.setLayout(null);
 			jPanelGeneral.setBackground(new Color(205, 219, 242));		// Coloration du contenu des onglets
@@ -189,6 +198,7 @@ public class Fenetre extends JFrame {
 			jPanelGeneral.add(getJScrollPane2(), null);
 			jPanelGeneral.add(getJScrollPane(), null);
 
+			jPanelGeneral.add(jLabelTotal, null);
 		}
 		return jPanelGeneral;
 	}
@@ -237,6 +247,18 @@ public class Fenetre extends JFrame {
 			saisieMP = new JTextField();
 			saisieMP.setBounds(new Rectangle(20, 370, 482, 35));
 			saisieMP.setBackground(new Color(253, 241, 230));
+			saisieMP.addKeyListener(new java.awt.event.KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					if(e.getKeyChar() == KeyEvent.VK_ENTER){
+
+						/* Méthode pour envoyer un message privé */
+						String texteEnvoiMP="";
+						texteEnvoiMP= saisieMP.getText();
+						saisieMP.setText("");		// On vide le champ de texte.
+						client.envoiMessagePrive(texteEnvoiMP);
+					}
+				}
+			});
 		}
 		return saisieMP;
 	}
@@ -251,6 +273,11 @@ public class Fenetre extends JFrame {
 			boutonEnvoyerMP = new JButton();
 			boutonEnvoyerMP.setBounds(new Rectangle(545, 370, 95, 35));
 			boutonEnvoyerMP.setText("Envoyer");
+			boutonEnvoyerMP.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+
+				}
+			});
 		}
 		return boutonEnvoyerMP;
 	}
@@ -268,7 +295,7 @@ public class Fenetre extends JFrame {
 			saisieGeneral.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
 					if(e.getKeyChar() == KeyEvent.VK_ENTER){
-						
+
 						/* Méthode pour envoyer un message général */
 						String texteEnvoiGeneral="";
 						texteEnvoiGeneral= saisieGeneral.getText();
@@ -293,12 +320,16 @@ public class Fenetre extends JFrame {
 			boutonEnvoyerGeneral.setBounds(new Rectangle(545, 370, 95, 35));
 			boutonEnvoyerGeneral.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					
-					/* méthode pour envoyer un message général */
-					String texteEnvoiGeneral="";
-					texteEnvoiGeneral= saisieGeneral.getText();
-					saisieGeneral.setText("");		// On vide le champ de texte.
-					client.envoiMessageGeneral(texteEnvoiGeneral);
+					if(client.conecte == true){
+						/* méthode pour envoyer un message général */
+						String texteEnvoiGeneral="";
+						texteEnvoiGeneral= saisieGeneral.getText();
+						saisieGeneral.setText("");		// On vide le champ de texte.
+						client.envoiMessageGeneral(texteEnvoiGeneral);
+					}
+					else{
+						client.messageSystem("Vous n'êtes pas connecté à un serveur.");
+					}
 				}
 			});
 		}
@@ -334,7 +365,6 @@ public class Fenetre extends JFrame {
 	}
 
 
-
 	/**
 	 * This method initializes jScrollPane	
 	 * 	
@@ -358,7 +388,6 @@ public class Fenetre extends JFrame {
 		if (jListClients == null) {
 			jListClients = new JList();
 			jListClients.setBackground(new Color(253, 241, 230));
-			//jListClients.setSelectedIndex(-1);
 		}
 		return jListClients;
 	}
