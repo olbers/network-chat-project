@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * La class RequeteSQL va traiter toutes les requetes SQL via un des prepared Statement
  * @author Poirier Kevin 
- * @version 0.1.3
+ * @version 0.1.4
  */
 
 public class RequeteSQL {
@@ -156,7 +156,7 @@ public class RequeteSQL {
 		try {
 			PreparedStatement preState = this.bdd.connexion.prepareStatement(sql);
 			preState.setString(1, ip);
-			preState.setTimestamp(2, timestamp);
+			preState.setLong(2, timestamp.getTime());
 			this.bdd.updateSQL(preState);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

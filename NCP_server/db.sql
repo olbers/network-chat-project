@@ -9,6 +9,6 @@ lastConnection varchar(10) NOT NULL);
 
 CREATE TABLE ban(
 ip varchar(50) NOT NULL PRIMARY KEY,
-finBan timestamp NOT NULL);
+finBan long NOT NULL);
 
 

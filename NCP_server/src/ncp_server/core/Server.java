@@ -299,6 +299,7 @@ public class Server {
 				chaineRecu = in.readLine();;
 				if (chaineRecu!=null && !chaineRecu.equals("")){
 					this.traitementChaine(chaineRecu,client);
+					this.client.setLastMessage(System.currentTimeMillis());
 				}
 			}
 
@@ -644,6 +645,14 @@ public class Server {
 	public void unBanIP(String ip){
 		this.requeteSQL.delBanIP(ip);
 		this.updateListBanIP();
+	}
+	
+	public void cleanBanIP(){
+		for (int i = 0; i <this.ListBanIP.size(); i++){
+			if(Long.parseLong(this.ListBanIP.get(i)[1])<=System.currentTimeMillis()){
+				
+			}
+		}
 	}
 
 	/**
