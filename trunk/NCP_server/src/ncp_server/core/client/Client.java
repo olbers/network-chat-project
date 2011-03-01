@@ -19,7 +19,7 @@ public class Client {
 	protected ThreadClient threadClient;
 	protected int lvAccess;
 	protected String ip;
-	protected long lastMessage;
+	protected double lastMessage;
 	protected boolean activer;
 	protected String mail;
 	protected String compte;
@@ -105,7 +105,7 @@ public class Client {
 	/**
 	 * @return the lastMessage
 	 */
-	public long getLastMessage() {
+	public double getLastMessage() {
 		return lastMessage;
 	}
 
@@ -199,7 +199,7 @@ public class Client {
 	/**
 	 * @param lastMessage the lastMessage to set
 	 */
-	public void setLastMessage(long lastMessage) {
+	public void setLastMessage(double lastMessage) {
 		this.lastMessage = lastMessage;
 	}
 	/**
