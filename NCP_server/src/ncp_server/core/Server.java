@@ -21,13 +21,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.6
+ * @version 0.2.0.7
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.6";
+	public static final String version = "0.2.0.7";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -131,6 +131,11 @@ public class Server {
 		listeDePseudo.append("$");
 		for(int i=0;i<this.listClient.size();i++){
 			if(this.listClient.get(i).isActiver())
+				if(this.isAdmin(this.listClient.get(i)))
+					listeDePseudo.append("@");
+				else if(this.isModerateur(this.listClient.get(i)))
+					listeDePseudo.append("&");
+				
 				listeDePseudo.append(this.listClient.get(i).getPseudo()+"|");
 		}
 		this.envoieATous(listeDePseudo.toString());
