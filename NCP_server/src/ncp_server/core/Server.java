@@ -21,13 +21,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.7
+ * @version 0.2.0.8
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.7";
+	public static final String version = "0.2.0.8";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -130,13 +130,14 @@ public class Server {
 		StringBuffer listeDePseudo = new StringBuffer();
 		listeDePseudo.append("$");
 		for(int i=0;i<this.listClient.size();i++){
-			if(this.listClient.get(i).isActiver())
+			if(this.listClient.get(i).isActiver()){
 				if(this.isAdmin(this.listClient.get(i)))
 					listeDePseudo.append("@");
 				else if(this.isModerateur(this.listClient.get(i)))
 					listeDePseudo.append("&");
 				
 				listeDePseudo.append(this.listClient.get(i).getPseudo()+"|");
+			}
 		}
 		this.envoieATous(listeDePseudo.toString());
 	}
@@ -365,11 +366,12 @@ public class Server {
 		client=this.ajoutClient(socketClient);
 		if(this.isAutorisationConnexion()){
 			this.envoiePrive(client, "&verif");
-			client.createThread();
-			client.startThread();
 			if(this.ipIsBan(client.getSocketClient().getInetAddress().toString())){
 				this.envoiePrive(client, "b");//ip banni
 				this.clientDeconnexion(client);
+			}else{
+				client.createThread();
+				client.startThread();
 			}
 		}else{
 			this.envoiePrive(client, "7");
