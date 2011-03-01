@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import ncp_server.util.Log;
 import ncp_server.util.option.Option;
@@ -16,7 +17,7 @@ import ncp_server.util.option.Option;
 /**
  * La class MySQL permettra la liason entre le serveur de chat et le serveur MySQL.
  * @author Poirier Kevin
- * @version 2.0.1
+ * @version 2.1.1
  *
  */
 
@@ -44,7 +45,7 @@ public class MySQL {
 	protected Option option;
 	/**
 	 * Variable log qui permet la gestion des message d'erreur.
-	 * @since 1.1.0
+	 * @since 1.2.0
 	 */
 	protected Log log;
 	private static MySQL instance;
@@ -73,7 +74,7 @@ public class MySQL {
 			this.log.exit();
 			System.exit(1);
 		}
-		
+
 	}
 	/**
 	 * Methode singleton qui permet d'assurer une seul instance de la classe.
@@ -105,7 +106,11 @@ public class MySQL {
 	 */
 	private Connection connectToBDD(){
 		try {
-			this.connexion = DriverManager.getConnection(this.db,this.user,this.pwd);			
+			Properties props = new Properties();
+			props.setProperty("user",this.user);
+			props.setProperty("password",this.pwd);
+			props.setProperty("autoReconnect", "true");
+			this.connexion = DriverManager.getConnection(this.db,props);
 		}
 		catch(SQLException e) {
 			System.err.println("[FAIL]");
@@ -177,7 +182,7 @@ public class MySQL {
 	public void setDb(String db) {
 		this.db = db;
 	}
-	
+
 	/**
 	 * Setter de la variable pwd.
 	 * @param pwd
@@ -207,5 +212,5 @@ public class MySQL {
 			this.log.err(e.getMessage()+"\n"+e.getSQLState());
 		}
 	}
-	
+
 }
