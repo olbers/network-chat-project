@@ -8,9 +8,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Vector;
 
-import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -24,7 +23,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
+
 
 import core.Client;
 import javax.swing.JLabel;
@@ -57,6 +56,8 @@ public class Fenetre extends JFrame {
 	protected Client client;
 	protected JTextPane jTextPaneGeneral = null;
 	public JLabel jLabelTotal = null;
+	protected String icone="image/logoSimple.png";
+
 	
 	/* Constructeur */
 	public Fenetre() {	
@@ -141,10 +142,12 @@ public class Fenetre extends JFrame {
 			//jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			// Le processus se termine correctement lorsque l'on ferme la fenêtre
 			jFrame.addWindowListener(new MyWindowListener(this.client));
 			jFrame.setResizable(false);										// On rend la fenêtre non redimentionnable
-			Image icone = Toolkit.getDefaultToolkit().getImage("./logoSimple.png");
-			jFrame.setIconImage(icone);
+			
+			//Image icone = Toolkit.getDefaultToolkit().getImage("./src/ui/logoSimple.png");
+			//jFrame.setIconImage(icone);
+			jFrame.setIconImage(new ImageIcon(this.getClass().getResource(icone)).getImage());
 			menu();
-			jFrame.setVisible(true);
+			//jFrame.setVisible(true);
 		}
 		return jFrame;
 	}
