@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.swing.JFrame;
+
 import ui.Fenetre;
 
 
 
 public class Client {
-	protected Socket socketClient;  //  @jve:decl-index=0:
+	public Socket socketClient;  //  @jve:decl-index=0:
 	protected PrintWriter versServeur;  
 	protected BufferedReader depuisServeur;  //  @jve:decl-index=0:
 	protected BufferedReader clavier;
@@ -28,12 +30,14 @@ public class Client {
 	protected String adresseIP;  //  @jve:decl-index=0:
 	protected int port;
 	protected String pseudo=null;  //  @jve:decl-index=0:
+	protected String pass=null;
 	protected boolean erreurCo=false;
-	protected Thread ecoute;
+	protected ThreadEcoute ecoute;
 	protected Vector<String> messagesGeneral;
 	protected Vector<String> messagesPrives;
 	protected Vector<String> clientsConnectes;
 	protected Fenetre fenetre;
+	public boolean conecte=false;
 
 	public Client(Fenetre fenetre) {
 		super();
@@ -41,13 +45,14 @@ public class Client {
 		this.messagesGeneral = new Vector<String>();
 		this.messagesPrives = new Vector<String>();
 		this.fenetre=fenetre;
+		ecoute = new ThreadEcoute(this);
 	}
 
 	public void verifConnexion(){
 		if (this.connexion(adresseIP, port)){
 			clavier = new BufferedReader(new InputStreamReader(System.in));
-			ThreadEcoute ecoute = new ThreadEcoute(this);
 			ecoute.start();
+			ecoute.setActif(true);
 			System.out.println("Normalement il est connecté.");
 		}
 		else{
@@ -59,7 +64,7 @@ public class Client {
 
 	public boolean connexion(String serveurIP, int port) {
 		System.out.println("Connexion au serveur...");
-		boolean conecte=false;
+
 		try {
 			this.socketClient = new Socket(serveurIP, port);
 			this.versServeur = new PrintWriter(socketClient.getOutputStream());
@@ -87,6 +92,14 @@ public class Client {
 				this.versServeur.println(message);
 				this.versServeur.flush();
 			}
+		}
+	}
+
+	public void envoiMessagePrive(String message) {
+		if(! message.equals("")){
+			message="/mp "+message;
+			this.versServeur.println(message);
+			this.versServeur.flush();
 		}
 	}
 
@@ -145,7 +158,14 @@ public class Client {
 		}
 		else if(message.substring(0,1).equals("9")){
 			System.out.println("MD5 OK");
-			envoiMessageGeneral("@connect "+pseudo);
+			if(pass != null){
+				envoiMessageGeneral("@connect "+pseudo+" "+pass);
+				System.out.println("Envoi données connexion: "+"@connect "+pseudo+" "+pass);
+			}
+			else{
+				envoiMessageGeneral("@connect "+pseudo);
+				System.out.println("Envoi données connexion: "+"@connect "+pseudo);
+			}
 		}
 		else{
 			System.err.println("SYNTAX MESSAGE ERROR: The message sent by server is not allowed by the protocol.");
@@ -160,8 +180,9 @@ public class Client {
 			//System.out.println(st.nextToken());
 			this.clientsConnectes.add(st.nextToken());
 		}
-		
+
 		this.fenetre.getJListClients().setListData(this.getClientsConnectes());
+		this.fenetre.jLabelTotal.setText("En ligne: "+clientsConnectes.size());
 
 	}
 
@@ -177,13 +198,13 @@ public class Client {
 				textPrint=textPrint+messagesPrives.get(i);
 			}
 			else{
-			textPrint=textPrint+"<br>"+messagesPrives.get(i);
+				textPrint=textPrint+"<br>"+messagesPrives.get(i);
 			}
 		}
 		textPrint=textPrint+"</HTML>";
 		this.fenetre.getJTextPaneMP().setText(textPrint);
 	}
-	
+
 	public void messageSystem(String message){	// Print message system en rouge.
 		message="<font color='red'>"+message+"</font>";
 		messagesGeneral.add(message);
@@ -197,14 +218,14 @@ public class Client {
 		}
 		return chaineModif;
 	}
-	
+
 	public void messageGeneral(String message){	// Print message system en rouge.
 		messagesGeneral.add(message);
 		printMessageGeneral();
 	}
 
 	public void printMessageGeneral() {
-		
+
 		String textPrint="<HTML>";
 
 		while(messagesGeneral.size() > 10){
@@ -215,7 +236,7 @@ public class Client {
 				textPrint=textPrint+messagesGeneral.get(i);
 			}
 			else{
-			textPrint=textPrint+"<br>"+messagesGeneral.get(i);
+				textPrint=textPrint+"<br>"+messagesGeneral.get(i);
 			}
 		}
 		textPrint=textPrint+"</HTML>";
@@ -225,20 +246,23 @@ public class Client {
 
 	public void deconnexion(){
 
-		//if(ecoute != null){
+		if(ecoute.isActif()){
 			commandeDeconnexion="@deconnexion";
 			envoiMessageGeneral(commandeDeconnexion);
 
+
 			try {
-				ecoute.stop();
+				ecoute.setActif(false);
+				ecoute.interrupt();
 				this.depuisServeur.close();
 				this.versServeur.close();
-				this.socketClient.close();
+				this.socketClient.close();	
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		//}
+		}
 	}
 
 	public void erreurConnexion(){
@@ -247,10 +271,12 @@ public class Client {
 		printMessageGeneral();
 	}
 
-	public void parametresConnexion(String adresseIP,int port,String pseudo){
+	public void parametresConnexion(String adresseIP,int port,String pseudo,char[] pass){
+		
 		this.adresseIP=adresseIP;
 		this.port=port;
 		this.pseudo=pseudo;
+		this.pass=new String(pass);
 		verifConnexion();
 	}
 
@@ -291,7 +317,7 @@ public class Client {
 		message = "#blabla2";
 		client1.typeMessage(message);
 
-		
+
 
 	}
 }

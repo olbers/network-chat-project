@@ -5,16 +5,18 @@ import java.io.IOException;
 public class ThreadEcoute extends Thread {
 
 	protected Client client;
+	protected boolean actif;
 
 
 	public ThreadEcoute(Client client){
 		super();
 		this.client=client;
+		this.actif=false;
 	}
 
 	public void run() {
 		// TODO Auto-generated method stub
-		while(true){
+		while(actif){
 			String message=null;
 			try {
 				if(this.client.getDepuisServeur().ready()){
@@ -27,9 +29,15 @@ public class ThreadEcoute extends Thread {
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.actif=false;
 			}
 		}
+	}
+	public void setActif(boolean actif){
+		this.actif = actif;
+	}
+	public boolean isActif(){
+		return actif;
 	}
 
 }
