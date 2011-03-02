@@ -10,7 +10,7 @@ import ncp_server.util.mail.Mail;
 /**
  * Class qui gère les commande clientes
  * @author Poirier Kevin
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 public class CommandeClient extends Commande {
@@ -134,34 +134,39 @@ public class CommandeClient extends Commande {
 					this.server.activationClient(client);
 				}
 			}else {
-				ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
-				boolean checkConnect =false;
-				if (this.server.verifPseudoMDP(compte, mdp)){//Client reconnu
-					String [] getValBDD = this.recupArgument(resultCompte.get(0), 4);
-					if(this.server.compteCo(Integer.parseInt(getValBDD[0]))){
-						checkConnect= true;
-						this.server.envoiePrive(client, "5");
-					}
-					if(!checkConnect){
-						// Gestion des information
-						client.setBddID(Integer.parseInt(getValBDD[0]));
-						client.setPseudo(getValBDD[1]);
-						client.setCompte(getValBDD[1]);
-						client.setMail(getValBDD[2]);
-						client.setLvAccess(Integer.parseInt(getValBDD[3]));
-						if(client.getLvAccess()==-1){
-							this.server.envoiePrive(client, "a"); //COmpte banni trouvé un message d'erreur
-							this.server.clientDeconnexion(client);
-						}else{
-							this.requeteSQL.updateLastCo(new DateString().dateSQL(), client.getBddID());
-							this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
-							this.server.envoiePrive(client, "0");//ok
-							this.server.activationClient(client);
-						}
-					}
+				if(client.getTentativeCo()>=4){//compte la 5eme tentative et ban.
+					this.server.banIP(client.getIp(), 600000, "Système");
 				}else{
-					//Utilisateur enregistrer
-					this.server.envoiePrive(client, "6");
+					client.setTentativeCo(client.getTentativeCo()+1);
+					ArrayList<String> resultCompte = this.requeteSQL.connexionClient(compte, mdp);
+					boolean checkConnect =false;
+					if (this.server.verifPseudoMDP(compte, mdp)){//Client reconnu
+						String [] getValBDD = this.recupArgument(resultCompte.get(0), 4);
+						if(this.server.compteCo(Integer.parseInt(getValBDD[0]))){
+							checkConnect= true;
+							this.server.envoiePrive(client, "5");
+						}
+						if(!checkConnect){
+							// Gestion des information
+							client.setBddID(Integer.parseInt(getValBDD[0]));
+							client.setPseudo(getValBDD[1]);
+							client.setCompte(getValBDD[1]);
+							client.setMail(getValBDD[2]);
+							client.setLvAccess(Integer.parseInt(getValBDD[3]));
+							if(client.getLvAccess()==-1){
+								this.server.envoiePrive(client, "a"); //COmpte banni trouvé un message d'erreur
+								this.server.clientDeconnexion(client);
+							}else{
+								this.requeteSQL.updateLastCo(new DateString().dateSQL(), client.getBddID());
+								this.requeteSQL.updateIP(client.getIp().toString(), client.getBddID());
+								this.server.envoiePrive(client, "0");//ok
+								this.server.activationClient(client);
+							}
+						}
+					}else{
+						//Utilisateur enregistrer
+						this.server.envoiePrive(client, "6");
+					}
 				}
 			}
 		}

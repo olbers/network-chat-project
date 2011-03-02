@@ -8,7 +8,7 @@ import java.net.Socket;
 /**
  * La class Client, permet la gestion de tout les clients connectés au serveur.
  * @author Poirier Kévin
- * @version 0.1.2
+ * @version 0.1.3
  */
 public class Client {
 	protected int id;
@@ -25,6 +25,8 @@ public class Client {
 	protected String compte;
 	protected int bddID;
 	protected boolean chMD5;
+	protected int compteurMSG;
+	protected int tentativeCo;
 	/**COnstructeur de la classe
 	 * @param id
 	 * @param pseudo
@@ -46,21 +48,25 @@ public class Client {
 		this.activer=false;
 		this.bddID=0;
 		this.chMD5=false;
+		this.compteurMSG=0;
+		this.tentativeCo=0;
 	}
 	/**
 	 * Permet de fermer la connexion au client
 	 */
 	public void closeClient(){
+		if(this.threadClient!=null){
 			this.threadClient.setActif(false);
 			this.threadClient.interrupt();
-			try {
-				this.in.close();
-				this.out.close();			
-				this.socketClient.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		}
+		try {
+			this.in.close();
+			this.out.close();			
+			this.socketClient.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	/**
 	 * Permet de créer le thread client
@@ -226,6 +232,31 @@ public class Client {
 	public void startThread(){
 		this.threadClient.start();
 	}
+	/**
+	 * @return the compteurMSG
+	 */
+	public int getCompteurMSG() {
+		return compteurMSG;
+	}
+	/**
+	 * @param compteurMSG the compteurMSG to set
+	 */
+	public void setCompteurMSG(int compteurMSG) {
+		this.compteurMSG = compteurMSG;
+	}
+	/**
+	 * @return the tentativeCo
+	 */
+	public int getTentativeCo() {
+		return tentativeCo;
+	}
+	/**
+	 * @param tentativeCo the tentativeCo to set
+	 */
+	public void setTentativeCo(int tentativeCo) {
+		this.tentativeCo = tentativeCo;
+	}
+
 
 
 

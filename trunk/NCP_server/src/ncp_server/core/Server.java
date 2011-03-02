@@ -1,18 +1,22 @@
 package ncp_server.core;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+
 import ncp_server.core.client.Client;
 import ncp_server.core.commande.CommandeClient;
 import ncp_server.core.commande.CommandeUtilisateur;
+import ncp_server.util.CountDown;
 import ncp_server.util.DateString;
 import ncp_server.util.Log;
 import ncp_server.util.db.MySQL;
@@ -21,13 +25,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.8
+ * @version 0.2.0.10
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.8";
+	public static final String version = "0.2.0.9";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -88,6 +92,8 @@ public class Server {
 
 	protected ArrayList<String[]> ListBanIP;
 
+	protected CountDown countDown;
+
 	/**
 	 * Constructeur de la class Server.
 	 * @param log
@@ -135,11 +141,25 @@ public class Server {
 					listeDePseudo.append("@");
 				else if(this.isModerateur(this.listClient.get(i)))
 					listeDePseudo.append("&");
-				
+
 				listeDePseudo.append(this.listClient.get(i).getPseudo()+"|");
 			}
 		}
 		this.envoieATous(listeDePseudo.toString());
+	}
+	/**
+	 * Permet de stopper le thread de connexion
+	 */
+	public void stopThreadConnexion(){
+		this.connexion.setAuthCo(false);
+		this.connexion.interrupt();
+	}
+	/**
+	 * Permet de relancer le thread de connexion
+	 */
+	public void restartThreadConnexion(){
+		this.connexion.setAuthCo(true);
+		this.connexion.start();
 	}
 	/**
 	 * La méthode ajoutClient permet de créer un client et de l'ajouter dans la liste.
@@ -157,14 +177,14 @@ public class Server {
 	 * @see ThreadConnexion
 	 */
 	public void clientConnexion(){
-		try {
-			this.socketClient = socketServer.accept();			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Erreur lors de la connexion d'un client.");
-			this.log.err("Erreur lors de la connexion d'un client.");
-		}	
-		this.verificationConnexion(this.socketClient);
+		if(!this.socketServer.isClosed()){
+			try {
+				this.socketClient = socketServer.accept();	
+				this.verificationConnexion(this.socketClient);
+			} catch (IOException e) {
+				this.log.err("Socket Fermer");
+			}
+		}
 	}
 	/**
 	 * Permet d'indiquer au client qu'il va être déconnecter.
@@ -194,7 +214,7 @@ public class Server {
 			return this.in;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.toString());
 			System.err.println("Erreur lors de la creation du flux d'entre pour le client");
 			this.log.err("Erreur lors de la creation du flux d'entre pour le client");
 		}
@@ -211,7 +231,7 @@ public class Server {
 			return this.out;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.toString());
 			System.err.println("Erreur lors de la creation du flux de sortie pour le client");
 			this.log.err("Erreur lors de la creation du flux de sortie pour le client");
 		}
@@ -243,6 +263,82 @@ public class Server {
 	public void initCommandes(){
 		this.comCli = CommandeClient.getInstance();
 		this.commUser = CommandeUtilisateur.getInstance();
+	}
+	/**
+	 * Permet de stopper le serveur
+	 */
+	public void stopServer(boolean kill){
+		this.connexion.setAuthCo(false);
+		this.connexion.interrupt();
+		this.decoAllClient();
+		this.BDD.closeBDD();
+		//deco le superviseur
+		this.countDown.interrupt();
+		try {
+			if(!this.socketServer.isClosed())
+				this.socketServer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			this.log.err("Problème lors de la fermeture du socket Server.");
+			if(kill)
+				System.exit(1);
+		}
+		if(kill){
+			System.out.println("Coupure du serveur !!");
+			System.exit(0);
+		}
+	}
+	/**
+	 * Permet de redémarrer le serveur.
+	 */
+	public void restartServer(){
+		this.stopServer(false);
+		boolean isJar=false;
+		File jarFile=null;
+		
+		try {			
+			jarFile = new File(ncp_server.core.Server.class.getProtectionDomain()
+					.getCodeSource().getLocation().toURI());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if ( jarFile.getName().endsWith(".jar") )  
+			isJar=true;
+				
+		if(isJar){
+			System.out.println("Redémarrage du serveur !!");
+			System.exit(5); //5 renvoie une erreur qui permet de relancer le serveur.
+		}else{
+			System.out.println("Redémarrage impossible, le fichier n'est pas un jar.");
+		}
+			
+	}
+	/**
+	 * Lancement du thread de compte à rebours.
+	 * @param compteur
+	 * @param restart
+	 */
+	public void procedureRestartorStop(int compteur, boolean restart, String pseudo){
+		if(restart){
+			this.log.chat("Redémarrage du serveur dans "+compteur+" secondes, demandé par "+pseudo);
+			System.out.println("Redémarrage du serveur dans "+compteur+" secondes, demandé par "+pseudo);
+		}else{
+			this.log.chat("Coupure du serveur dans "+compteur+" secondes, demandé par "+pseudo);
+			System.out.println("Coupure du serveur dans "+compteur+" secondes, demandé par "+pseudo);
+		}
+
+		this.countDown = new CountDown(compteur, restart);
+		this.countDown.start();
+	}
+
+	/**
+	 * Permet de déconnecter tout les clients.
+	 */
+	public void decoAllClient(){
+		for(int i=0; i<this.listClient.size();i++)
+			this.clientDeconnexion(this.listClient.get(i));
 	}
 	/**
 	 * La methode envoieATous permet d'envoyer les messages à tout les clients connecter.
@@ -299,7 +395,8 @@ public class Server {
 				chaineRecu = in.readLine();;
 				if (chaineRecu!=null && !chaineRecu.equals("")){
 					this.traitementChaine(chaineRecu,client);
-					this.client.setLastMessage(System.currentTimeMillis());
+					this.client.setLastMessage(System.currentTimeMillis());//Mise à jour du dernier message
+					this.client.setCompteurMSG(this.client.getCompteurMSG()+1); //Mise à jour du compteur de message
 				}
 			}
 
@@ -646,12 +743,25 @@ public class Server {
 		this.requeteSQL.delBanIP(ip);
 		this.updateListBanIP();
 	}
-	
+	/**
+	 * Permet d'effacer les ip banni qui ont expiré le delais.
+	 */
 	public void cleanBanIP(){
 		for (int i = 0; i <this.ListBanIP.size(); i++){
 			if(Long.parseLong(this.ListBanIP.get(i)[1])<=System.currentTimeMillis()){
-				
+				this.unBanIP(this.ListBanIP.get(i)[0]);
 			}
+		}
+	}
+	/**
+	 * Methode qui permet l'antiflood
+	 */
+	public void antiFlood(){
+		for (int i=0;i<this.listClient.size();i++){
+			if(this.listClient.get(i).getCompteurMSG()>=10)
+				this.kick(this.listClient.get(i), "Système", "Flood");
+			else
+				this.listClient.get(i).setCompteurMSG(0);				
 		}
 	}
 

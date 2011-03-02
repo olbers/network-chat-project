@@ -31,7 +31,7 @@ public class ThreadConnexion extends Thread {
 				sleep(50); //permet de ralentir les vérification du thread. (Vérification que cela ne pose pas de soucis...)
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.authCo=false;
 				this.serveur.log.err("Erreur lors de la temporisation du thread de connexion");
 			}
 		}
