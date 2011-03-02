@@ -139,7 +139,7 @@ public class Fenetre extends JFrame {
 			jFrame.setSize(new Dimension(700, 500));						// Définit une taille de la fenêtre. (700 par 500).
 			jFrame.setContentPane(getJContentPane());						// Panel de la fenêtre.
 			jFrame.setLocationRelativeTo(null);								// On positionne la fenètre au centre de l'écran					
-			//jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			// Le processus se termine correctement lorsque l'on ferme la fenêtre
+			//jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		// Le processus se termine correctement lorsque l'on ferme la fenêtre
 			jFrame.addWindowListener(new MyWindowListener(this.client));
 			jFrame.setResizable(false);										// On rend la fenêtre non redimentionnable
 			

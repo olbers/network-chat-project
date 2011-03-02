@@ -26,7 +26,7 @@ public class ThreadEcoute extends Thread {
 						this.client.typeMessage(message);
 					}
 				}
-				this.sleep(50);
+				sleep(50);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				this.actif=false;
