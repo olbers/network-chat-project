@@ -7,7 +7,7 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 1.0.2
+ * @version 1.0.1
  */
 public class CommandeUtilisateur extends Commande {
 
@@ -61,6 +61,10 @@ public class CommandeUtilisateur extends Commande {
 			this.banIp(chaine, client);
 		else if(commande.equalsIgnoreCase("unbanIP"))
 			this.unBanIP(chaine, client);
+		else if(commande.equalsIgnoreCase("restart"))
+			this.restart(chaine,client);
+		else if(commande.equalsIgnoreCase("stop"))
+			this.stop(chaine,client);
 	}
 	/**
 	 * Gère la commande me
@@ -104,7 +108,12 @@ public class CommandeUtilisateur extends Commande {
 	 * @param client
 	 */
 	private void total(Client client){
-		this.server.envoiePrive(client, "#Il y a actuellement "+this.server.getListClient().size()+" connecte(s)");
+		int compteur=0;
+		for (int i=0;i<this.server.getListClient().size();i++){
+			if(this.server.getListClient().get(i).isActiver())
+				compteur++;
+		}
+		this.server.envoiePrive(client, "#Il y a actuellement "+compteur+" connecte(s)");
 	}
 	/**
 	 * Permet de connaitre des informations sur les utilisateurs.
@@ -121,7 +130,7 @@ public class CommandeUtilisateur extends Commande {
 			}else{
 				Client clientWho=this.server.getClient(argument[1]);
 				if(clientWho!=null){
-					String message = "Voici les information concernant : "+clientWho.getPseudo() +
+					String message = "#Voici les information concernant : "+clientWho.getPseudo() +
 					"[IP : "+clientWho.getIp()+"]";
 					if(clientWho.getCompte()!=null){
 						message=message + " [Nom du Compte : "+clientWho.getCompte()+"]";
@@ -148,7 +157,7 @@ public class CommandeUtilisateur extends Commande {
 		else{
 			String date = new DateString().dateChat();
 			this.server.getLog().chat(date+" "+clientExpe.getPseudo() +" à "+clientRecep.getPseudo()+": "+message);
-			this.server.envoiePrive(clientExpe, "%"+date+" "+clientExpe.getPseudo()+": "+message);
+			this.server.envoiePrive(clientExpe, "%"+date+" "+clientExpe.getPseudo()+" à "+clientRecep.getPseudo()+":"+message);
 			this.server.envoiePrive(clientRecep, "%"+date+" "+clientExpe.getPseudo()+": "+message);
 		}		
 	}
@@ -185,7 +194,7 @@ public class CommandeUtilisateur extends Commande {
 			if(this.server.pseudoCo(argument[1])){
 				Client clientBan = this.server.getClient(argument[1]);
 				if(clientBan.getCompte()==null){
-					this.server.envoiePrive(client, clientBan.getPseudo()+" n'a pas de compte, cependant vous pouvez le kick ou bannir son ip.");
+					this.server.envoiePrive(client, "#"+clientBan.getPseudo()+" n'a pas de compte, cependant vous pouvez le kick ou bannir son ip.");
 				}else{
 					this.server.ban(clientBan, client, message);
 				}					
@@ -207,7 +216,7 @@ public class CommandeUtilisateur extends Commande {
 			if(this.server.existCompte(argument[1]))
 				this.server.unban(argument[1], client);
 			else
-				this.server.envoiePrive(client, "Le compte: "+ argument[1]+" n'existe pas.");
+				this.server.envoiePrive(client, "#Le compte: "+ argument[1]+" n'existe pas.");
 		}
 	}
 	/**
@@ -281,6 +290,53 @@ public class CommandeUtilisateur extends Commande {
 				}				
 			}
 		}
-
+	}
+	/**
+	 * Commande qui permet de redémarrer le serveur.
+	 * @param chaine
+	 * @param client
+	 */
+	public void restart(String chaine,Client client){
+		if (!this.server.isAdmin(client) )
+			this.server.commandeRefuse(client);
+		else{
+			boolean verif=true;
+			String[] argument = recupArgument(chaine, 2);
+			int decompte=0;
+			try{
+				decompte = Integer.parseInt(argument[1]);
+			}catch (NumberFormatException e) {
+				this.server.envoiePrive(client, "#Attention le paramètre n'est pas un nombre");
+				verif=false;
+			}
+			if(verif){
+				this.server.procedureRestartorStop(decompte, true,client.getCompte());
+			}
+			
+		}
+	}
+	/**
+	 * Commande qui permet de stopper le serveur.
+	 * @param chaine
+	 * @param client
+	 */
+	public void stop(String chaine,Client client){
+		if (!this.server.isAdmin(client) )
+			this.server.commandeRefuse(client);
+		else{
+			boolean verif=true;
+			String[] argument = recupArgument(chaine, 2);
+			int decompte=0;
+			try{
+				decompte = Integer.parseInt(argument[1]);
+			}catch (NumberFormatException e) {
+				this.server.envoiePrive(client, "#Attention le paramètre n'est pas un nombre");
+				verif=false;
+			}
+			if(verif){
+				this.server.procedureRestartorStop(decompte, false,client.getCompte());
+			}
+			
+		}
 	}
 }
