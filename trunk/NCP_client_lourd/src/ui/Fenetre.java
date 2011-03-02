@@ -147,7 +147,7 @@ public class Fenetre extends JFrame {
 			//jFrame.setIconImage(icone);
 			jFrame.setIconImage(new ImageIcon(this.getClass().getResource(icone)).getImage());
 			menu();
-			//jFrame.setVisible(true);
+			jFrame.setVisible(true);
 		}
 		return jFrame;
 	}
