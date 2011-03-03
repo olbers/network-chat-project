@@ -6,7 +6,7 @@ import com.jezhumble.javasysmon.JavaSysMon;
 /**
  * Permet de faire diverse fonctionnalité du surveillance du serveur.
  * @author Poirier Kévin
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class Supervisor extends Thread {
 
@@ -41,7 +41,7 @@ public class Supervisor extends Thread {
 		this.run=true;
 		this.monitor= new JavaSysMon();
 		this.server=Server.getInstance();
-		this.antiFlood=System.currentTimeMillis()+15000;//Toutes les 15 secondes
+		this.antiFlood=System.currentTimeMillis()+5000;//Toutes les 15 secondes
 		this.cleanListClient=System.currentTimeMillis()+30000;//Toutes les 30 secondes
 		this.chSQL=System.currentTimeMillis()+60000;//Toutes les minutes.
 		this.ressource=System.currentTimeMillis()+60000; //Toutes les minutes
@@ -66,7 +66,7 @@ public class Supervisor extends Thread {
 			if((System.currentTimeMillis()-this.antiFlood)>=0){
 				//System.out.println("Appelle anti flood");
 				this.server.antiFlood();
-				this.antiFlood=System.currentTimeMillis()+15000;//Toutes les 15 secondes
+				this.antiFlood=System.currentTimeMillis()+5000;//Toutes les 15 secondes
 			}
 			if((System.currentTimeMillis()-this.cleanListClient)>=0){
 				//System.out.println("Appelle cleanListClient");
