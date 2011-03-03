@@ -215,8 +215,9 @@ public class ParametresConnexion implements MouseListener{
 			if((jTextFieldPseudo.getText().length()<=15) && (jTextFieldIP.getText().length()<=15) && (jTextFieldPort.getText().length()<=5)){
 
 				System.out.println("Contraintes OK");
+				this.jFrame.dispose();
 				this.client.parametresConnexion(adresseIP, port, pseudo,pass);
-				jFrame.dispose();
+				
 			}
 			else{
 				String textContrainte="Certains champs ne sont pas conformes! \n\n" +
@@ -251,6 +252,11 @@ public class ParametresConnexion implements MouseListener{
 			jPasswordField.setBounds(new Rectangle(120, 162,  136, 26));
 			jPasswordField.setBackground(new Color(192, 192, 192));
 			jPasswordField.addMouseListener(this);
+			jPasswordField.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					valider();
+				}
+			});
 		}
 		return jPasswordField;
 	}
