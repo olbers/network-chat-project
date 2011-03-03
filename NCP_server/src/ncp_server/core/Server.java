@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.16
+ * @version 0.2.0.17
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.16";
+	public static final String version = "0.2.0.17";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -206,6 +206,10 @@ public class Server {
 		this.listClient.remove(client);
 		this.affichListClient();
 	}
+	public void clientDeconnectionBoucle(Client client){
+		this.envoiePrive(client, "&deconnexion");
+		client.closeClient();
+	}
 	/**
 	 * Deconnexion demandé par utilisateuré
 	 * @param client
@@ -355,8 +359,7 @@ public class Server {
 	 */
 	public void decoAllClient(){
 		for(int i=0; i<this.listClient.size();i++){
-			this.envoiePrive(this.listClient.get(i), "&deconnexion");
-			this.listClient.get(i).closeClient();
+			this.clientDeconnectionBoucle(this.listClient.get(i));
 		}
 	}
 	/**
@@ -781,9 +784,9 @@ public class Server {
 	 */
 	public void cleanListClient(){
 		for (int i = 0; i <this.listClient.size(); i++){
-			if((System.currentTimeMillis()-this.listClient.get(i).getLastMessage())>=60000 && 
+			if((System.currentTimeMillis()-this.listClient.get(i).getLastMessage())>=30000 && 
 					!this.listClient.get(i).isActiver()){//Dernier message + de 1 min et client non activer
-				this.clientDeconnexion(this.listClient.get(i));
+				this.clientDeconnectionBoucle(this.listClient.get(i));
 			}
 		}
 	}
