@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -25,13 +26,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.11
+ * @version 0.2.0.12
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.11";
+	public static final String version = "0.2.0.12";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -94,6 +95,12 @@ public class Server {
 
 	protected CountDown countDown;
 
+	protected boolean verifSQl;
+
+	protected int countRessource;
+
+	protected Supervisor supervisor;
+
 	/**
 	 * Constructeur de la class Server.
 	 * @param log
@@ -107,6 +114,8 @@ public class Server {
 		this.autorisationConnexion=true;
 		this.BDD=MySQL.getInstance();
 		this.requeteSQL= RequeteSQL.getInstance();
+		this.verifSQl=false;
+		this.countRessource=1;
 		this.ListBanIP = new ArrayList<String[]>();
 		this.updateListBanIP();
 	}
@@ -244,11 +253,13 @@ public class Server {
 		try {
 			this.socketServer= new ServerSocket(this.option.getPort());
 			System.out.println("[OK]");
-			this.initCommandes();
-			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());			
+			this.initCommandes();						
 			this.connexion= new ThreadConnexion();
 			this.connexion.start();
-		} catch (IOException e) {
+			this.supervisor=Supervisor.getInstance();
+			this.supervisor.start();
+			System.out.println(this.option.getNameServer()+" est lance, et est a l'ecoute sur le port : "+this.option.getPort());
+		}catch (IOException e) {
 			System.err.println("[FAIL]");
 			this.log.err("Impossible de créer le serveur.");
 			System.err.println("Impossible de créer le serveur.");
@@ -268,11 +279,12 @@ public class Server {
 	 * Permet de stopper le serveur
 	 */
 	public void stopServer(boolean kill){
+		this.supervisor.setRun(false);
 		this.connexion.setAuthCo(false);
 		this.connexion.interrupt();
 		this.decoAllClient();
 		this.BDD.closeBDD();
-		//deco le superviseur
+		this.supervisor.interrupt();
 		this.countDown.interrupt();
 		try {
 			if(!this.socketServer.isClosed())
@@ -295,7 +307,7 @@ public class Server {
 		this.stopServer(false);
 		boolean isJar=false;
 		File jarFile=null;
-		
+
 		try {			
 			jarFile = new File(ncp_server.core.Server.class.getProtectionDomain()
 					.getCodeSource().getLocation().toURI());
@@ -303,17 +315,17 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		if ( jarFile.getName().endsWith(".jar") )  
 			isJar=true;
-				
+
 		if(isJar){
 			System.out.println("Redémarrage du serveur !!");
 			System.exit(5); //5 renvoie une erreur qui permet de relancer le serveur.
 		}else{
 			System.out.println("Redémarrage impossible, le fichier n'est pas un jar.");
 		}
-			
+
 	}
 	/**
 	 * Lancement du thread de compte à rebours.
@@ -408,13 +420,6 @@ public class Server {
 	}
 
 	/**
-	 * @param autorisationConnexion the autorisationConnexion to set
-	 */
-	public void setAutorisationConnexion(boolean autorisationConnexion) {
-		this.autorisationConnexion = autorisationConnexion;
-	}
-
-	/**
 	 * Cette methode permet de supprimer le premier caracteres qui permet de distinguer les commandes.
 	 * @param chaine
 	 * @return chaineModif
@@ -473,6 +478,7 @@ public class Server {
 			}
 		}else{
 			this.envoiePrive(client, "7");
+			this.clientDeconnexion(client);
 		}
 	}
 	/**
@@ -754,15 +760,95 @@ public class Server {
 		}
 	}
 	/**
+	 * Permet de nettoyer la liste des utilisateur non activer.
+	 */
+	public void cleanListClient(){
+		for (int i = 0; i <this.listClient.size(); i++){
+			if((System.currentTimeMillis()-this.listClient.get(i).getLastMessage())>=60000 && 
+					!this.listClient.get(i).isActiver()){//Dernier message + de 1 min et client non activer
+				this.clientDeconnexion(this.listClient.get(i));
+			}
+		}
+	}
+
+	/**
 	 * Methode qui permet l'antiflood
 	 */
 	public void antiFlood(){
 		for (int i=0;i<this.listClient.size();i++){
 			if(this.listClient.get(i).getCompteurMSG()>=10)
-				this.kick(this.listClient.get(i), "Système", "Flood");
+				this.kick(this.listClient.get(i), "Système", "Flood !!");
 			else
 				this.listClient.get(i).setCompteurMSG(0);				
 		}
+	}
+	/**
+	 * Permet de kick les afk.
+	 */
+	public void antiAFK(){
+		for (int i=0;i<this.listClient.size();i++){
+			if(this.listClient.get(i).isActiver() && 
+					(System.currentTimeMillis()-this.listClient.get(i).getLastMessage()>=1800000)){
+				this.kick(this.listClient.get(i), "Système", "AFK...");
+			}
+		}
+	}
+	/**
+	 * Permet de surveiller la connection de la base SQL, sinon reboot du serveur.
+	 */
+	public void chSQL(){
+		try {
+			if(this.BDD.getConnexion().isClosed()){
+				if(this.verifSQl){
+					System.out.println("Probleme avec la connection SQL, restart du serveur");
+					this.log.err("Probleme avec la connection SQL, restart du serveur");
+					this.procedureRestartorStop(60, true, "Système");
+				}else{
+					this.verifSQl=true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.toString());
+			this.log.err(e.toString());
+		}		
+	}
+	/**
+	 * Permet de surveiller la charge de la machine hôte.
+	 * @param chargeCPU
+	 * @param ramRest
+	 */
+	public void checkRessource(double chargeCPU, double ramRest){
+		boolean overLoad=false;
+		if(chargeCPU>0.9 || ramRest<10){
+			overLoad=true;
+		}else{
+			this.countRessource=1;
+			if(!this.isAutorisationConnexion())
+				System.out.println("Nouvelle connexion prise à nouveau en charge");
+			this.log.err("Nouvelle connexion non prise à nouveau en charge");
+			this.setAutorisationConnexion(true);
+		}
+		if(overLoad){
+			if(this.countRessource==1 || this.countRessource==2)
+				this.countRessource++;
+			else if(this.countRessource==3){
+				this.cleanListClient();
+				System.out.println("Nouvelle connexion non prise en charge");
+				this.log.err("Nouvelle connexion non prise en charge");
+				this.setAutorisationConnexion(false);
+				this.countRessource++;
+			}else if(this.countRessource==4){
+				this.antiAFK();
+				this.countRessource++;
+			}else if(this.countRessource==5){
+				this.procedureRestartorStop(30, true, "Système");
+				System.out.println("Probleme de charge sur le serveur");
+				this.log.err("Probleme de charge sur le serveur");
+			}
+
+		}
+
 	}
 
 	/**
@@ -832,4 +918,11 @@ public class Server {
 	public void setOut(PrintWriter out) {
 		this.out = out;
 	}
+	/**
+	 * @param autorisationConnexion the autorisationConnexion to set
+	 */
+	public void setAutorisationConnexion(boolean autorisationConnexion) {
+		this.autorisationConnexion = autorisationConnexion;
+	}
+
 }

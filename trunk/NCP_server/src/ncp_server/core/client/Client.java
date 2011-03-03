@@ -8,7 +8,7 @@ import java.net.Socket;
 /**
  * La class Client, permet la gestion de tout les clients connectés au serveur.
  * @author Poirier Kévin
- * @version 0.1.3
+ * @version 0.1.4
  */
 public class Client {
 	protected int id;
@@ -44,7 +44,7 @@ public class Client {
 		this.out = out;
 		this.lvAccess = 0;
 		this.ip = this.socketClient.getInetAddress().toString();
-		this.lastMessage = 0;
+		this.lastMessage = System.currentTimeMillis();
 		this.activer=false;
 		this.bddID=0;
 		this.chMD5=false;
