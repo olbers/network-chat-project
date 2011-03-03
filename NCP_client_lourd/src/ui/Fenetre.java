@@ -100,13 +100,15 @@ public class Fenetre extends JFrame {
 		item3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,KeyEvent.CTRL_DOWN_MASK));
 		item3.addActionListener (new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				String textAbout="Nom: ClientChat\n" +
-				"Auteur: HUCHEDÉ Cédric\n" +
+				String textAbout="Nom: NCP_Client\n" +
+				"Auteurs: HUCHEDÉ Cédric et POIRIER Kévin\n" +
+				"Nous contacter: cedric@huchede.com \n" +
 				"Version: 1.0\n" +
 				"                                                     ------------------------------------------------------------- \n\n"+
 				"Description:\n" +
 				"\n" +
-				"Ce programme est un client permettant de se connecter à un serveur.\nIl permet de communiquer par messagerie instantanée à d'autres clients connectés au même serveur.\n";
+				"Ce programme est un client de messagerie instantanée permettant de dialoguer via un serveur web.\n" +
+				"Le serveur par défaut est le suivant: IP: 109.238.0.52 PORT: 1999.\n\n";
 				JOptionPane.showMessageDialog(null,
 						textAbout,
 						"A Propos...",
@@ -278,7 +280,11 @@ public class Fenetre extends JFrame {
 			boutonEnvoyerMP.setText("Envoyer");
 			boutonEnvoyerMP.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-
+					/* Méthode pour envoyer un message privé */
+					String texteEnvoiMP="";
+					texteEnvoiMP= saisieMP.getText();
+					saisieMP.setText("");		// On vide le champ de texte.
+					client.envoiMessagePrive(texteEnvoiMP);
 				}
 			});
 		}
