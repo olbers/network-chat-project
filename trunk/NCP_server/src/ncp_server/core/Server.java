@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.17
+ * @version 0.2.0.18
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.17";
+	public static final String version = "0.2.0.18";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -206,7 +206,7 @@ public class Server {
 		this.listClient.remove(client);
 		this.affichListClient();
 	}
-	public void clientDeconnectionBoucle(Client client){
+	public void clientDeconnexionBoucle(Client client){
 		this.envoiePrive(client, "&deconnexion");
 		client.closeClient();
 	}
@@ -359,7 +359,7 @@ public class Server {
 	 */
 	public void decoAllClient(){
 		for(int i=0; i<this.listClient.size();i++){
-			this.clientDeconnectionBoucle(this.listClient.get(i));
+			this.clientDeconnexionBoucle(this.listClient.get(i));
 		}
 	}
 	/**
@@ -488,7 +488,7 @@ public class Server {
 			}
 		}else{
 			this.envoiePrive(client, "7");
-			this.clientDeconnexion(client);
+			this.clientDeconnexionBoucle(client);
 		}
 	}
 	/**
@@ -783,10 +783,16 @@ public class Server {
 	 * Permet de nettoyer la liste des utilisateur non activer.
 	 */
 	public void cleanListClient(){
+		long timeLastMSG=0;
+		if(this.countRessource>=1 && this.countRessource<=2){
+			timeLastMSG=30000;
+		}else{
+			timeLastMSG=15000;
+		}		
 		for (int i = 0; i <this.listClient.size(); i++){
-			if((System.currentTimeMillis()-this.listClient.get(i).getLastMessage())>=30000 && 
+			if((System.currentTimeMillis()-this.listClient.get(i).getLastMessage())>=timeLastMSG && 
 					!this.listClient.get(i).isActiver()){//Dernier message + de 1 min et client non activer
-				this.clientDeconnectionBoucle(this.listClient.get(i));
+				this.clientDeconnexionBoucle(this.listClient.get(i));
 			}
 		}
 	}
