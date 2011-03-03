@@ -72,9 +72,9 @@ public class TestMain {
 		
 		Commande cmd= new Commande();
 		System.out.println(cmd.getMessage("/mp Kenin Blablabla looll trop mdr", 1));
-		*/
-		System.out.println(server.inhibHTLM("Salut <br> <div>ça <s>va</s> bien</div> </br> <b>Moi tres bien </b>"));
 		
+		System.out.println(server.inhibHTLM("Salut <br> <div>ça <s>va</s> bien</div> </br> <b>Moi tres bien </b>"));*/
+		//server.mailError("Erreur de test", server.getSupervisor().updateCPUusage(), server.getSupervisor().updateFreeRam());
 	}
 
 }
