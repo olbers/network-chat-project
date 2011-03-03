@@ -26,13 +26,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.13
+ * @version 0.2.0.14
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.13";
+	public static final String version = "0.2.0.14";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -407,8 +407,8 @@ public class Server {
 				chaineRecu = in.readLine();;
 				if (chaineRecu!=null && !chaineRecu.equals("")){
 					this.traitementChaine(chaineRecu,client);
-					this.client.setLastMessage(System.currentTimeMillis());//Mise à jour du dernier message
-					this.client.setCompteurMSG(this.client.getCompteurMSG()+1); //Mise à jour du compteur de message
+					client.setLastMessage(System.currentTimeMillis());//Mise à jour du dernier message
+					client.setCompteurMSG(this.client.getCompteurMSG()+1); //Mise à jour du compteur de message
 				}
 			}
 
@@ -776,7 +776,7 @@ public class Server {
 	 */
 	public void antiFlood(){
 		for (int i=0;i<this.listClient.size();i++){
-			if(this.listClient.get(i).getCompteurMSG()>=10)
+			if(this.listClient.get(i).getCompteurMSG()>=5)
 				this.kick(this.listClient.get(i), "Système", "Flood !!");
 			else
 				this.listClient.get(i).setCompteurMSG(0);				
