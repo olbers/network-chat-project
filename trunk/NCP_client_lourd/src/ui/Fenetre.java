@@ -34,9 +34,9 @@ public class Fenetre extends JFrame {
 
 	public JFrame jFrame = null; 
 	protected JPanel jContentPane = null;
-	protected JTextField saisieGeneral = null;
+	public JTextField saisieGeneral = null;
 	protected JButton boutonEnvoyerGeneral = null;
-	protected JTextPane jTextPaneMP = null;  
+	public JTextPane jTextPaneMP = null;  
 	protected JMenuBar menuBar = new JMenuBar();
 	protected JMenu menu1 = new JMenu("Fichier");
 	protected JMenu menu2 = new JMenu("Aide");
@@ -48,13 +48,13 @@ public class Fenetre extends JFrame {
 	protected JPanel jPanelGeneral = null;
 	protected JPanel jPanelMP = null;
 	protected JScrollPane jScrollPaneMP = null;
-	protected JTextField saisieMP = null;
+	public JTextField saisieMP = null;
 	protected JButton boutonEnvoyerMP = null;
 	protected JScrollPane jScrollPane2 = null;
 	protected JScrollPane jScrollPane = null;
-	protected JList jListClients = null;
+	public JList jListClients = null;
 	protected Client client;
-	protected JTextPane jTextPaneGeneral = null;
+	public JTextPane jTextPaneGeneral = null;
 	public JLabel jLabelTotal = null;
 	protected String icone="image/logoSimple.png";
 
