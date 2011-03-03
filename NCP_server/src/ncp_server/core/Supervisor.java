@@ -6,7 +6,7 @@ import com.jezhumble.javasysmon.JavaSysMon;
 /**
  * Permet de faire diverse fonctionnalité du surveillance du serveur.
  * @author Poirier Kévin
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Supervisor extends Thread {
 
@@ -97,10 +97,7 @@ public class Supervisor extends Thread {
 				sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				System.out.println("Erreur dans le superviseur, Relancement du thread");
-				this.server.getLog().err("Erreur dans le superviseur, Relancement du thread");
-				this.interrupt();
-				this.start();
+				this.server.getLog().err("Erreur dans le superviseur.");
 			}
 
 		}

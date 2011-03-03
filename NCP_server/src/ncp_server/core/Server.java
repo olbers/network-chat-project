@@ -26,13 +26,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.12
+ * @version 0.2.0.13
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.12";
+	public static final String version = "0.2.0.13";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -824,10 +824,11 @@ public class Server {
 			overLoad=true;
 		}else{
 			this.countRessource=1;
-			if(!this.isAutorisationConnexion())
+			if(!this.isAutorisationConnexion()){
 				System.out.println("Nouvelle connexion prise à nouveau en charge");
-			this.log.err("Nouvelle connexion non prise à nouveau en charge");
-			this.setAutorisationConnexion(true);
+				this.log.err("Nouvelle connexion non prise à nouveau en charge");
+				this.setAutorisationConnexion(true);
+			}
 		}
 		if(overLoad){
 			if(this.countRessource==1 || this.countRessource==2)
