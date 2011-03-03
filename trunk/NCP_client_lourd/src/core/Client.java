@@ -133,28 +133,28 @@ public class Client {
 			System.out.println("Connexion au serveur OK");
 		}
 		else if(message.substring(0,1).equals("1")){
-			System.out.println("Enregistrement OK");
+			messageSystem("Enregistrement effectué avec succès!");
 		}
 		else if(message.substring(0,1).equals("2")){
-			System.out.println("Pseudo déja dans bdd, impossible de l'enregistrer");
+			messageSystem("Enregistrement impossible: Pseudo déjà réservé par un autre utilisateur.");
 		}
 		else if(message.substring(0,1).equals("3")){
-			System.out.println("Mail déjà enregistré");
+			messageSystem("Enregistrement impossible: L'adresse E-Mail entrée est déjà enregistrée pour un autre compte.");
 		}
 		else if(message.substring(0,1).equals("4")){
-			System.out.println("Connexion impossible, le pseudo est réservé");
+			messageSystem("Connexion impossible au serveur: Ce pseudo est déjà réservé.");
 		}
 		else if(message.substring(0,1).equals("5")){
-			System.out.println("Utilisateur déjà en ligne");
+			messageSystem("Connexion impossible au serveur: Le pseudo que vous avez saisi est un utilisateur déjà en ligne.");
 		}
 		else if(message.substring(0,1).equals("6")){
-			System.out.println("erreur mdp");
+			messageSystem("Connexion impossible au serveur: Mot de passe erroné.");
 		}
 		else if(message.substring(0,1).equals("7")){
-			System.out.println("trop de connexions");
+			messageSystem("Connexion impossible au serveur: Le serveur est saturé, réessayez ultérieurement.");
 		}
 		else if(message.substring(0,1).equals("8")){
-			System.err.println("Application non conforme!");
+			messageSystem("Connexion impossible au serveur: Votre application n'est pas conforme.");
 		}
 		else if(message.substring(0,1).equals("9")){
 			System.out.println("MD5 OK");
@@ -186,7 +186,7 @@ public class Client {
 
 	}
 
-	public void messagePrive(String message) {		// Revoir selon ARRAYLIST
+	public void messagePrive(String message) {		
 		String textPrint="<HTML>";
 		messagesPrives.add(message);
 
@@ -219,7 +219,7 @@ public class Client {
 		return chaineModif;
 	}
 
-	public void messageGeneral(String message){	// Print message system en rouge.
+	public void messageGeneral(String message){	
 		messagesGeneral.add(message);
 		printMessageGeneral();
 	}
@@ -266,13 +266,13 @@ public class Client {
 	}
 
 	public void erreurConnexion(){
-		String messageErreur="<html><font color='red'>Connexion impossible au serveur: vérifiez les paramètres de connexion!</font></html>";
+		String messageErreur="<font color='red'>Connexion impossible au serveur: vérifiez les paramètres de connexion!</font>";
 		messageGeneral(messageErreur);
 		printMessageGeneral();
 	}
 
 	public void parametresConnexion(String adresseIP,int port,String pseudo,char[] pass){
-		
+
 		this.adresseIP=adresseIP;
 		this.port=port;
 		this.pseudo=pseudo;
