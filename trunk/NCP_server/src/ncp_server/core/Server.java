@@ -10,9 +10,9 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
 
 import ncp_server.core.client.Client;
 import ncp_server.core.commande.CommandeClient;
@@ -22,17 +22,18 @@ import ncp_server.util.DateString;
 import ncp_server.util.Log;
 import ncp_server.util.db.MySQL;
 import ncp_server.util.db.RequeteSQL;
+import ncp_server.util.mail.Mail;
 import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.14
+ * @version 0.2.0.15
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.14";
+	public static final String version = "0.2.0.15";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -91,7 +92,7 @@ public class Server {
 
 	protected CommandeUtilisateur commUser;
 
-	protected ArrayList<String[]> ListBanIP;
+	protected ArrayList<String[]> listBanIP;
 
 	protected CountDown countDown;
 
@@ -116,7 +117,7 @@ public class Server {
 		this.requeteSQL= RequeteSQL.getInstance();
 		this.verifSQl=false;
 		this.countRessource=1;
-		this.ListBanIP = new ArrayList<String[]>();
+		this.listBanIP = new ArrayList<String[]>();
 		this.updateListBanIP();
 	}
 	/**
@@ -313,10 +314,10 @@ public class Server {
 					.getCodeSource().getLocation().toURI());
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.err(e.toString());
 		}
 
-		if ( jarFile.getName().endsWith(".jar") )  
+		if ( jarFile!=null &&jarFile.getName().endsWith(".jar") )  
 			isJar=true;
 
 		if(isJar){
@@ -695,10 +696,10 @@ public class Server {
 	public void updateListBanIP(){
 		ArrayList<String> result = this.requeteSQL.getBanIP();
 		int i;
-		this.ListBanIP.clear();
+		this.listBanIP.clear();
 		if(result!=null){
 			for(i=0;i<result.size();i++){
-				this.ListBanIP.add(i, this.recupArgument(result.get(i), 2));
+				this.listBanIP.add(i, this.recupArgument(result.get(i), 2));
 			}
 		}
 	}
@@ -708,8 +709,8 @@ public class Server {
 	 * @return boolean
 	 */
 	public boolean ipIsBan(String ip){
-		for (int i = 0; i<this.ListBanIP.size();i++){
-			if(this.ListBanIP.get(i)[0].equalsIgnoreCase(ip)){
+		for (int i = 0; i<this.listBanIP.size();i++){
+			if(this.listBanIP.get(i)[0].equalsIgnoreCase(ip)){
 				return true;
 			}
 		}
@@ -749,13 +750,21 @@ public class Server {
 		this.requeteSQL.delBanIP(ip);
 		this.updateListBanIP();
 	}
+	public int totalClient(){
+		int compteur=0;
+		for (int i=0;i<this.getListClient().size();i++){
+			if(this.getListClient().get(i).isActiver())
+				compteur++;
+		}
+		return compteur;
+	}
 	/**
 	 * Permet d'effacer les ip banni qui ont expiré le delais.
 	 */
 	public void cleanBanIP(){
-		for (int i = 0; i <this.ListBanIP.size(); i++){
-			if(Long.parseLong(this.ListBanIP.get(i)[1])<=System.currentTimeMillis()){
-				this.unBanIP(this.ListBanIP.get(i)[0]);
+		for (int i = 0; i <this.listBanIP.size(); i++){
+			if(Long.parseLong(this.listBanIP.get(i)[1])<=System.currentTimeMillis()){
+				this.unBanIP(this.listBanIP.get(i)[0]);
 			}
 		}
 	}
@@ -844,11 +853,48 @@ public class Server {
 				this.countRessource++;
 			}else if(this.countRessource==5){
 				this.procedureRestartorStop(30, true, "Système");
+				String message = "Un problème de surcharge à été détecté sur le serveur";
+				this.mailError(message,chargeCPU,ramRest);
 				System.out.println("Probleme de charge sur le serveur");
 				this.log.err("Probleme de charge sur le serveur");
 			}
 
 		}
+
+	}
+	/**
+	 * Permet d'envoyer un rapport d'erreur au admins
+	 * @param error
+	 * @param chargeCPU
+	 * @param ramRest
+	 */
+	public void mailError(String error,double chargeCPU, double ramRest){
+		DecimalFormat df = new DecimalFormat("########.000");
+		String CPU=df.format(chargeCPU*100);
+		String ram=df.format(ramRest);
+		String booBDD;
+		try {
+			booBDD=""+this.BDD.getConnexion().isClosed();
+		} catch (SQLException e) {	
+			booBDD="Error";
+		}
+		String rapport = error+",\n" +
+		"\nInformation Hôte \n"+
+		"\nSystème d'exploitation hôte : "+System.getProperty("os.name")+
+		"\nArchitecture sytème d'exploitation : "+System.getProperty("os.arch")+
+		"\nVersion sytème d'exploitation : "+System.getProperty("os.version")+
+		"\n\n\nJRE \n"+
+		"\nVersion du JRE : "+System.getProperty("java.version")+
+		"\n\n\nUtilisation Ressources\n"+
+		"\nCharge CPU : "+CPU+
+		"\nPourcentage de ram Disponible : "+ram+
+		"\n\n\nInformation NCP Server\n"+
+		"\nVersion du serveur NCP : "+Server.version+
+		"\nLocalisation des fichier du serveur : "+System.getProperty("user.dir")+
+		"\nNombre de Client actif : "+this.totalClient()+
+		"\nNombre total de client : "+this.listClient.size()+
+		"\nBDD déconnecté : "+booBDD;
+		new Mail().errorAdminMail(rapport);
 
 	}
 
@@ -925,5 +971,12 @@ public class Server {
 	public void setAutorisationConnexion(boolean autorisationConnexion) {
 		this.autorisationConnexion = autorisationConnexion;
 	}
+	/**
+	 * @return the supervisor
+	 */
+	public Supervisor getSupervisor() {
+		return supervisor;
+	}
+	
 
 }

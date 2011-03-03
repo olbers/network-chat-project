@@ -107,13 +107,8 @@ public class CommandeUtilisateur extends Commande {
 	 * Permet d'envoyer le nombre total de connectes.
 	 * @param client
 	 */
-	private void total(Client client){
-		int compteur=0;
-		for (int i=0;i<this.server.getListClient().size();i++){
-			if(this.server.getListClient().get(i).isActiver())
-				compteur++;
-		}
-		this.server.envoiePrive(client, "#Il y a actuellement "+compteur+" connecte(s)");
+	private void total(Client client){		
+		this.server.envoiePrive(client, "#Il y a actuellement "+this.server.totalClient()+" connecte(s)");
 	}
 	/**
 	 * Permet de connaitre des informations sur les utilisateurs.
