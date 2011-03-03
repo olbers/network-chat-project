@@ -44,21 +44,21 @@ public class CountDown extends Thread {
 					this.server.envoieATous("#Coupure du serveur dans 1 minute.");				
 			}else if(this.compteur==30){
 				if(restart)
-					this.server.envoieATous("#Redémarrage du serveur dans 30 secondes.S'il vous plait, veuillez vous déconnecter.");
+					this.server.envoieATous("#Redémarrage du serveur dans 30 secondes.");
 				else
-					this.server.envoieATous("#Coupure du serveur dans 30 secondes.S'il vous plait, veuillez vous déconnecter.");	
+					this.server.envoieATous("#Coupure du serveur dans 30 secondes.");	
 				
 			}else if(this.compteur<=10 && this.compteur>1){
 				if(restart)
-					this.server.envoieATous("#Redémarrage du serveur dans "+this.compteur+" secondes.S'il vous plait, veuillez vous déconnecter.");
+					this.server.envoieATous("#Redémarrage du serveur dans "+this.compteur+" secondes.");
 				else
-					this.server.envoieATous("#Coupure du serveur dans "+this.compteur+" secondes.S'il vous plait, veuillez vous déconnecter.");	
+					this.server.envoieATous("#Coupure du serveur dans "+this.compteur+" secondes");	
 				
 			}else if(this.compteur==1){
 				if(restart)
-					this.server.envoieATous("#Redémarrage du serveur dans 1 seconde.S'il vous plait, veuillez vous déconnecter.");
+					this.server.envoieATous("#Redémarrage du serveur dans 1 seconde.");
 				else
-					this.server.envoieATous("#Coupure du serveur dans 1 seconde.S'il vous plait, veuillez vous déconnecter.");	
+					this.server.envoieATous("#Coupure du serveur dans 1 seconde.");	
 				
 			}else if(this.compteur==0){
 				if(restart){
