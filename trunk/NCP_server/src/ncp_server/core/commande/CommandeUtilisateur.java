@@ -7,7 +7,7 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 1.0.1
+ * @version 1.0.3
  */
 public class CommandeUtilisateur extends Commande {
 
@@ -151,9 +151,9 @@ public class CommandeUtilisateur extends Commande {
 			this.server.pseudoNonCo(argument[1], clientExpe);
 		else{
 			String date = new DateString().dateChat();
-			this.server.getLog().chat(date+" "+clientExpe.getPseudo() +" à "+clientRecep.getPseudo()+": "+message);
-			this.server.envoiePrive(clientExpe, "%"+date+" "+clientExpe.getPseudo()+" à "+clientRecep.getPseudo()+":"+message);
-			this.server.envoiePrive(clientRecep, "%"+date+" "+clientExpe.getPseudo()+": "+message);
+			this.server.getLog().chat(date+" "+clientExpe.getPseudo() +" à "+clientRecep.getPseudo()+" : "+message);
+			this.server.envoiePrive(clientExpe, "%"+date+" "+clientExpe.getPseudo()+" à "+clientRecep.getPseudo()+" : "+message);
+			this.server.envoiePrive(clientRecep, "%"+date+" "+clientExpe.getPseudo()+" : "+message);
 		}		
 	}
 	/**
@@ -278,7 +278,7 @@ public class CommandeUtilisateur extends Commande {
 			String ip = "/"+argument[1];
 			if(verif){
 				if(this.server.ipIsBan(ip)){
-					this.server.unBanIP(ip);
+					this.server.unBanIP(ip,true);
 					this.server.envoiePrive(client, "#L'IP "+argument[1]+" n'est plus banni");
 				}else{
 					this.server.envoiePrive(client, "#L'IP "+argument[1]+" n'est pas banni.");

@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.15
+ * @version 0.2.0.16
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.15";
+	public static final String version = "0.2.0.16";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -206,6 +206,10 @@ public class Server {
 		this.listClient.remove(client);
 		this.affichListClient();
 	}
+	/**
+	 * Deconnexion demandé par utilisateuré
+	 * @param client
+	 */
 	public void deconnexionUtilisateur(Client client){
 		client.closeClient();
 		this.listClient.remove(client);
@@ -282,9 +286,9 @@ public class Server {
 	public void stopServer(boolean kill){
 		this.supervisor.setRun(false);
 		this.connexion.setAuthCo(false);
-		this.connexion.interrupt();
-		this.decoAllClient();
+		this.decoAllClient();	
 		this.BDD.closeBDD();
+		this.connexion.interrupt();
 		this.supervisor.interrupt();
 		this.countDown.interrupt();
 		try {
@@ -350,8 +354,10 @@ public class Server {
 	 * Permet de déconnecter tout les clients.
 	 */
 	public void decoAllClient(){
-		for(int i=0; i<this.listClient.size();i++)
-			this.clientDeconnexion(this.listClient.get(i));
+		for(int i=0; i<this.listClient.size();i++){
+			this.envoiePrive(this.listClient.get(i), "&deconnexion");
+			this.listClient.get(i).closeClient();
+		}
 	}
 	/**
 	 * La methode envoieATous permet d'envoyer les messages à tout les clients connecter.
@@ -746,9 +752,10 @@ public class Server {
 	 * Permet de retirer des ip banni. Attention la vérification que l'ip est banni doit être fait avant.
 	 * @param ip
 	 */
-	public void unBanIP(String ip){
+	public void unBanIP(String ip, boolean updateList){
 		this.requeteSQL.delBanIP(ip);
-		this.updateListBanIP();
+		if(updateList)
+			this.updateListBanIP();
 	}
 	public int totalClient(){
 		int compteur=0;
@@ -764,9 +771,10 @@ public class Server {
 	public void cleanBanIP(){
 		for (int i = 0; i <this.listBanIP.size(); i++){
 			if(Long.parseLong(this.listBanIP.get(i)[1])<=System.currentTimeMillis()){
-				this.unBanIP(this.listBanIP.get(i)[0]);
+				this.unBanIP(this.listBanIP.get(i)[0],false);
 			}
 		}
+		this.updateListBanIP();
 	}
 	/**
 	 * Permet de nettoyer la liste des utilisateur non activer.
