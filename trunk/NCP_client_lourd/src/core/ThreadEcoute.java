@@ -21,7 +21,7 @@ public class ThreadEcoute extends Thread {
 			try {
 				if(this.client.getDepuisServeur().ready()){
 					message = this.client.getDepuisServeur().readLine();
-					System.out.println(message);
+					System.out.println("reçu: "+message);
 					if(message != null){
 						this.client.typeMessage(message);
 					}

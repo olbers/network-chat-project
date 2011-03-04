@@ -82,7 +82,7 @@ public class Fenetre extends JFrame {
 		item4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,KeyEvent.CTRL_DOWN_MASK));
 		item4.addActionListener (new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				new Register();
+				new Register(client);
 			}		
 		});
 
