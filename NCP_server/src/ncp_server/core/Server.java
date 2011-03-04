@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.19
+ * @version 0.2.0.20
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.19";
+	public static final String version = "0.2.0.20";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -157,20 +157,7 @@ public class Server {
 		}
 		this.envoieATous(listeDePseudo.toString());
 	}
-	/**
-	 * Permet de stopper le thread de connexion
-	 */
-	public void stopThreadConnexion(){
-		this.connexion.setAuthCo(false);
-		this.connexion.interrupt();
-	}
-	/**
-	 * Permet de relancer le thread de connexion
-	 */
-	public void restartThreadConnexion(){
-		this.connexion.setAuthCo(true);
-		this.connexion.start();
-	}
+
 	/**
 	 * La méthode ajoutClient permet de créer un client et de l'ajouter dans la liste.
 	 * @param socketClient
@@ -865,6 +852,7 @@ public class Server {
 				System.out.println("Nouvelle connexion prise à nouveau en charge");
 				this.log.err("Nouvelle connexion non prise à nouveau en charge");
 				this.setAutorisationConnexion(true);
+				this.connexion.setAuthCo(true);
 			}
 		}
 		if(overLoad){
@@ -875,6 +863,7 @@ public class Server {
 				System.out.println("Nouvelle connexion non prise en charge");
 				this.log.err("Nouvelle connexion non prise en charge");
 				this.setAutorisationConnexion(false);
+				this.connexion.setAuthCo(false);
 				this.countRessource++;
 			}else if(this.countRessource==4){
 				this.antiAFK();
