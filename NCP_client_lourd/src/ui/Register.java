@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,8 +13,13 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
+
+import core.Client;
 
 public class Register {
 
@@ -34,14 +40,24 @@ public class Register {
 	private JPanel jPanelMail = null;
 	private JLabel jLabelConfirmationMDP = null;
 	private JLabel jLabelConfirmationMail = null;
-	
-	
-	public Register() {
+	protected Client client;
+	protected Fenetre fenetre;
+	protected String adresseMail = null;  //  @jve:decl-index=0:
+	protected String adresseMailConfirmation = null;
+	protected char[] mdp = null;
+	protected char[] mdpConfirmation = null;
+	protected String mdp2 = null;
+	protected String mdpConfirmation2 = null;  //  @jve:decl-index=0:
+	protected String pseudoEnregistrement = null;
+
+
+	public Register(Client client) {
 		super();
+		this.client = client;
 		getJFrame();
 	}
-	
-	
+
+
 	/**
 	 * This method initializes jFrame	
 	 * 	
@@ -172,7 +188,7 @@ public class Register {
 		return jPanelPseudo;
 	}
 
-	
+
 
 	/**
 	 * This method initializes jButtonValider	
@@ -186,8 +202,7 @@ public class Register {
 			jButtonValider.setText("Valider");
 			jButtonValider.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					
-					jFrame.dispose();
+					valider();
 				}
 			});
 		}
@@ -259,4 +274,62 @@ public class Register {
 		return jPanelMail;
 	}
 
+	public boolean verificationMail(String adresseMail,String adresseMailConfirmation){
+		boolean verifMail=false;
+		if((adresseMail.equalsIgnoreCase(adresseMailConfirmation))){
+			verifMail = true;
+		}
+		else{
+			verifMail = false;
+		}
+		return verifMail;
+	}
+
+	public boolean verificationMdp(String mdp,String mdp2){
+		boolean verifMdp =false;
+		if(mdp.equals(mdp2)){
+			verifMdp = true;
+		}
+		else{
+			verifMdp = false;
+		}
+		return verifMdp;
+	}
+
+	public void valider(){
+		adresseMail = jTextMail.getText();
+		adresseMailConfirmation = jTextMail2.getText();
+		pseudoEnregistrement = textPseudo.getText();
+		mdp=jPasswordMDP.getPassword();
+		mdp2=new String(mdp);
+		mdpConfirmation=jPasswordMDP2.getPassword();
+		mdpConfirmation2=new String(mdpConfirmation);
+		String textInformation="";
+		if((!adresseMail.isEmpty()) && (!mdp2.isEmpty()) && (!pseudoEnregistrement.isEmpty())){
+			if(verificationMail(adresseMail,adresseMailConfirmation) && (verificationMdp(mdp2, mdpConfirmation2))){
+				this.client.infosEnregistrement(pseudoEnregistrement,adresseMail,mdp2);
+				jFrame.dispose();
+			}
+			else {
+
+				if (!verificationMail(adresseMail,adresseMailConfirmation)){
+					textInformation = textInformation+"Les adresses mail ne correspondent pas\n";
+				}
+				if(!verificationMdp(mdp2, mdpConfirmation2)){
+					textInformation = textInformation+"Les mots de passe ne correspondent pas\n";
+				}
+				JOptionPane.showMessageDialog(null,
+						textInformation,
+						"Erreurs d'enregistrement",
+						JOptionPane.INFORMATION_MESSAGE);				
+			}
+			textInformation = "";
+		}
+		else{
+			JOptionPane.showMessageDialog(null,
+					"Certains champs sont vides!",
+					"Erreurs d'enregistrement",
+					JOptionPane.INFORMATION_MESSAGE);		
+		}
+	}
 }

@@ -39,6 +39,9 @@ public class Client {
 	protected Fenetre fenetre;
 	public boolean conecte=false;
 	public boolean verifCheckConnexion;
+	String adresseMail = null;
+	String pseudoEnregistrement = null;
+	String mdp = null;
 
 	public Client(Fenetre fenetre) {
 		super();
@@ -103,11 +106,13 @@ public void envoiMessageGeneral(String message) {
 	if(! message.equals("")){
 		if(message.substring(0,1).equalsIgnoreCase("/") || message.substring(0,1).equalsIgnoreCase("@")){
 			this.versServeur.println(message);
+			System.out.println("Envoi: "+message);
 			this.versServeur.flush();
 		}
 		else{
 			message="~"+message;
 			this.versServeur.println(message);
+			System.out.println("Envoi: "+message);
 			this.versServeur.flush();
 		}
 	}
@@ -317,6 +322,15 @@ public void parametresConnexion(String adresseIP,int port,String pseudo,char[] p
 	this.pass=new String(pass);
 	checkConnexion();
 }
+
+public void infosEnregistrement(String pseudoEnregistrement,String adresseMail,String mdp){
+	this.adresseMail = adresseMail;
+	this.pseudoEnregistrement=pseudoEnregistrement;
+	this.mdp=mdp;
+	System.out.println("@register "+this.pseudoEnregistrement+" "+this.mdp+" "+this.adresseMail);
+	envoiMessageGeneral("@register "+this.pseudoEnregistrement+" "+this.mdp+" "+this.adresseMail);
+}
+
 public void clearApplication(){
 	fenetre.jTextPaneGeneral.setText("");
 	fenetre.saisieMP.setText("");
