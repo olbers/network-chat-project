@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.20
+ * @version 0.2.0.21
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.20";
+	public static final String version = "0.2.0.21";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -877,7 +877,7 @@ public class Server {
 			}
 
 		}
-		if(jvmRAM>90){
+		if(jvmRAM<20){
 			this.procedureRestartorStop(30, true, "Système");
 			String message = "Un problème de surcharge sur la JVM à été détecté sur le serveur";
 			this.mailError(message,chargeCPU,ramRest,jvmRAM);
