@@ -288,7 +288,6 @@ public class Client {
 				this.versServeur.close();
 				this.socketClient.close();	
 				clearApplication();
-				messageSystem("Vous avez été déconecté du serveur.");
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -342,10 +341,11 @@ public class Client {
 	}
 
 	public void clearApplication(){
-		fenetre.jTextPaneGeneral.setText("");
+
 		fenetre.saisieMP.setText("");
+		fenetre.saisieGeneral.setText("");
 		clientsConnectes.clear();
-		messagesGeneral.clear();
+		//messagesGeneral.clear();
 		messagesPrives.clear();
 		fenetre.jListClients.setListData(clientsConnectes);
 		fenetre.jLabelTotal.setText("");
