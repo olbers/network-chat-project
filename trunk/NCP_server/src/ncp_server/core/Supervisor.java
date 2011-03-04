@@ -135,8 +135,8 @@ public class Supervisor extends Thread {
 	 */
 	public double updateMemoryJVM(){
 		double free = Runtime.getRuntime().freeMemory();
-		double max = Runtime.getRuntime().maxMemory();
-		return (free/max)*100;
+		double total = Runtime.getRuntime().totalMemory();
+		return (free/total)*100;
 	}
 	/**
 	 * @return the run
