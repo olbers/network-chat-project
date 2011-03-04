@@ -113,6 +113,7 @@ public class Register {
 	private JTextField getTextPseudo() {
 		if (textPseudo == null) {
 			textPseudo = new JTextField();
+			textPseudo.setText(this.client.pseudo);
 			textPseudo.setBounds(new Rectangle(9, 33, 117, 20));
 		}
 		return textPseudo;
@@ -305,31 +306,40 @@ public class Register {
 		mdpConfirmation=jPasswordMDP2.getPassword();
 		mdpConfirmation2=new String(mdpConfirmation);
 		String textInformation="";
-		if((!adresseMail.isEmpty()) && (!mdp2.isEmpty()) && (!pseudoEnregistrement.isEmpty())){
-			if(verificationMail(adresseMail,adresseMailConfirmation) && (verificationMdp(mdp2, mdpConfirmation2))){
-				this.client.infosEnregistrement(pseudoEnregistrement,adresseMail,mdp2);
-				jFrame.dispose();
-			}
-			else {
+		
+		if (client.verifCheckConnexion){
+			if((!adresseMail.isEmpty()) && (!mdp2.isEmpty()) && (!pseudoEnregistrement.isEmpty())){
+				if(verificationMail(adresseMail,adresseMailConfirmation) && (verificationMdp(mdp2, mdpConfirmation2))){
+					this.client.infosEnregistrement(pseudoEnregistrement,adresseMail,mdp2);
+					jFrame.dispose();
+				}
+				else {
 
-				if (!verificationMail(adresseMail,adresseMailConfirmation)){
-					textInformation = textInformation+"Les adresses mail ne correspondent pas\n";
+					if (!verificationMail(adresseMail,adresseMailConfirmation)){
+						textInformation = textInformation+"Les adresses mail ne correspondent pas\n";
+					}
+					if(!verificationMdp(mdp2, mdpConfirmation2)){
+						textInformation = textInformation+"Les mots de passe ne correspondent pas\n";
+					}
+					JOptionPane.showMessageDialog(null,
+							textInformation,
+							"Erreurs d'enregistrement",
+							JOptionPane.INFORMATION_MESSAGE);				
 				}
-				if(!verificationMdp(mdp2, mdpConfirmation2)){
-					textInformation = textInformation+"Les mots de passe ne correspondent pas\n";
-				}
-				JOptionPane.showMessageDialog(null,
-						textInformation,
-						"Erreurs d'enregistrement",
-						JOptionPane.INFORMATION_MESSAGE);				
+				textInformation = "";
 			}
-			textInformation = "";
+			else{
+				JOptionPane.showMessageDialog(null,
+						"Certains champs sont vides!",
+						"Erreurs d'enregistrement",
+						JOptionPane.INFORMATION_MESSAGE);		
+			}
 		}
 		else{
 			JOptionPane.showMessageDialog(null,
-					"Certains champs sont vides!",
-					"Erreurs d'enregistrement",
-					JOptionPane.INFORMATION_MESSAGE);		
+					"Impossible d'effectuer un enregistrement tant que vous n'êtes pas connecté!",
+					"Enregistrement Impossible",
+					JOptionPane.INFORMATION_MESSAGE);	
 		}
 	}
 }
