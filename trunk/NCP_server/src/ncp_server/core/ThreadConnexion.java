@@ -2,7 +2,7 @@ package ncp_server.core;
 /**
  * La class ThreadConnexion permet de gérer en continue les requetes de conenxion au serveur.
  * @author Poirier Kévin
- * @version 0.1.3
+ * @version 0.2.0
  */
 
 public class ThreadConnexion extends Thread {
@@ -10,13 +10,15 @@ public class ThreadConnexion extends Thread {
 	 * L'attribut serveur est un objet de type Server.
 	 */
 	protected Server serveur;
-	protected boolean authCo; //Authorisation de connexion
+	protected boolean run;
+	protected boolean authCo;
 	/**
 	 * Constructeur de Thread.
 	 */
 	public ThreadConnexion(){
 		super();
 		this.serveur=Server.getInstance();
+		this.run=true;
 		this.authCo=true;
 	}
 	/**
@@ -24,15 +26,16 @@ public class ThreadConnexion extends Thread {
 	 */
 	@Override
 	public void run(){
-		while(authCo){
-			
-			try {
-				this.serveur.clientConnexion();
-				sleep(50); //permet de ralentir les vérification du thread. (Vérification que cela ne pose pas de soucis...)
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				this.authCo=false;
-				this.serveur.log.err("Erreur lors de la temporisation du thread de connexion");
+		while(run){
+			if(authCo){
+				try {
+					this.serveur.clientConnexion();
+					sleep(50); //permet de ralentir les vérification du thread. (Vérification que cela ne pose pas de soucis...)
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					this.run=false;
+					this.serveur.log.err("Erreur lors de la temporisation du thread de connexion");
+				}
 			}
 		}
 	}
@@ -40,13 +43,26 @@ public class ThreadConnexion extends Thread {
 	 * @return the authCo
 	 */
 	public boolean isAuthCo() {
-		return authCo;
+		return run;
 	}
 	/**
 	 * @param authCo the authCo to set
 	 */
 	public void setAuthCo(boolean authCo) {
-		this.authCo = authCo;
+		this.run = authCo;
+	}
+	/**
+	 * @return the run
+	 */
+	public boolean isRun() {
+		return run;
+	}
+	/**
+	 * @param run the run to set
+	 */
+	public void setRun(boolean run) {
+		this.run = run;
 	}
 	
+
 }
