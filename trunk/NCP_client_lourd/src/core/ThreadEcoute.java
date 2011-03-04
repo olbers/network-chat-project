@@ -33,6 +33,7 @@ public class ThreadEcoute extends Thread {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				this.actif=false;
+				e.printStackTrace();
 			}
 		}
 	}

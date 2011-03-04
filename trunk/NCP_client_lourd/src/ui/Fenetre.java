@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 
 import core.Client;
 import javax.swing.JLabel;
+import javax.swing.text.DefaultCaret;
 
 
 
@@ -356,6 +357,8 @@ public class Fenetre extends JFrame {
 			jTextPaneMP.setBackground(new Color(253, 241, 230));
 			jTextPaneMP.setContentType("text/html");
 		}
+		DefaultCaret caret2 = (DefaultCaret)jTextPaneMP.getCaret();
+		caret2.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		return jTextPaneMP;
 	}
 
@@ -418,6 +421,9 @@ public class Fenetre extends JFrame {
 			jTextPaneGeneral.setContentType("text/html");
 			jTextPaneGeneral.setBackground(new Color(253, 241, 230));
 		}
+		DefaultCaret caret = (DefaultCaret)jTextPaneGeneral.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
 		return jTextPaneGeneral;
 	}
 }
