@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.18
+ * @version 0.2.0.19
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.18";
+	public static final String version = "0.2.0.19";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -615,11 +615,17 @@ public class Server {
 	 * @param raison
 	 */
 	public void kick(Client clientAKicker,String kicker,String raison){
-		if(raison.isEmpty()|| raison.equalsIgnoreCase(""))
-			this.envoieATous("#"+clientAKicker.getPseudo() + " a été kick par "+kicker+".");
-		else
-			this.envoieATous("#"+clientAKicker.getPseudo() + " a été kick par "+kicker+"(Raison: "+raison+").");		
-		this.clientDeconnexion(clientAKicker);
+		if(!isAdmin(clientAKicker)){
+			if(raison.isEmpty()|| raison.equalsIgnoreCase(""))
+				this.envoieATous("#"+clientAKicker.getPseudo() + " a été kick par "+kicker+".");
+			else
+				this.envoieATous("#"+clientAKicker.getPseudo() + " a été kick par "+kicker+"(Raison: "+raison+").");		
+			this.clientDeconnexion(clientAKicker);
+		}else{
+			if(!kicker.equalsIgnoreCase("Système")){
+				this.envoiePrive(this.getClient(kicker), "#On ne kick pas un administrateur");
+			}
+		}
 	}
 	/**
 	 * Permet de bannir un compte.
@@ -628,12 +634,16 @@ public class Server {
 	 * @param raison
 	 */
 	public void ban(Client clientABan,Client banniseur,String raison ){
-		if(raison.isEmpty()||raison.equalsIgnoreCase(""))
-			this.envoieATous("#"+clientABan.getPseudo() + " a été banni par "+banniseur.getPseudo()+".");
-		else
-			this.envoieATous("#"+clientABan.getPseudo() + " a été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
-		this.clientDeconnexion(clientABan);
-		this.requeteSQL.updatelvAccess(clientABan.getBddID(), -1);
+		if(!isAdmin(clientABan)){
+			if(raison.isEmpty()||raison.equalsIgnoreCase(""))
+				this.envoieATous("#"+clientABan.getPseudo() + " a été banni par "+banniseur.getPseudo()+".");
+			else
+				this.envoieATous("#"+clientABan.getPseudo() + " a été banni par "+banniseur.getPseudo()+"(Raison: "+raison+").");
+			this.clientDeconnexion(clientABan);
+			this.requeteSQL.updatelvAccess(clientABan.getBddID(), -1);
+		}else{
+			this.envoiePrive(banniseur, "#On ne banni pas un administrateur.");
+		}
 	}
 	/**
 	 * Permet de débannir un compte. Attention la vérification de l'existence du compte doit être fait en amont.
@@ -829,6 +839,7 @@ public class Server {
 					System.out.println("Probleme avec la connection SQL, restart du serveur");
 					this.log.err("Probleme avec la connection SQL, restart du serveur");
 					this.procedureRestartorStop(60, true, "Système");
+					this.mailError("Erreur avec la BDD", this.supervisor.updateCPUusage(), this.supervisor.updateFreeRam(),this.supervisor.updateMemoryJVM());
 				}else{
 					this.verifSQl=true;
 				}
@@ -844,7 +855,7 @@ public class Server {
 	 * @param chargeCPU
 	 * @param ramRest
 	 */
-	public void checkRessource(double chargeCPU, double ramRest){
+	public void checkRessource(double chargeCPU, double ramRest, double jvmRAM){
 		boolean overLoad=false;
 		if(chargeCPU>0.9 || ramRest<10){
 			overLoad=true;
@@ -871,13 +882,20 @@ public class Server {
 			}else if(this.countRessource==5){
 				this.procedureRestartorStop(30, true, "Système");
 				String message = "Un problème de surcharge à été détecté sur le serveur";
-				this.mailError(message,chargeCPU,ramRest);
+				this.mailError(message,chargeCPU,ramRest,jvmRAM);
 				System.out.println("Probleme de charge sur le serveur");
 				this.log.err("Probleme de charge sur le serveur");
 			}
 
 		}
-
+		if(jvmRAM>90){
+			this.procedureRestartorStop(30, true, "Système");
+			String message = "Un problème de surcharge sur la JVM à été détecté sur le serveur";
+			this.mailError(message,chargeCPU,ramRest,jvmRAM);
+			System.out.println("Probleme de charge sur la JVM du serveur");
+			this.log.err("Probleme de charge sur la JVM du serveur");
+		}
+		
 	}
 	/**
 	 * Permet d'envoyer un rapport d'erreur au admins
@@ -885,10 +903,11 @@ public class Server {
 	 * @param chargeCPU
 	 * @param ramRest
 	 */
-	public void mailError(String error,double chargeCPU, double ramRest){
+	public void mailError(String error,double chargeCPU, double ramRest, double jvmRAM){
 		DecimalFormat df = new DecimalFormat("########.000");
 		String CPU=df.format(chargeCPU*100);
 		String ram=df.format(ramRest);
+		String jvm=df.format(jvmRAM);
 		String booBDD;
 		try {
 			booBDD=""+this.BDD.getConnexion().isClosed();
@@ -902,12 +921,13 @@ public class Server {
 		"\nVersion sytème d'exploitation : "+System.getProperty("os.version")+
 		"\n\n\nJRE \n"+
 		"\nVersion du JRE : "+System.getProperty("java.version")+
+		"\nPourcentage de mémoire utilisé de la JVM : "+jvm+
 		"\n\n\nUtilisation Ressources\n"+
 		"\nCharge CPU : "+CPU+
 		"\nPourcentage de ram Disponible : "+ram+
 		"\n\n\nInformation NCP Server\n"+
 		"\nVersion du serveur NCP : "+Server.version+
-		"\nLocalisation des fichier du serveur : "+System.getProperty("user.dir")+
+		"\nLocalisation des fichiers du serveur : "+System.getProperty("user.dir")+
 		"\nNombre de Client actif : "+this.totalClient()+
 		"\nNombre total de client : "+this.listClient.size()+
 		"\nBDD déconnecté : "+booBDD;
@@ -994,6 +1014,6 @@ public class Server {
 	public Supervisor getSupervisor() {
 		return supervisor;
 	}
-	
+
 
 }

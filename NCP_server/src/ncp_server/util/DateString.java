@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 /**
  * La class DateString permet de récuperer la date et l'heure, ou la date et l'heure en fonction des besoins.
  * @author Poirier Kévin
- * @version 0.1.1
+ * @version 0.2.0
  */
 
 public class DateString {
@@ -17,7 +17,7 @@ public class DateString {
 		String date="";
 		int heure,minute,seconde;
 		GregorianCalendar cal = new GregorianCalendar();
-        heure = cal.get(Calendar.HOUR);
+        heure = cal.get(Calendar.HOUR_OF_DAY);
         minute= cal.get(Calendar.MINUTE);
         seconde= cal.get(Calendar.SECOND);
 		date="["+heure+":"+minute+":"+seconde+"]";
@@ -33,7 +33,7 @@ public class DateString {
 		GregorianCalendar cal = new GregorianCalendar();
 		mois = cal.get(Calendar.MONTH)+1;
         jour = cal.get(Calendar.DAY_OF_MONTH);
-        heure = cal.get(Calendar.HOUR);
+        heure = cal.get(Calendar.HOUR_OF_DAY);
         minute= cal.get(Calendar.MINUTE);
         seconde= cal.get(Calendar.SECOND);
 		date="["+jour+"/"+mois+" "+heure+":"+minute+":"+seconde+"]";
