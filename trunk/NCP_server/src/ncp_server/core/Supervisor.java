@@ -80,7 +80,7 @@ public class Supervisor extends Thread {
 			}
 			if((System.currentTimeMillis()-this.ressource)>=0){
 				//System.out.println("Appelle ressource");
-				this.server.checkRessource(this.updateCPUusage(), this.updateFreeRam());
+				this.server.checkRessource(this.updateCPUusage(), this.updateFreeRam(),this.updateMemoryJVM());
 				this.ressource=System.currentTimeMillis()+60000; //Toutes les minutes
 			}			
 			if((System.currentTimeMillis()-this.cleanlistBanIP)>=0){
@@ -128,6 +128,15 @@ public class Supervisor extends Thread {
 		double free = this.monitor.physical().getFreeBytes();
 		double total = this.monitor.physical().getTotalBytes();
 		return free/total*100;		
+	}
+	/**
+	 * Permet de surveiller de le % de mémoire allouer JVM restante.
+	 * @return double
+	 */
+	public double updateMemoryJVM(){
+		double free = Runtime.getRuntime().freeMemory();
+		double max = Runtime.getRuntime().maxMemory();
+		return (free/max)*100;
 	}
 	/**
 	 * @return the run

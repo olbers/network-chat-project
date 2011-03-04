@@ -75,6 +75,7 @@ public class TestMain {
 		
 		System.out.println(server.inhibHTLM("Salut <br> <div>ça <s>va</s> bien</div> </br> <b>Moi tres bien </b>"));*/
 		//server.mailError("Erreur de test", server.getSupervisor().updateCPUusage(), server.getSupervisor().updateFreeRam());
+		System.out.println(server.getSupervisor().updateMemoryJVM());
 	}
 
 }

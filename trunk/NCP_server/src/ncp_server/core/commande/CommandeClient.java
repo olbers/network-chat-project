@@ -83,6 +83,8 @@ public class CommandeClient extends Commande {
 					this.server.envoiePrive(client, "1");//Message de confirmation 
 				}
 			}
+		}else{
+			this.server.envoiePrive(client, "c");
 		}
 		this.server.affichListClient();
 	}
