@@ -195,13 +195,13 @@ public class Client {
 			}
 		}
 		else if(message.substring(0,1).equalsIgnoreCase("a")){
-			messageSystem("Vous avez déjà un compte enregistré sur le serveur.");
+			messageSystem("Le compte que vous tentez d'utiliser est banni!");
 		}
 		else if(message.substring(0,1).equalsIgnoreCase("b")){
 			messageSystem("Votre adresse IP est bannie du serveur!");
 		}
 		else if(message.substring(0,1).equalsIgnoreCase("c")){
-			messageSystem("Le compte que vous tentez d'utiliser est banni!");
+			messageSystem("Vous avez déjà un compte enregistré sur le serveur.");
 		}
 		else{
 			System.err.println("SYNTAX MESSAGE ERROR: The message sent by server is not allowed by the protocol.");
