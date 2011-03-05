@@ -2,7 +2,7 @@ package ncp_server.core;
 /**
  * La class ThreadConnexion permet de gérer en continue les requetes de conenxion au serveur.
  * @author Poirier Kévin
- * @version 0.2.1
+ * @version 0.2.2
  */
 
 public class ThreadConnexion extends Thread {
@@ -27,10 +27,9 @@ public class ThreadConnexion extends Thread {
 	@Override
 	public void run(){
 		while(run){
-
+			if(authCo)
+				this.serveur.clientConnexion();
 			try {
-				if(authCo)
-					this.serveur.clientConnexion();
 				sleep(50); //permet de ralentir les vérification du thread. (Vérification que cela ne pose pas de soucis...)
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -44,13 +43,13 @@ public class ThreadConnexion extends Thread {
 	 * @return the authCo
 	 */
 	public boolean isAuthCo() {
-		return run;
+		return authCo;
 	}
 	/**
 	 * @param authCo the authCo to set
 	 */
 	public void setAuthCo(boolean authCo) {
-		this.run = authCo;
+		this.authCo = authCo;
 	}
 	/**
 	 * @return the run
