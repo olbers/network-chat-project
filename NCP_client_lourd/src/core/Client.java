@@ -323,12 +323,12 @@ public class Client {
 		printMessageGeneral();
 	}
 
-	public void parametresConnexion(String adresseIP,int port,String pseudo,char[] pass){
+	public void parametresConnexion(String adresseIP,int port,String pseudo,String pass){
 
 		this.adresseIP=adresseIP;
 		this.port=port;
 		this.pseudo=pseudo;
-		this.pass=new String(pass);
+		this.pass=pass;
 		checkConnexion();
 	}
 

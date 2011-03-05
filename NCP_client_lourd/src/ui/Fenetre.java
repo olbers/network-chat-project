@@ -58,12 +58,14 @@ public class Fenetre extends JFrame {
 	public JTextPane jTextPaneGeneral = null;
 	public JLabel jLabelTotal = null;
 	protected String icone="image/logoSimple.png";
+	protected Clignoter clignoter;
 
 	
 	/* Constructeur */
 	public Fenetre() {	
 		super();
 		this.client = new Client(this);
+		clignoter = new Clignoter();
 		getJFrame();
 	}
 

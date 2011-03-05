@@ -19,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 import core.Client;
+import core.Encode;
+
 import javax.swing.JPasswordField;
 
 
@@ -37,6 +39,7 @@ public class ParametresConnexion implements MouseListener{
 	protected JButton boutonValider = null;
 	protected String adresseIP=null;
 	protected char[] pass=null;
+	protected String pass2 = null;  //  @jve:decl-index=0:
 	protected int port=0;
 	protected String pseudo=null;
 	protected Fenetre fenetre;
@@ -208,6 +211,13 @@ public class ParametresConnexion implements MouseListener{
 		port=Integer.parseInt(jTextFieldPort.getText());
 		pseudo=jTextFieldPseudo.getText();
 		pass=jPasswordField.getPassword();
+		pass2 = new String(pass);
+		if(pass2.isEmpty()){
+			pass2 = "";
+		}
+		else{
+			pass2 = Encode.MD5(pass2);
+		}
 
 
 		if((!jTextFieldPseudo.getText().isEmpty()) && (!jTextFieldIP.getText().isEmpty()) && (!jTextFieldPort.getText().isEmpty())){
@@ -216,7 +226,7 @@ public class ParametresConnexion implements MouseListener{
 
 				System.out.println("Contraintes OK");
 				this.jFrame.dispose();
-				this.client.parametresConnexion(adresseIP, port, pseudo,pass);
+				this.client.parametresConnexion(adresseIP, port, pseudo,pass2);
 				
 			}
 			else{
