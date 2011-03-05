@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.21
+ * @version 0.2.0.22
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.21";
+	public static final String version = "0.2.0.22";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -204,8 +204,10 @@ public class Server {
 	public void deconnexionUtilisateur(Client client){
 		client.closeClient();
 		this.listClient.remove(client);
-		this.envoieATous("#"+client.getPseudo()+ " vient de se déconnecter.");
-		this.affichListClient();
+		if(client.isActiver()){
+			this.envoieATous("#"+client.getPseudo()+ " vient de se déconnecter.");
+			this.affichListClient();
+		}
 	}
 
 	/**
@@ -757,6 +759,10 @@ public class Server {
 		if(updateList)
 			this.updateListBanIP();
 	}
+	/**
+	 * Methode qui retourne le nombre total de clients actifs.
+	 * @return int
+	 */
 	public int totalClient(){
 		int compteur=0;
 		for (int i=0;i<this.getListClient().size();i++){
@@ -765,6 +771,56 @@ public class Server {
 		}
 		return compteur;
 	}
+	/**
+	 * Permet de modifier le niveau d'accès d'un utilisateur.
+	 * @param clientModif
+	 * @param clientChangeur
+	 * @param newLvAcess
+	 */
+	public void updateLvAcess(Client clientModif, Client clientChangeur, int newLvAcess){
+		boolean lvChange=false;
+		if(newLvAcess==-1){
+			this.envoiePrive(clientChangeur,"#Il existe une commande pour bannir, merci de ne pas utiliser cette commande à cette fin.");
+		}else if(newLvAcess>2 && newLvAcess<-1){
+			this.envoiePrive(clientChangeur,"#Erreur de niveau d'accès. 0=Utilisateur normal, 1=Moderateur, 2=Administrateur");
+		}else{
+			if(clientModif.getBddID()!=0){
+				if(newLvAcess==clientModif.getLvAccess()){
+					this.envoiePrive(clientChangeur, "#Le nouveau niveau d'accès est identique à l'actuelle.");
+				}else{
+					if(clientModif.getLvAccess()==2){
+						this.envoiePrive(clientChangeur, "#On ne modifie pas les droits d'un administrateurs.");
+					}else if(clientModif.getLvAccess()==1){
+						if(newLvAcess==0){
+							this.envoiePrive(clientModif, "#Vous avez été rétrogradé au rang d'utilisateur normal.");
+							lvChange=true;
+						}else if(newLvAcess==2){
+							this.envoiePrive(clientModif, "#Vous avez été promu au rang d'administrateur.");
+							lvChange=true;
+						}
+					}else if(clientModif.getLvAccess()==0){
+						if(newLvAcess==1){
+							this.envoiePrive(clientModif, "#Vous avez été promu au rang de modérateur.");
+							lvChange=true;
+						}else if(newLvAcess==2){
+							this.envoiePrive(clientModif, "#Vous avez été promu au rang d'administrateur.");
+							lvChange=true;
+						}
+					}
+				}			
+			}else{
+				this.envoiePrive(clientChangeur, "#Le client n'a pas de compte.");
+				this.envoiePrive(clientModif, "#L'administrateur à voulu vous donner des droits, mais vous n'êtes pas enregistré.");
+			}
+		}
+		if(lvChange){
+			clientModif.setLvAccess(newLvAcess);
+			this.requeteSQL.updatelvAccess(clientModif.getBddID(), newLvAcess);
+			this.envoiePrive(clientChangeur,"#La modification à bien été prise en compte.");
+			this.envoiePrive(clientModif,"#Pour que la modification sois prise en compte veuillez vous reconnecter.");
+		}				
+	}
+	
 	/**
 	 * Permet d'effacer les ip banni qui ont expiré le delais.
 	 */
@@ -877,7 +933,16 @@ public class Server {
 			}
 
 		}
-		if(jvmRAM<20){
+		if(jvmRAM>40){
+			if(!this.connexion.isAuthCo()){
+				this.connexion.setAuthCo(true);
+				System.out.println("Réactivation de la connexion via socket.");
+			}			
+		}else if(jvmRAM<40){
+			this.connexion.setAuthCo(false);
+			System.out.println("Un problème de surcharge sur la JVM à été détecté sur le serveur");
+			System.out.println("Désactivation de la connexion via socket.");
+		}else if(jvmRAM<20){
 			this.procedureRestartorStop(30, true, "Système");
 			String message = "Un problème de surcharge sur la JVM à été détecté sur le serveur";
 			this.mailError(message,chargeCPU,ramRest,jvmRAM);

@@ -7,7 +7,7 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 1.0.3
+ * @version 1.0.4
  */
 public class CommandeUtilisateur extends Commande {
 
@@ -65,6 +65,8 @@ public class CommandeUtilisateur extends Commande {
 			this.restart(chaine,client);
 		else if(commande.equalsIgnoreCase("stop"))
 			this.stop(chaine,client);
+		else if(commande.equalsIgnoreCase("setAccess"))
+			this.lvAccess(chaine,client);
 	}
 	/**
 	 * Gère la commande me
@@ -331,6 +333,37 @@ public class CommandeUtilisateur extends Commande {
 			if(verif){
 				this.server.procedureRestartorStop(decompte, false,client.getCompte());
 			}
+			
+		}
+	}
+	/**
+	 * Commande qui modifie les niveau d'accès.
+	 * @param chaine
+	 * @param client
+	 */
+	public void lvAccess(String chaine, Client client){
+		Client clientModif;
+		if (!this.server.isAdmin(client) )
+			this.server.commandeRefuse(client);
+		else{
+			boolean verif=true;
+			String[] argument = recupArgument(chaine, 3);
+			int newAcess=0;
+			try{
+				newAcess = Integer.parseInt(argument[2]);
+			}catch (NumberFormatException e) {
+				this.server.envoiePrive(client, "#Attention le second paramètre n'est pas un nombre");
+				verif=false;
+			}
+			if(verif){
+				clientModif=this.server.getClient(argument[1]);
+				if(clientModif!=null){
+					this.server.updateLvAcess(clientModif, client, newAcess);
+				}else{
+					this.server.envoiePrive(client, "#Le client n'existe pas.");
+				}
+			}
+			
 			
 		}
 	}
