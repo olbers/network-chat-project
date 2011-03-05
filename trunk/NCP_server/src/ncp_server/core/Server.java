@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.22
+ * @version 0.2.0.23
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.22";
+	public static final String version = "0.2.0.23";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -373,6 +373,17 @@ public class Server {
 		//System.out.println(message);
 		client.getOut().println(message);
 		client.getOut().flush();
+	}
+	/**
+	 * Permet d'envoyer un message juste au administrateur et au moderateur.
+	 * @param message
+	 */
+	public void envoieAdminModo(String message){
+		for(int i=0;i<this.listClient.size();i++){
+			if(this.isAdmin(this.listClient.get(i)) || this.isModerateur(this.listClient.get(i)) ){
+				this.envoiePrive(this.listClient.get(i), message);
+			}
+		}
 	}
 
 	/**
@@ -906,6 +917,7 @@ public class Server {
 			this.countRessource=1;
 			if(!this.isAutorisationConnexion()){
 				System.out.println("Nouvelle connexion prise à nouveau en charge");
+				this.envoieAdminModo("#Nouvelle connexion prise à nouveau en charge");
 				this.log.err("Nouvelle connexion non prise à nouveau en charge");
 				this.setAutorisationConnexion(true);
 				this.connexion.setAuthCo(true);
@@ -916,6 +928,7 @@ public class Server {
 				this.countRessource++;
 			else if(this.countRessource==3){
 				this.cleanListClient();
+				this.envoieAdminModo("#Surcharge serveur : Nouvelle connexion non prise en charge");
 				System.out.println("Nouvelle connexion non prise en charge");
 				this.log.err("Nouvelle connexion non prise en charge");
 				this.setAutorisationConnexion(false);
@@ -936,12 +949,17 @@ public class Server {
 		if(jvmRAM>40){
 			if(!this.connexion.isAuthCo()){
 				this.connexion.setAuthCo(true);
+				this.envoieAdminModo("#Sortie du mode de protection de la JVM.");
 				System.out.println("Réactivation de la connexion via socket.");
+				this.log.err("Réactivation de la connexion via socket.");
 			}			
 		}else if(jvmRAM<40){
 			this.connexion.setAuthCo(false);
+			this.mailError("Mise en mode protection de la JVM", chargeCPU, ramRest, jvmRAM);
+			this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
 			System.out.println("Un problème de surcharge sur la JVM à été détecté sur le serveur");
 			System.out.println("Désactivation de la connexion via socket.");
+			this.log.err("Désactivation de la connexion via socket.");
 		}else if(jvmRAM<20){
 			this.procedureRestartorStop(30, true, "Système");
 			String message = "Un problème de surcharge sur la JVM à été détecté sur le serveur";
