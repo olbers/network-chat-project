@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.24
+ * @version 0.2.0.25
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.24";
+	public static final String version = "0.2.0.25";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -831,7 +831,7 @@ public class Server {
 			this.envoiePrive(clientModif,"#Pour que la modification sois prise en compte veuillez vous reconnecter.");
 		}				
 	}
-	
+
 	/**
 	 * Permet d'effacer les ip banni qui ont expiré le delais.
 	 */
@@ -954,20 +954,23 @@ public class Server {
 				this.log.err("Réactivation de la connexion via socket.");
 			}			
 		}else if(jvmRAM<40){
-			this.connexion.setAuthCo(false);
-			this.mailError("Mise en mode protection de la JVM", chargeCPU, ramRest, jvmRAM);
-			this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
-			System.out.println("Un problème de surcharge sur la JVM à été détecté sur le serveur");
-			System.out.println("Désactivation de la connexion via socket.");
-			this.log.err("Désactivation de la connexion via socket.");
-		}else if(jvmRAM<20){
+			if(this.connexion.isAuthCo()){
+				this.connexion.setAuthCo(false);
+				this.mailError("Mise en mode protection de la JVM", chargeCPU, ramRest, jvmRAM);
+				this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
+				System.out.println("Un problème de surcharge sur la JVM à été détecté sur le serveur");
+				System.out.println("Désactivation de la connexion via socket.");
+				this.log.err("Désactivation de la connexion via socket.");
+			}
+		}
+		if(jvmRAM<20){
 			this.procedureRestartorStop(30, true, "Système");
 			String message = "Un problème de surcharge sur la JVM à été détecté sur le serveur";
 			this.mailError(message,chargeCPU,ramRest,jvmRAM);
 			System.out.println("Probleme de charge sur la JVM du serveur");
 			this.log.err("Probleme de charge sur la JVM du serveur");
 		}
-		
+
 	}
 	/**
 	 * Permet d'envoyer un rapport d'erreur au admins
