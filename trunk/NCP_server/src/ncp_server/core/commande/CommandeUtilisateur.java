@@ -253,8 +253,8 @@ public class CommandeUtilisateur extends Commande {
 
 			if(verif){
 				if(!this.server.ipIsBan(ip)){
-					this.server.banIP(ip, banTime, client.getPseudo());
-					this.server.envoiePrive(client, "#L'ip "+ argument[1]+" à été banni.");
+					this.server.banIP(ip, banTime*60000, client.getPseudo());
+					this.server.envoiePrive(client, "#L'ip "+ argument[1]+" à été banni pour "+banTime+" minutes.");
 				}else{
 					this.server.envoiePrive(client, "#L'ip:" +argument[1]+" est déjà banni");
 				}
