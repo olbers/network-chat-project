@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 
 import core.Client;
+import core.Encode;
 
 public class Register {
 
@@ -302,9 +303,11 @@ public class Register {
 		adresseMailConfirmation = jTextMail2.getText();
 		pseudoEnregistrement = textPseudo.getText();
 		mdp=jPasswordMDP.getPassword();
-		mdp2=new String(mdp);
+		mdp2 = new String(mdp);
+		mdp2 = Encode.MD5(mdp2);
 		mdpConfirmation=jPasswordMDP2.getPassword();
 		mdpConfirmation2=new String(mdpConfirmation);
+		mdpConfirmation2 = Encode.MD5(mdpConfirmation2);
 		String textInformation="";
 		
 		if (client.verifCheckConnexion){
