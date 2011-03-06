@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="fill_parent" android:layout_width="fill_parent"
-	android:orientation="vertical" android:id="@+id/linearLayout1">
-	<ScrollView android:layout_height="match_parent" android:id="@+id/scrollView1"
+	android:orientation="vertical" android:id="@+id/coLinearLayout1">
+	<ScrollView android:layout_height="match_parent" android:id="@+id/coScrollView1"
 		android:layout_width="match_parent">
 		<LinearLayout android:layout_height="match_parent"
-			android:layout_width="match_parent" android:id="@+id/linearLayout2"
+			android:layout_width="match_parent" android:id="@+id/coLinearLayout2"
 			android:orientation="vertical">
 			<ImageView android:src="@drawable/logosimple"
 				android:layout_height="wrap_content" android:id="@+id/imageView1"
 				android:layout_width="wrap_content" android:layout_gravity="center|top"></ImageView>
-			<EditText android:id="@+id/editText1" android:hint="Adresse du serveur"
+			<EditText android:id="@+id/coEditText1" android:hint="Adresse du serveur"
 				android:layout_width="fill_parent" android:layout_height="50dip"></EditText>
-			<EditText android:id="@+id/editText2" android:hint="Port du serveur"
+			<EditText android:id="@+id/coEditText2" android:hint="Port du serveur"
 				android:layout_width="fill_parent" android:layout_height="50dip"></EditText>
-			<EditText android:id="@+id/editText3" android:hint="Pseudonyme"
+			<EditText android:id="@+id/coEditText3" android:hint="Pseudonyme"
 				android:layout_width="fill_parent" android:layout_height="50dip"></EditText>
-			<EditText android:id="@+id/editText4" android:hint="Mot de Passe"
+			<EditText android:id="@+id/coEditText4" android:hint="Mot de Passe"
 				android:layout_width="match_parent" android:layout_height="50dip"></EditText>
 			<Button android:layout_height="50dip" android:text="@string/connexion"
-				android:id="@+id/button3" android:layout_width="wrap_content"
+				android:id="@+id/coButton1" android:layout_width="wrap_content"
 				android:layout_gravity="center"></Button>
 		</LinearLayout>
 	</ScrollView>

@@ -3,25 +3,25 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	<ScrollView android:layout_height="wrap_content"
-		android:layout_width="match_parent" android:id="@+id/scrollView1">
+		android:layout_width="match_parent" android:id="@+id/reScrollView1">
 		<LinearLayout android:layout_width="match_parent"
-			android:id="@+id/linearLayout1" android:layout_height="match_parent"
+			android:id="@+id/reLinearLayout1" android:layout_height="match_parent"
 			android:orientation="vertical">
 			<ImageView android:src="@drawable/logosimple"
 				android:layout_height="wrap_content" android:id="@+id/imageView1"
 				android:layout_width="wrap_content" android:layout_gravity="center|top"></ImageView>
-			<EditText android:layout_height="50dip" android:id="@+id/editText1"
+			<EditText android:layout_height="50dip" android:id="@+id/reEditText1"
 				android:hint="Pseudonyme" android:layout_width="fill_parent"></EditText>
-			<EditText android:layout_height="50dip" android:id="@+id/editText2"
+			<EditText android:layout_height="50dip" android:id="@+id/reEditText2"
 				android:hint="Mot de Passe" android:layout_width="fill_parent"></EditText>
-			<EditText android:layout_height="50dip" android:id="@+id/editText3"
+			<EditText android:layout_height="50dip" android:id="@+id/reEditText3"
 				android:hint="Confirmation MDP" android:layout_width="fill_parent"></EditText>
-			<EditText android:layout_height="50dip" android:id="@+id/editText4"
+			<EditText android:layout_height="50dip" android:id="@+id/reEditText4"
 				android:hint="Adresse E-Mail" android:layout_width="fill_parent"></EditText>
-			<EditText android:layout_height="50dip" android:id="@+id/editText5"
+			<EditText android:layout_height="50dip" android:id="@+id/reEditText5"
 				android:hint="Confirmation E-Mail" android:layout_width="fill_parent"></EditText>
 			<Button android:layout_gravity="center" android:layout_height="wrap_content"
-				android:text="@string/register" android:id="@+id/button5"
+				android:text="@string/register" android:id="@+id/reButton5"
 				android:layout_width="wrap_content"></Button>
 		</LinearLayout>
 	</ScrollView>

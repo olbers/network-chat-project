@@ -17,7 +17,7 @@ public class Connexion extends Activity {
 		this.context=this;
 		setContentView(R.layout.connexion);
 		
-		((Button)findViewById(R.id.button3)).setOnClickListener(new OnClickListener() {
+		((Button)findViewById(R.id.coButton1)).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
