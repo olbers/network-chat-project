@@ -6,4 +6,5 @@
     <string name="quit">Quitter l\'application</string>
     <string name="version">0.0.0.1</string>
     <string name="register">Enregistrement</string>
+    <string name="send">Envoyer</string>
 </resources>
