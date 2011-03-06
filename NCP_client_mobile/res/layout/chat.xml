@@ -9,5 +9,7 @@
 	<EditText android:id="@+id/ChatEditText1" android:layout_height="wrap_content"
 		android:hint="Ecrivez votre message..."
 		android:layout_alignParentBottom="true" android:focusable="true" android:layout_width="225dip" android:focusableInTouchMode="true" ></EditText>
-	<TextView android:layout_alignParentTop="true" android:id="@+id/chatTextView1" android:text="TextView" android:layout_width="match_parent" android:layout_height="270dip" android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbars="vertical"></TextView>
+	<ScrollView android:id="@+id/chatScrollView1" android:layout_width="match_parent" android:layout_height="270dip">
+		<TextView  android:id="@+id/chatTextView1" android:layout_width="match_parent" android:text="TextView" android:layout_height="270dip" android:scrollbars="vertical"></TextView>
+	</ScrollView>
 </RelativeLayout>
