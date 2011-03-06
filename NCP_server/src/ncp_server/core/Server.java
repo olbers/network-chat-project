@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.27
+ * @version 0.2.0.28
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.27";
+	public static final String version = "0.2.0.28";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -100,6 +100,8 @@ public class Server {
 
 	protected int countRessource;
 
+	protected int countRessourceJVM;
+
 	protected Supervisor supervisor;
 
 	/**
@@ -117,6 +119,7 @@ public class Server {
 		this.requeteSQL= RequeteSQL.getInstance();
 		this.verifSQl=false;
 		this.countRessource=1;
+		this.countRessourceJVM=0;
 		this.listBanIP = new ArrayList<String[]>();
 		this.updateListBanIP();
 	}
@@ -954,13 +957,16 @@ public class Server {
 				this.log.err("Réactivation de la connexion via socket.");
 			}			
 		}else if(jvmRAM<40){
-			if(this.connexion.isAuthCo()){
+			if(this.countRessourceJVM>=3){
+				this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
+				this.procedureRestartorStop(30, true, "Système");
+			}else if(this.connexion.isAuthCo()){
 				this.connexion.setAuthCo(false);
-				this.mailError("Mise en mode protection de la JVM", chargeCPU, ramRest, jvmRAM);
 				this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
 				System.out.println("Un problème de surcharge sur la JVM à été détecté sur le serveur");
 				System.out.println("Désactivation de la connexion via socket.");
 				this.log.err("Désactivation de la connexion via socket.");
+				this.countRessourceJVM++;
 			}
 		}
 		if(jvmRAM<20){
