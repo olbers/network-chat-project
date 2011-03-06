@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.28
+ * @version 0.2.0.29
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.28";
+	public static final String version = "0.2.0.29";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -670,42 +670,34 @@ public class Server {
 	 */
 	public String inhibHTLM(String message){
 		String mot;
-		int i;
-		boolean ecrit;
-		boolean isExistINF;
+		int x;
+		int inf;
+		int sup;
+		char lettre;
 		StringBuffer phrase = new StringBuffer();
-		StringBuffer motInhib = new StringBuffer();
 		StringTokenizer token = new StringTokenizer(message);
 
 		while(token.hasMoreTokens()){
-			ecrit=true;
-			isExistINF=false;
 			mot=token.nextToken();
+			inf=0;
+			sup=0;
 			//Vérifie que le mot contient le charactère > et <
-			if(mot.contains("<") && mot.contains(">")){
+			if(mot.contains("<") || mot.contains(">")){
 				//vérifie que la phrase contient les balises autorisé.
 				if(mot.contains("<b>") || mot.contains("</b>") || mot.contains("<i>")||
 						mot.contains("</i>") || mot.contains("<s>") || mot.contains("</s>")){
-					phrase.append(mot+" ");
-				}else{
-					//Permet d'afficher les char si il ne sont pas des balises même si ils contiennent < et >
-					motInhib.setLength(0);
-					for (i=0;i<mot.length();i++){							
-						if (mot.charAt(i)=='>')
-							isExistINF=true;
-
-						if (mot.charAt(i)=='<'&& !isExistINF)
-							ecrit=false;
-						else if(!ecrit && mot.charAt(i-1)=='>')
-							ecrit=true;						
-
-						if(ecrit){
-							motInhib.append(mot.charAt(i));
-						}					
+					for(x=0;x<mot.length();x++){
+						lettre=mot.charAt(x);
+						if(lettre=='<'){
+							inf++;
+						}else if(lettre=='>'){
+							sup++;
+						}
 					}
-					if(motInhib.length()!=0)
-						phrase.append(motInhib.toString()+" ");	
-				}				
+					if(inf==1 && sup==1){
+						phrase.append(mot+" ");
+					}
+				}
 			}else{				
 				phrase.append(mot+" ");
 			}
