@@ -2,4 +2,8 @@
 <resources>
     <string name="hello">Hello World, NCP!</string>
     <string name="app_name">NCP</string>
+    <string name="connexion">Connexion </string>
+    <string name="quit">Quitter l\'application</string>
+    <string name="version">0.0.0.1</string>
+    <string name="register">Enregistrement</string>
 </resources>
