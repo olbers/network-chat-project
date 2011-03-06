@@ -99,11 +99,12 @@ public class CommandeClient extends Commande {
 			argument=this.recupArgument(chaine, 2);
 			//System.out.println(option.lourdMD5);
 			//System.out.println(argument[1]);
-			if(!this.server.getOption().isProtectMD5() || this.server.getOption().getLourdMD5().equalsIgnoreCase(argument[1])){
+			if(!this.server.getOption().isProtectMD5() || this.server.getOption().getLourdMD5().equalsIgnoreCase(argument[1]) 
+					|| this.server.getOption().getAndroidMD5().equalsIgnoreCase(argument[1])){
 				this.server.envoiePrive(client, "9"); //ok
 				client.setChMD5(true);
 			}else{
-				this.server.envoiePrive(client, "7");
+				this.server.envoiePrive(client, "8");
 			}
 		}
 	}
