@@ -17,7 +17,7 @@ public class NCP extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		this.context=this;
-		((Button)findViewById(R.id.button1)).setOnClickListener(new OnClickListener() {
+		((Button)findViewById(R.id.chatButton1)).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {

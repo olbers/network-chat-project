@@ -3,10 +3,11 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical">
-	<Button android:layout_height="wrap_content" android:id="@+id/button4"
+	<Button android:layout_height="wrap_content" android:id="@+id/chatButton1"
 		android:layout_width="wrap_content" android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true" android:text="@string/send"></Button>
-	<EditText android:id="@+id/editText1" android:layout_height="wrap_content"
+	<EditText android:id="@+id/ChatEditText1" android:layout_height="wrap_content"
 		android:hint="Ecrivez votre message..."
 		android:layout_alignParentBottom="true" android:focusable="true" android:layout_width="225dip" android:focusableInTouchMode="true" ></EditText>
+	<TextView android:layout_alignParentTop="true" android:id="@+id/chatTextView1" android:text="TextView" android:layout_width="match_parent" android:layout_height="270dip" android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbars="vertical"></TextView>
 </RelativeLayout>
