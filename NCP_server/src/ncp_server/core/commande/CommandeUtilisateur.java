@@ -7,7 +7,7 @@ import ncp_server.util.db.RequeteSQL;
 /**
  * Class qui gère les commande utilisateurs
  * @author Poirier Kevin
- * @version 1.0.4
+ * @version 1.0.6
  */
 public class CommandeUtilisateur extends Commande {
 
@@ -37,37 +37,41 @@ public class CommandeUtilisateur extends Commande {
 	 * @param client
 	 */
 	public void traitementCommande(String chaine,Client client){
-		String commande;
-		commande=recupCommande(chaine);
-		if(commande.equalsIgnoreCase("me"))
-			this.me(chaine, client);
-		else if(commande.equals("nick"))
-			this.nick(chaine, client);
-		else if(commande.equals("total"))
-			this.total(client);
-		else if(commande.equals("who"))
-			this.who(chaine,client);
-		else if(commande.equals("mp"))
-			this.mp(chaine,client);
-		else if(commande.equalsIgnoreCase("kick"))
-			this.kick(chaine,client);
-		else if(commande.equalsIgnoreCase("ban"))
-			this.ban(chaine, client);
-		else if(commande.equalsIgnoreCase("unban"))
-			this.unBan(chaine, client);
-		else if(commande.equalsIgnoreCase("info"))
-			this.info(client);
-		else if(commande.equalsIgnoreCase("banIP"))
-			this.banIp(chaine, client);
-		else if(commande.equalsIgnoreCase("unbanIP"))
-			this.unBanIP(chaine, client);
-		else if(commande.equalsIgnoreCase("restart"))
-			this.restart(chaine,client);
-		else if(commande.equalsIgnoreCase("stop"))
-			this.stop(chaine,client);
-		else if(commande.equalsIgnoreCase("setAccess"))
-			this.lvAccess(chaine,client);
-	}
+		if(chaine!=null){
+			String commande;
+			commande=recupCommande(chaine);
+			if(commande.equalsIgnoreCase("me"))
+				this.me(chaine, client);
+			else if(commande.equals("nick"))
+				this.nick(chaine, client);
+			else if(commande.equals("total"))
+				this.total(client);
+			else if(commande.equals("who"))
+				this.who(chaine,client);
+			else if(commande.equals("mp"))
+				this.mp(chaine,client);
+			else if(commande.equalsIgnoreCase("kick"))
+				this.kick(chaine,client);
+			else if(commande.equalsIgnoreCase("ban"))
+				this.ban(chaine, client);
+			else if(commande.equalsIgnoreCase("unban"))
+				this.unBan(chaine, client);
+			else if(commande.equalsIgnoreCase("info"))
+				this.info(client);
+			else if(commande.equalsIgnoreCase("banIP"))
+				this.banIp(chaine, client);
+			else if(commande.equalsIgnoreCase("unbanIP"))
+				this.unBanIP(chaine, client);
+			else if(commande.equalsIgnoreCase("restart"))
+				this.restart(chaine,client);
+			else if(commande.equalsIgnoreCase("stop"))
+				this.stop(chaine,client);
+			else if(commande.equalsIgnoreCase("setAccess"))
+				this.lvAccess(chaine,client);
+			else if(commande.equalsIgnoreCase("cmd"))
+				this.cmd(client);
+		}
+	}	
 	/**
 	 * Gère la commande me
 	 * @param chaine
@@ -309,7 +313,7 @@ public class CommandeUtilisateur extends Commande {
 			if(verif){
 				this.server.procedureRestartorStop(decompte, true,client.getCompte());
 			}
-			
+
 		}
 	}
 	/**
@@ -333,7 +337,7 @@ public class CommandeUtilisateur extends Commande {
 			if(verif){
 				this.server.procedureRestartorStop(decompte, false,client.getCompte());
 			}
-			
+
 		}
 	}
 	/**
@@ -363,8 +367,30 @@ public class CommandeUtilisateur extends Commande {
 					this.server.envoiePrive(client, "#Le client n'existe pas.");
 				}
 			}
-			
-			
 		}
+	}
+	
+	public void cmd(Client client){
+		this.server.envoiePrive(client, "#===COMMANDES SERVEUR===");
+		this.server.envoiePrive(client, "# ");
+		this.server.envoiePrive(client, "#/me [message]");
+		this.server.envoiePrive(client, "#/mp [pseudo] [message]");
+		this.server.envoiePrive(client, "#/nick [nouveauPseudo]");
+		this.server.envoiePrive(client, "#/total");
+		this.server.envoiePrive(client, "#/info");
+		if(this.server.isAdmin(client) || this.server.isModerateur(client) ){
+			this.server.envoiePrive(client, "#/who [pseudo]");
+			this.server.envoiePrive(client, "#/kick [pseudo] (Optionnel [raison])");
+			this.server.envoiePrive(client, "#/ban [pseudo] (Optionnel [raison])");
+			this.server.envoiePrive(client, "#/unban [pseudo]");
+			this.server.envoiePrive(client, "#/banip [ip] [durée (seconde)]");
+			this.server.envoiePrive(client, "#/unbanip [ip]");
+		}
+		if(this.server.isAdmin(client)){
+			this.server.envoiePrive(client, "#/stop [seconde]");
+			this.server.envoiePrive(client, "#/restart [seconde]");
+			this.server.envoiePrive(client, "#/setAccess [pseudo] [niveau D'accès [0-1-2]");
+		}
+		
 	}
 }
