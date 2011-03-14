@@ -1,5 +1,6 @@
 package fr.kenin.ncp;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,15 @@ public class NCP extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(context,Connexion.class);
 				startActivity(intent);
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.chatButton2)).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
 			}
 		});
 	}
@@ -35,8 +45,13 @@ public class NCP extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		
+		finish();
 	}
+
+	/**
+	 * Permet de connaître l'état du réseau.
+	 */
+
 
 	
 }

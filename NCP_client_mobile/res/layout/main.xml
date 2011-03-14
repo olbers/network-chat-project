@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:gravity="fill_horizontal|fill">
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:gravity="fill_horizontal|fill" android:orientation="vertical">
     <ImageView android:src="@drawable/logosimple" android:layout_height="wrap_content" android:id="@+id/imageView1" android:layout_width="wrap_content" android:layout_gravity="center|top"></ImageView>
 	<Button android:text="@string/connexion"
 		android:id="@+id/chatButton1" android:gravity="center" android:layout_height="wrap_content" android:layout_width="match_parent">
 	</Button>
 	<Button android:layout_height="wrap_content" android:text="@string/quit" android:id="@+id/chatButton2" android:gravity="center" android:layout_width="match_parent"></Button>
+	<LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="match_parent">
+		<TextView android:text="@string/networkStates" android:layout_height="wrap_content" android:id="@+id/chatTextView1" android:layout_width="wrap_content"></TextView>
+	</LinearLayout>
 </LinearLayout>
     
     
