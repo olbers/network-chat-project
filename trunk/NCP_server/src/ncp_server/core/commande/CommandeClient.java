@@ -10,7 +10,7 @@ import ncp_server.util.mail.Mail;
 /**
  * Class qui gère les commande clientes
  * @author Poirier Kevin
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 public class CommandeClient extends Commande {
@@ -39,18 +39,19 @@ public class CommandeClient extends Commande {
 	 * @param client
 	 */
 	public void traitementCommande(String chaine,Client client){
-		String commande;
-		commande=recupCommande(chaine);
-		if (commande.equalsIgnoreCase("connect")){
-			this.connect(chaine, client);
-		}else if (commande.equalsIgnoreCase("md5")){
-			this.md5(chaine, client);
-		}else if (commande.equalsIgnoreCase("register")){
-			this.register(chaine, client);
-		}else if(commande.equalsIgnoreCase("deconnexion")){
-			this.deconnexion(client);
+		if(chaine!=null){
+			String commande;
+			commande=recupCommande(chaine);
+			if (commande.equalsIgnoreCase("connect")){
+				this.connect(chaine, client);
+			}else if (commande.equalsIgnoreCase("md5")){
+				this.md5(chaine, client);
+			}else if (commande.equalsIgnoreCase("register")){
+				this.register(chaine, client);
+			}else if(commande.equalsIgnoreCase("deconnexion")){
+				this.deconnexion(client);
+			}
 		}
-
 	}
 	/**
 	 * Permet d'enregistrer un client dans la base de données.

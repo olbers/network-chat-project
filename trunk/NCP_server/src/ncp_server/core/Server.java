@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.29
+ * @version 0.2.0.30
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.29";
+	public static final String version = "0.2.0.30";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -451,11 +451,11 @@ public class Server {
 	public void traitementChaine(String chaine,Client client){
 		if(!chaine.isEmpty()|| !"".equals(chaine)){
 			if (chaine.substring(0,1).equalsIgnoreCase("@")){
-				this.comCli.traitementCommande(this.inhibHTLM(this.suppr1Car(chaine)),client);
+				this.comCli.traitementCommande(this.inhibHTLM(this.suppr1Car(chaine),client),client);
 			}else if (chaine.substring(0,1).equalsIgnoreCase("/")){
-				this.commUser.traitementCommande(this.inhibHTLM(this.suppr1Car(chaine)),client);
+				this.commUser.traitementCommande(this.inhibHTLM(this.suppr1Car(chaine),client),client);
 			}else if (chaine.substring(0,1).equals("~")) {
-				this.traitementMessageAll(this.inhibHTLM(this.suppr1Car(chaine)), client);
+				this.traitementMessageAll(this.inhibHTLM(this.suppr1Car(chaine),client), client);
 			}
 		}
 	}
@@ -465,12 +465,14 @@ public class Server {
 	 * @param client
 	 */
 	public void traitementMessageAll(String chaine,Client client){
-		if(client.isActiver()){
-			String message,messageToLog;
-			messageToLog=client.getPseudo() + ": "+chaine;
-			this.log.chat(messageToLog);
-			message="*"+new DateString().dateChat() +" "+ messageToLog;
-			this.envoieATous(message);
+		if(chaine !=null){
+			if(client.isActiver()){
+				String message,messageToLog;
+				messageToLog=client.getPseudo() + ": "+chaine;
+				this.log.chat(messageToLog);
+				message="*"+new DateString().dateChat() +" "+ messageToLog;
+				this.envoieATous(message);
+			}
 		}
 	}
 	/**
@@ -668,7 +670,8 @@ public class Server {
 	 * @param message
 	 * @return String
 	 */
-	public String inhibHTLM(String message){
+	public String inhibHTLM(String message,Client client){
+		String motEntier;
 		String mot;
 		int x;
 		int inf;
@@ -676,31 +679,62 @@ public class Server {
 		char lettre;
 		StringBuffer phrase = new StringBuffer();
 		StringTokenizer token = new StringTokenizer(message);
+		StringTokenizer token2;
 
 		while(token.hasMoreTokens()){
-			mot=token.nextToken();
-			inf=0;
-			sup=0;
+			motEntier=token.nextToken();
+			token2 =new StringTokenizer(motEntier, ">");
+
 			//Vérifie que le mot contient le charactère > et <
-			if(mot.contains("<") || mot.contains(">")){
-				//vérifie que la phrase contient les balises autorisé.
-				if(mot.contains("<b>") || mot.contains("</b>") || mot.contains("<i>")||
-						mot.contains("</i>") || mot.contains("<s>") || mot.contains("</s>")){
-					for(x=0;x<mot.length();x++){
-						lettre=mot.charAt(x);
-						if(lettre=='<'){
-							inf++;
-						}else if(lettre=='>'){
-							sup++;
-						}
-					}
-					if(inf==1 && sup==1){
+			if(motEntier.contains("<") || motEntier.contains(">")){
+				while(token2.hasMoreTokens()){
+					inf=0;
+					sup=0;
+					mot=token2.nextToken();
+					if(mot.contains("<")){
+						mot=mot+">";
+					}else{
 						phrase.append(mot+" ");
+					}
+					System.out.println(mot);
+					//vérifie que la phrase contient les balises autorisé.
+					if(mot.contains("<b>") || mot.contains("</b>") || mot.contains("<i>")||
+							mot.contains("</i>") || mot.contains("<s>") || mot.contains("</s>")
+							|| mot.contains("<u>") || mot.contains("</u>")){
+						for(x=0;x<mot.length();x++){
+							lettre=mot.charAt(x);
+							if(lettre=='<'){
+								inf++;
+							}else if(lettre=='>'){
+								sup++;
+							}
+						}
+						System.out.println("inf"+inf+"sup"+sup);
+						if(inf==1 && sup==1){
+							phrase.append(mot+" ");
+						}
 					}
 				}
 			}else{				
-				phrase.append(mot+" ");
-			}
+				phrase.append(motEntier+" ");
+
+			}		
+		}
+		if(phrase.toString().contains("<b>") && !phrase.toString().contains("</b>")){
+			this.envoiePrive(client, "#Attention à vos balises...");
+			return null;
+		}
+		if(phrase.toString().contains("<i>") && !phrase.toString().contains("</i>")){
+			this.envoiePrive(client, "#Attention à vos balises...");
+			return null;
+		}
+		if(phrase.toString().contains("<s>") && !phrase.toString().contains("</s>")){
+			this.envoiePrive(client, "#Attention à vos balises...");
+			return null;
+		}
+		if(phrase.toString().contains("<u>") && !phrase.toString().contains("</u>")){
+			this.envoiePrive(client, "#Attention à vos balises...");
+			return null;
 		}
 		return phrase.toString();
 	}
@@ -941,17 +975,18 @@ public class Server {
 			}
 
 		}
-		if(jvmRAM>40){
+		if(jvmRAM>15){
 			if(!this.connexion.isAuthCo()){
 				this.connexion.setAuthCo(true);
 				this.envoieAdminModo("#Sortie du mode de protection de la JVM.");
 				System.out.println("Réactivation de la connexion via socket.");
 				this.log.err("Réactivation de la connexion via socket.");
 			}			
-		}else if(jvmRAM<40){
+		}else if(jvmRAM<15){
 			if(this.countRessourceJVM>=3){
 				this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
 				this.procedureRestartorStop(30, true, "Système");
+				this.mailError("Surcharge de la JVM",chargeCPU,ramRest,jvmRAM);
 			}else if(this.connexion.isAuthCo()){
 				this.connexion.setAuthCo(false);
 				this.envoieAdminModo("#Surcharge de la JVM: Mise en mode protection");
@@ -961,7 +996,7 @@ public class Server {
 				this.countRessourceJVM++;
 			}
 		}
-		if(jvmRAM<20){
+		if(jvmRAM<5){
 			this.procedureRestartorStop(30, true, "Système");
 			String message = "Un problème de surcharge sur la JVM à été détecté sur le serveur";
 			this.mailError(message,chargeCPU,ramRest,jvmRAM);
