@@ -44,6 +44,7 @@ public class Client extends Service {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		try {
+			envoiMessage("@deconnexion");
 			in.close();
 			out.close();
 			socketClient.close();
@@ -92,6 +93,11 @@ public class Client extends Service {
 			return false;
 		}
 	}
+	
+	public void deconnexion(){
+		this.stopSelf();
+	}
+	
 	/**
 	 * Permet d'envoyer un message à tout le serveur.
 	 * @param message
@@ -171,6 +177,8 @@ public class Client extends Service {
 		if (commande.equalsIgnoreCase("verif")){
 			envoiMessage(commandeClient("md5 0"));
 			envoiMessage(commandeClient(requeteConnexion));
+		}else if(commande.equalsIgnoreCase("deconnexion")){
+			
 		}
 	}
 
@@ -182,7 +190,10 @@ public class Client extends Service {
 			pseudo = st.nextToken();
 			listePrete.append(pseudo+"\n");
 		}
+		Log.d(TAG, "Liste des utilisateurs faites");
+		
 		utilisateurList = listePrete.toString();
+		Log.d(TAG, utilisateurList);
 	}
 
 	public void autreCommande(String message){
@@ -214,7 +225,7 @@ public class Client extends Service {
 			if(message.charAt(0)=='/'){
 				envoiMessage(message);
 			}else{
-				envoiMessage("~"+message);
+				envoiMessage(messageAll(message));
 			}
 		}
 	}
@@ -256,6 +267,12 @@ public class Client extends Service {
 		this.messageList = messageList;
 	}
 
+	/**
+	 * @return the utilisateurList
+	 */
+	public String getUtilisateurList() {
+		return utilisateurList;
+	}
 	/**
 	 * @return the socketClient
 	 */

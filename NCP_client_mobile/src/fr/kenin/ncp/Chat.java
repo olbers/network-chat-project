@@ -71,8 +71,6 @@ public class Chat extends Activity {
 		
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onStart()
 	 */
@@ -96,6 +94,27 @@ public class Chat extends Activity {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		doUnbindService();
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		updateList.interrupt();
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		doBindService();
 	}
 
 	@Override
@@ -156,10 +175,11 @@ public class Chat extends Activity {
 	};
 	
 	private void doBindService() {
-		bindService(intentAssoClient, mConnexion, context.BIND_AUTO_CREATE);
+		bindService(intentAssoClient, mConnexion, Context.BIND_AUTO_CREATE);
 	}
 	        
 	private void doUnbindService() {
+		mClient.stopSelf();
 		unbindService(mConnexion);
 	}
 

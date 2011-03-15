@@ -1,7 +1,6 @@
 package fr.kenin.ncp;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +29,6 @@ public class Connexion extends Activity {
 	protected Intent intentAssoClient;
 	private static final String TAG = "Connexion_NCP";
 
-	@SuppressWarnings("unused")
 	private String connexionString;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,10 +42,8 @@ public class Connexion extends Activity {
 		this.isRegister=false;
 
 		intentAssoClient = new Intent(this, Client.class);
-		
-		if (mClient == null){
-			bindService(intentAssoClient, mConnexion, context.BIND_AUTO_CREATE);
-		}
+		doBindService();
+
 
 		((Button)findViewById(R.id.coButton1)).setOnClickListener(new OnClickListener() {
 
@@ -56,14 +52,15 @@ public class Connexion extends Activity {
 				// TODO Auto-generated method stub
 				if(checkText()){
 					Log.d(TAG, "Check des cond ok");
-					if(bindService(intentAssoClient, mConnexion, context.BIND_AUTO_CREATE)){
-						if(mClient != null){
+					if(bindService(intentAssoClient, mConnexion, Context.BIND_AUTO_CREATE)){
+						if(initConnexion()){
 							mClient.setRequeteConnexion(connexionString);
 							if(mClient.createClient(ip, port)){
 								Intent intent = new Intent(context,Chat.class);
 								intent.putExtra("isRegister", isRegister);;
 								intent.putExtra("requetteCo", connexionString);
 								startActivity(intent);
+								finish();
 							}else{
 								Toast.makeText(context, "Erreur de connexion au serveur.", Toast.LENGTH_LONG).show();
 							}
@@ -76,7 +73,6 @@ public class Connexion extends Activity {
 			}
 		});
 	}
-	
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
@@ -85,8 +81,8 @@ public class Connexion extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		doUnbindService();
 	}
-
 
 	public boolean checkText(){
 		ip = this.ipTV.getText().toString();
@@ -116,12 +112,28 @@ public class Connexion extends Activity {
 		return false;
 	}
 
+	private boolean initConnexion(){
+		if(mClient != null){
+			return true;
+		}else{
+			return false;
+		}
+	}	
+	private void doBindService() {
+		bindService(intentAssoClient, mConnexion, Context.BIND_AUTO_CREATE);
+	}
+
+	private void doUnbindService() {
+		unbindService(mConnexion);
+	}
+
 	private ServiceConnection mConnexion = new ServiceConnection(){
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			// TODO Auto-generated method stub
-			mClient = ((Client.ClientBinder) service).getService();			
+			mClient = ((Client.ClientBinder) service).getService();
+			initConnexion();
 		}
 
 		@Override
