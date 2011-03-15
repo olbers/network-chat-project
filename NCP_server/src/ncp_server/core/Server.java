@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.30
+ * @version 0.2.0.31
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.30";
+	public static final String version = "0.2.0.31";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -696,7 +696,7 @@ public class Server {
 					}else{
 						phrase.append(mot+" ");
 					}
-					System.out.println(mot);
+					//System.out.println(mot);
 					//vérifie que la phrase contient les balises autorisé.
 					if(mot.contains("<b>") || mot.contains("</b>") || mot.contains("<i>")||
 							mot.contains("</i>") || mot.contains("<s>") || mot.contains("</s>")
@@ -709,7 +709,7 @@ public class Server {
 								sup++;
 							}
 						}
-						System.out.println("inf"+inf+"sup"+sup);
+						//System.out.println("inf"+inf+"sup"+sup);
 						if(inf==1 && sup==1){
 							phrase.append(mot+" ");
 						}
