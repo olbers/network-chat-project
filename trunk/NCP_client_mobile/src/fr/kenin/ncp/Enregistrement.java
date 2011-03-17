@@ -18,6 +18,7 @@ public class Enregistrement extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.enregistrement);
+		intentAssoClient = new Intent(this, Client.class);
 		doBindService();
 	}
 	

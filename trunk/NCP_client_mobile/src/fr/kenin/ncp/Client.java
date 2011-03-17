@@ -1,6 +1,7 @@
 package fr.kenin.ncp;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -9,6 +10,10 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import fr.kenin.ncp.util.AndroidFile;
+import fr.kenin.ncp.util.Checksum;
+
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -26,6 +31,11 @@ public class Client extends Service {
 	protected String utilisateurList;
 	protected String requeteConnexion;
 	protected String chat;
+	protected String md5;
+
+	protected char retourRegister;
+	protected char retourMD5;
+	protected char retourConnect;
 
 	private Runnable ruClient = new ThreadClient();
 	private Thread thClient;
@@ -37,6 +47,9 @@ public class Client extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		messageList = new ArrayList<String>(100);
+		retourConnect='`';
+		retourMD5='`';
+		retourConnect='`';
 
 	}
 	@Override
@@ -48,11 +61,14 @@ public class Client extends Service {
 			in.close();
 			out.close();
 			socketClient.close();
+			thClient.interrupt();			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+
 	@Override
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
@@ -93,11 +109,12 @@ public class Client extends Service {
 			return false;
 		}
 	}
-	
+
 	public void deconnexion(){
-		this.stopSelf();
+		stopSelf();
 	}
-	
+
+
 	/**
 	 * Permet d'envoyer un message à tout le serveur.
 	 * @param message
@@ -110,16 +127,17 @@ public class Client extends Service {
 
 	public void recupMessage(){
 		try {
-			if(in.ready()){
-				Log.d(TAG, "Message recuperer");
-				String chaineRecu=in.readLine();
-				if(chaineRecu!=null && !chaineRecu.equals("")){
-					traitementMessage(chaineRecu);
+				if(in.ready()){
+					Log.d(TAG, "Message recuperer");
+					String chaineRecu=in.readLine();
+					if(chaineRecu!=null && !chaineRecu.equals("")){
+						traitementMessage(chaineRecu);
+					}
 				}
-			}
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			thClient.stop();
 		}
 	}
 
@@ -136,7 +154,7 @@ public class Client extends Service {
 		}else if(firstChar == '#'){ // Message Système
 			messageSysteme(supprChar(chaineRecu));
 		}else{ //Autre commande traité séparément
-
+			autreCommande(chaineRecu);
 		}
 
 	}
@@ -175,12 +193,26 @@ public class Client extends Service {
 
 	private void commandeServer(String commande){
 		if (commande.equalsIgnoreCase("verif")){
-			envoiMessage(commandeClient("md5 0"));
-			envoiMessage(commandeClient(requeteConnexion));
+			envoiMD5();
+			envoiConnect();
+			Log.d("sync_NCP", "& verif recup et répondu");
 		}else if(commande.equalsIgnoreCase("deconnexion")){
-			
+			deconnexion();
 		}
 	}
+
+	public void envoiMD5(){
+		envoiMessage(commandeClient("md5 "+md5));
+	}
+
+	public void envoiConnect(){
+		envoiMessage(commandeClient(requeteConnexion));
+	}
+	
+	public void envoiRegister(String chaine){
+		envoiMessage(commandeClient(chaine));
+	}
+
 
 	public void updateListUser(String message){
 		StringTokenizer st = new StringTokenizer(message,"|");
@@ -191,13 +223,22 @@ public class Client extends Service {
 			listePrete.append(pseudo+"\n");
 		}
 		Log.d(TAG, "Liste des utilisateurs faites");
-		
+
 		utilisateurList = listePrete.toString();
 		Log.d(TAG, utilisateurList);
 	}
 
-	public void autreCommande(String message){
-		//Gerer les autre commande		
+	public void autreCommande(String chaine){
+		char firstChar = chaine.charAt(0);
+		Log.d(TAG, "Char recup: "+firstChar);
+		if(firstChar=='1' || firstChar=='2' || firstChar=='3' || firstChar=='c' ){
+			retourRegister = firstChar;
+		}else if(firstChar=='8' || firstChar=='9' ){
+			retourMD5 = firstChar;
+		}else if(firstChar=='4' || firstChar=='5' || firstChar=='6' || firstChar=='7' || firstChar=='0' ||
+				firstChar=='a' || firstChar=='6'){
+			retourConnect = firstChar;
+		}
 	}
 
 	/**
@@ -229,6 +270,14 @@ public class Client extends Service {
 			}
 		}
 	}
+
+	public String recupAPKMD5(Activity activity){
+		md5 = "";
+		String apkPath = AndroidFile.getPathAPK(activity);
+		md5 = Checksum.MD5(new File(apkPath));
+		return md5;
+	}
+
 	/**
 	 * @return the requeteConnexion
 	 */
@@ -279,6 +328,24 @@ public class Client extends Service {
 	public Socket getSocketClient() {
 		return socketClient;
 	}
+	/**
+	 * @return the retourRegister
+	 */
+	public char getRetourRegister() {
+		return retourRegister;
+	}
+	/**
+	 * @return the retourMD5
+	 */
+	public char getRetourMD5() {
+		return retourMD5;
+	}
+	/**
+	 * @return the retourConnect
+	 */
+	public char getRetourConnect() {
+		return retourConnect;
+	}
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -294,7 +361,7 @@ public class Client extends Service {
 	class ThreadClient implements Runnable{
 		@Override
 		public void run() {
-			while(socketClient.isConnected()){
+			while(!socketClient.isClosed()){
 				recupMessage();
 				try {
 					Thread.sleep(50);
