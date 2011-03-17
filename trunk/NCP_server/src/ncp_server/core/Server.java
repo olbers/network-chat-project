@@ -27,13 +27,13 @@ import ncp_server.util.option.Option;
 /**
  * Class Server, est la classe principale du serveur de chat NCP.
  * @author Poirier Kévin
- * @version 0.2.0.31
+ * @version 0.2.0.32
  *
  */
 
 public class Server {
 
-	public static final String version = "0.2.0.31";
+	public static final String version = "0.2.0.32";
 	/**
 	 * socketServer contiendra le socket du serveur qui permettra de se connecter au serveur.
 	 */
@@ -483,11 +483,11 @@ public class Server {
 		Client client;
 		client=this.ajoutClient(socketClient);
 		if(this.isAutorisationConnexion()){
-			this.envoiePrive(client, "&verif");
 			if(this.ipIsBan(client.getSocketClient().getInetAddress().toString())){
 				this.envoiePrive(client, "b");//ip banni
 				this.clientDeconnexion(client);
 			}else{
+				this.envoiePrive(client, "&verif");
 				client.createThread();
 				client.startThread();
 			}
