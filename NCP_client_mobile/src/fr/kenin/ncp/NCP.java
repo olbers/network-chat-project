@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,15 +15,17 @@ public class NCP extends Activity {
 	
 	protected Context context;
 	
+	private static final String TAG = "Main_NCP";
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		this.context=this;
 		((Button)findViewById(R.id.chatButton1)).setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				Log.d(TAG, "Lancement de la connexion.");
 				Intent intent = new Intent(context,Connexion.class);
 				startActivity(intent);
 				finish();

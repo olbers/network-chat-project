@@ -49,7 +49,7 @@ public class Chat extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat);
-		this.context=this;
+		context=this;		
 		Bundle extra = this.getIntent().getExtras();
 		if(extra != null){
 			this.isRegister=extra.getBoolean("isRegister");
@@ -142,7 +142,9 @@ public class Chat extends Activity {
 
 			return true;
 		case MENU_QUITTER :
-
+			if(mClient!=null){
+				mClient.deconnexion();
+			}
 			finish();
 			return true;
 
@@ -181,13 +183,14 @@ public class Chat extends Activity {
 	private void doUnbindService() {
 		mClient.stopSelf();
 		unbindService(mConnexion);
+		stopService(intentAssoClient);
 	}
 
 	Thread updateList = new Thread(new Runnable(){
 		@Override
 		public void run() {
 			if(mClient!=null){
-				while(mClient.getSocketClient().isConnected()){
+				while(!mClient.getSocketClient().isClosed()){
 					Message msg = handler.obtainMessage();
 					handler.sendMessageAtFrontOfQueue(msg);
 					try {
