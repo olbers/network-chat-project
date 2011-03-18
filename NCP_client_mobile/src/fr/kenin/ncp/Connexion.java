@@ -72,7 +72,6 @@ public class Connexion extends Activity {
 								lancementChat();
 							}
 						}
-
 					}else{
 						Toast.makeText(context, "Service non lié.", Toast.LENGTH_LONG).show();
 					}
