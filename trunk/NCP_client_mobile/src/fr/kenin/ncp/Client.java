@@ -49,7 +49,7 @@ public class Client extends Service {
 		messageList = new ArrayList<String>(100);
 		retourConnect='`';
 		retourMD5='`';
-		retourConnect='`';
+		retourRegister='`';
 
 	}
 	@Override

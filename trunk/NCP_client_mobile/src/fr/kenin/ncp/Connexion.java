@@ -116,8 +116,6 @@ public class Connexion extends Activity {
 				}
 			}
 		}while((retourMD5=='`' || retourConnect=='`')|| retourConnect=='b');
-
-
 	}
 
 	private void returnError(){
