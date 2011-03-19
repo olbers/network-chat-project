@@ -4,9 +4,9 @@
     <string name="app_name">NCP</string>
     <string name="connexion">Connexion </string>
     <string name="quit">Quitter l\'application</string>
-    <string name="version">0.1.1.2</string>
+    <string name="version">0.1.2.1</string>
     <string name="register">Enregistrement</string>
     <string name="send">Envoyer</string>
-    <string name="networkStates">Etat du réseau :</string>
+    <string name="networkStates">Etat du réseau : </string>
     <string name="userCo">Liste des utilisateurs connectés :</string>
 </resources>

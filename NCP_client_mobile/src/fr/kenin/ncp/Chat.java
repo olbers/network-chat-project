@@ -29,6 +29,7 @@ public class Chat extends Activity {
 	private final static int MENU_PARAMETRE = 1;
 	private final static int MENU_REGISTER = 2;
 	private final static int MENU_QUITTER = 3;
+	private final static int CODE_REGISTER = 1;
 	
 	private static final String TAG = "Chat_NCP";
 
@@ -125,7 +126,9 @@ public class Chat extends Activity {
 		menu.add(0,MENU_QUITTER,Menu.NONE,"Quitter");
 		return super.onCreateOptionsMenu(menu);
 	}
-
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()){
@@ -138,7 +141,7 @@ public class Chat extends Activity {
 		case MENU_REGISTER :
 
 			Intent register = new Intent(context,Enregistrement.class);
-			startActivity(register);
+			startActivityForResult(register, CODE_REGISTER);
 
 			return true;
 		case MENU_QUITTER :
@@ -151,6 +154,26 @@ public class Chat extends Activity {
 		default : 
 			return true;
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		switch(requestCode){
+		case CODE_REGISTER:
+				switch (resultCode) {
+				case RESULT_OK:
+					isRegister=true;					
+					break;
+				default:
+					break;
+				}
+		}
+		
 	}
 
 	private void updateText(String message){
