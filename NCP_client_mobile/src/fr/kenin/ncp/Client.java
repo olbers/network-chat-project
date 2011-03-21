@@ -271,11 +271,11 @@ public class Client extends Service {
 		}
 	}
 
-	public String recupAPKMD5(Activity activity){
+	public void recupAPKMD5(Activity activity){
 		md5 = "";
 		String apkPath = AndroidFile.getPathAPK(activity);
 		md5 = Checksum.MD5(new File(apkPath));
-		return md5;
+	 
 	}
 
 	/**

@@ -22,7 +22,7 @@ public class AndroidFile {
 	
 	public static String getPathAPK(Activity activity){
 		String path="";
-		activity.getApplication().getApplicationContext().getPackageResourcePath();
+		path=activity.getApplication().getApplicationContext().getPackageResourcePath();
 		return path;
 	}
 }
