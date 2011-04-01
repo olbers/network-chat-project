@@ -41,7 +41,7 @@ public class Supervisor extends Thread {
 		this.run=true;
 		this.monitor= new JavaSysMon();
 		this.server=Server.getInstance();
-		this.antiFlood=System.currentTimeMillis()+5000;//Toutes les 15 secondes
+		this.antiFlood=System.currentTimeMillis()+5000;//Toutes les 5 secondes
 		this.cleanListClient=System.currentTimeMillis()+30000;//Toutes les 30 secondes
 		this.chSQL=System.currentTimeMillis()+60000;//Toutes les minutes.
 		this.ressource=System.currentTimeMillis()+60000; //Toutes les minutes

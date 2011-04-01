@@ -1,5 +1,5 @@
 ChangeLog :
-==========================================================
+===========================================================
 06 Fevrier 2011
 V:0.1
 Revision : 42
@@ -9,4 +9,17 @@ Fonction verification MD5
 Connect /Register
 Log
 Fichier Option
+===========================================================
+===========================================================
+01 Avril 2011
+V:0.3
+Revision : 138
+Superviseur
+Refonte architecture
+Système redémarrage
+Système de Stop
+Gestion de toutes les commandes
+Diverse optiomisation
+Ajout d'un système de compte à rebours
+...
 ===========================================================
